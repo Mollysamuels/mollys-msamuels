@@ -31,6 +31,10 @@
   .wish-btn { opacity: 1; transform: none; }
   .quick-add { opacity: 1; transform: none; position: static; margin-top: 10px; }
   .promo-popup { padding: 32px 24px; }
+  .product-layout { grid-template-columns: 1fr; gap: 32px; }
+  .size-grid { grid-template-columns: repeat(5, 1fr); }
+  .product-actions { flex-wrap: wrap; }
+  .product-actions .btn { flex: 1 1 45%; }
 }
 
 /* ---------- Small mobile ---------- */
