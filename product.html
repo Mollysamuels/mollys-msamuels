@@ -100,14 +100,27 @@
   <div class="product-layout">
 
     <!-- LEFT: Auto-cycling gallery -->
-    <div class="gallery" aria-label="Product image gallery — swipe to browse views">
-      <span class="gallery-label">front</span>
-      <span class="gallery-hint">Swipe or hold →</span>
-      <div class="gallery-frame active" data-view="front"><img src="" alt=""></div>
-      <div class="gallery-frame" data-view="back"><img src="" alt=""></div>
-      <div class="gallery-frame" data-view="model"><img src="" alt=""></div>
-      <div class="gallery-dots">
-        <span class="active"></span><span></span><span></span>
+    <div class="gallery-col">
+      <div class="gallery" aria-label="Product image gallery — swipe to browse views">
+        <span class="gallery-label">front</span>
+        <span class="gallery-hint">Swipe or hold →</span>
+        <div class="gallery-frame active" data-view="front"><img src="" alt=""></div>
+        <div class="gallery-frame" data-view="back"><img src="" alt=""></div>
+        <div class="gallery-frame" data-view="model"><img src="" alt=""></div>
+        <div class="gallery-dots">
+          <span class="active"></span><span></span><span></span>
+        </div>
+      </div>
+      <div class="thumbnail-row">
+        <button class="thumbnail active" data-view="front" aria-label="Front view">
+          <img data-thumb="front" src="" alt="Front view thumbnail">
+        </button>
+        <button class="thumbnail" data-view="back" aria-label="Back view">
+          <img data-thumb="back" src="" alt="Back view thumbnail">
+        </button>
+        <button class="thumbnail" data-view="model" aria-label="Model view">
+          <img data-thumb="model" src="" alt="Model view thumbnail">
+        </button>
       </div>
     </div>
 
