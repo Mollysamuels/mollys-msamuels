@@ -55,7 +55,7 @@
 .division-panel::before {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(0deg, rgba(20,14,8,0.82) 0%, rgba(20,14,8,0.1) 55%);
+  background: linear-gradient(0deg, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.1) 55%);
 }
 .division-content { position: relative; z-index: 2; color: var(--cream); max-width: 420px; }
 .division-content .eyebrow {
@@ -328,21 +328,21 @@
   background: var(--umber-deep);
   color: var(--cream);
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 10px 24px rgba(33,26,18,0.28);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28);
   border: none;
   z-index: 200;
   animation: chatPulse 3.2s ease-in-out infinite;
 }
 .chat-fab svg { width: 24px; height: 24px; }
 @keyframes chatPulse {
-  0%, 100% { box-shadow: 0 10px 24px rgba(33,26,18,0.28), 0 0 0 0 rgba(217,164,65,0.4); }
-  50% { box-shadow: 0 10px 24px rgba(33,26,18,0.28), 0 0 0 10px rgba(217,164,65,0); }
+  0%, 100% { box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 0 0 0 rgba(244,217,0,0.4); }
+  50% { box-shadow: 0 10px 24px rgba(0,0,0,0.28), 0 0 0 10px rgba(244,217,0,0); }
 }
 
 /* ---------- Promo popup ---------- */
 .promo-popup-backdrop {
   position: fixed; inset: 0;
-  background: rgba(33,26,18,0.45);
+  background: rgba(0,0,0,0.45);
   z-index: 300;
   display: flex; align-items: center; justify-content: center;
   opacity: 0; visibility: hidden;
