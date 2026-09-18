@@ -150,6 +150,13 @@
           <button class="color-swatch" data-color="black" aria-label="Black">
             <span class="swatch-fill" style="background:#181410;"></span>
           </button>
+          <button class="color-swatch color-swatch-other" data-color="other" aria-label="Other — specify your own colour">
+            <span class="swatch-fill swatch-other-fill">+</span>
+          </button>
+        </div>
+        <div class="custom-color-field">
+          <input type="text" class="custom-color-input" placeholder="Type your preferred colour (e.g. Bottle Green)" maxlength="40">
+          <span class="custom-color-note">We'll confirm availability of this colour before processing your order.</span>
         </div>
       </div>
 
@@ -159,22 +166,28 @@
           <label>Chest size (in)</label>
           <a href="size-guide.html" class="size-guide-link">Size guide</a>
         </div>
-        <div class="size-grid">
-          <span class="size-option disabled">22</span>
-          <span class="size-option">24</span>
-          <span class="size-option">26</span>
-          <span class="size-option active">28</span>
-          <span class="size-option">30</span>
-          <span class="size-option">32</span>
-          <span class="size-option">34</span>
-          <span class="size-option">36</span>
-          <span class="size-option">38</span>
-          <span class="size-option">40</span>
-          <span class="size-option">42</span>
-          <span class="size-option">44</span>
-          <span class="size-option">46</span>
-          <span class="size-option disabled">48</span>
-          <span class="size-option disabled">50</span>
+        <div class="size-dropdown">
+          <button class="size-dropdown-btn" type="button">
+            <span class="size-dropdown-value">28 in</span>
+            <svg width="11" height="11" viewBox="0 0 10 10" fill="none"><path d="M1 3l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg>
+          </button>
+          <div class="size-dropdown-menu">
+            <button class="size-dropdown-option disabled" disabled>22 in — sold out</button>
+            <button class="size-dropdown-option" data-size="24">24 in</button>
+            <button class="size-dropdown-option" data-size="26">26 in</button>
+            <button class="size-dropdown-option active" data-size="28">28 in</button>
+            <button class="size-dropdown-option" data-size="30">30 in</button>
+            <button class="size-dropdown-option" data-size="32">32 in</button>
+            <button class="size-dropdown-option" data-size="34">34 in</button>
+            <button class="size-dropdown-option" data-size="36">36 in</button>
+            <button class="size-dropdown-option" data-size="38">38 in</button>
+            <button class="size-dropdown-option" data-size="40">40 in</button>
+            <button class="size-dropdown-option" data-size="42">42 in</button>
+            <button class="size-dropdown-option" data-size="44">44 in</button>
+            <button class="size-dropdown-option" data-size="46">46 in</button>
+            <button class="size-dropdown-option disabled" disabled>48 in — sold out</button>
+            <button class="size-dropdown-option disabled" disabled>50 in — sold out</button>
+          </div>
         </div>
       </div>
 
