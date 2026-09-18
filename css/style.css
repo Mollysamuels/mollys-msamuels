@@ -220,7 +220,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   min-height: 640px;
-  background: var(--umber-deep);
+  background: linear-gradient(155deg, var(--gold-deep) 0%, var(--umber-deep) 62%);
   overflow: hidden;
 }
 
