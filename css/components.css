@@ -209,7 +209,7 @@
 
 /* ---------- Promo band ---------- */
 .promo-band {
-  background: linear-gradient(120deg, var(--umber-deep) 0%, var(--umber) 55%, var(--gold-deep) 130%);
+  background: linear-gradient(120deg, var(--umber-deep) 0%, var(--umber) 55%, var(--gold) 130%);
   padding: 70px 0;
 }
 .promo-band .wrap {
@@ -290,7 +290,6 @@
   background: var(--cream-deep);
   color: #1A1A1A;
   padding: 64px 0 28px;
-  border-top: 3px solid #000000;
 }
 .footer-grid {
   display: grid;
