@@ -1,1 +1,44 @@
-/* Mobile/tablet responsive rules */
+/* ============================================
+   MOLLYS × M. SAMUELS — RESPONSIVE RULES
+   ============================================ */
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr); }
+  .hero { grid-template-columns: 1fr 1fr; min-height: 560px; }
+  .footer-grid { grid-template-columns: 1fr 1fr 1fr; }
+  .promo-band .wrap { grid-template-columns: 1fr; }
+  .promo-band .visual { order: -1; }
+}
+
+/* ---------- Mobile nav breakpoint ---------- */
+@media (max-width: 860px) {
+  .main-nav { display: none; }
+  .menu-toggle { display: flex; }
+  .market-btn span.label { display: none; }
+  .hero { grid-template-columns: 1fr; min-height: auto; }
+  .hero-visual { height: 340px; order: -1; }
+  .hero-copy { padding: 44px 24px; }
+  .hero-quotes { min-height: 180px; }
+  .divisions { grid-template-columns: 1fr; }
+  .division-panel { min-height: 340px; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 18px 14px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
+  .footer-brand { grid-column: 1 / -1; }
+  .section { padding: 56px 0; }
+  .section-head { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .feature-strip ul { justify-content: flex-start; }
+  .wish-btn { opacity: 1; transform: none; }
+  .quick-add { opacity: 1; transform: none; position: static; margin-top: 10px; }
+  .promo-popup { padding: 32px 24px; }
+}
+
+/* ---------- Small mobile ---------- */
+@media (max-width: 480px) {
+  .wrap { padding: 0 18px; }
+  .header-row { padding: 14px 18px; }
+  .product-grid { grid-template-columns: 1fr 1fr; gap: 14px 10px; }
+  .newsletter-form { flex-direction: column; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .chat-fab { width: 50px; height: 50px; bottom: 18px; right: 18px; }
+}
