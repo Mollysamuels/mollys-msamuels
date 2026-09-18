@@ -1,4 +1,4 @@
- /* ============================================
+/* ============================================
    MOLLYS × M. SAMUELS — MAIN STYLESHEET
    Design tokens, reset, typography, header, hero
    ============================================ */
@@ -10,7 +10,6 @@
   --ink:        #211A12;
   --ink-soft:   #58493A;
   --gold:       #F4D900;
-  --gold-deep:  #D6BE00;
   --umber:      #1A1A1A;
   --umber-deep: #000000;
   --line:       #E6DCC6;
@@ -78,7 +77,7 @@ h1, h2, h3, h4 {
 }
 
 a:focus-visible, button:focus-visible, input:focus-visible {
-  outline: 2px solid var(--gold-deep);
+  outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
 
@@ -119,7 +118,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   color: var(--umber-deep);
   white-space: nowrap;
 }
-.logo-mark span { color: var(--gold-deep); }
+.logo-mark span { color: var(--gold); }
 
 .main-nav {
   display: flex;
@@ -162,7 +161,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   font-size: 0.85rem;
   color: var(--ink-soft);
 }
-.market-btn:hover { border-color: var(--gold-deep); color: var(--umber-deep); }
+.market-btn:hover { border-color: var(--gold); color: var(--umber-deep); }
 .market-menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -201,7 +200,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .badge {
   position: absolute;
   top: -4px; right: -6px;
-  background: var(--gold-deep);
+  background: var(--gold);
   color: var(--white);
   font-size: 0.62rem;
   font-weight: 700;
@@ -244,7 +243,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   min-height: 640px;
-  background: linear-gradient(155deg, var(--gold-deep) 0%, var(--umber-deep) 62%);
+  background: linear-gradient(155deg, var(--gold) 0%, var(--umber-deep) 62%);
   overflow: hidden;
 }
 
@@ -326,8 +325,8 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
 }
 .btn:hover { transform: translateY(-1px); }
-.btn-gold { background: var(--gold); color: var(--umber-deep); }
-.btn-gold:hover { background: var(--gold-deep); }
+.btn-gold { background: var(--gold); color: var(--umber-deep); box-shadow: 0 0 0 rgba(0,0,0,0); }
+.btn-gold:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.28); }
 .btn-outline { border-color: rgba(250, 246, 238, 0.5); color: var(--cream); }
 .btn-outline:hover { border-color: var(--cream); background: rgba(250,246,238,0.08); }
 .btn-dark { background: var(--umber-deep); color: var(--cream); }
