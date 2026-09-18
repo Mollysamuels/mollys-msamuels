@@ -93,7 +93,7 @@
   width: 84px; height: 84px;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 2px solid var(--gold);
   margin-bottom: 10px;
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
@@ -198,7 +198,7 @@
 
 /* ---------- Promo band ---------- */
 .promo-band {
-  background: var(--umber-deep);
+  background: linear-gradient(120deg, var(--umber-deep) 0%, var(--umber) 55%, var(--gold-deep) 130%);
   padding: 70px 0;
 }
 .promo-band .wrap {
@@ -279,6 +279,7 @@
   background: var(--umber-deep);
   color: #D8CBB8;
   padding: 64px 0 28px;
+  border-top: 3px solid var(--gold);
 }
 .footer-grid {
   display: grid;
