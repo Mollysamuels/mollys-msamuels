@@ -149,12 +149,27 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   /* ---------- Color swatches ---------- */
+  const customColorField = document.querySelector(".custom-color-field");
+  const customColorInput = document.querySelector(".custom-color-input");
+
   document.querySelectorAll(".color-swatch").forEach((swatch) => {
     swatch.addEventListener("click", () => {
       const colorKey = swatch.dataset.color;
-      currentColor = colorKey;
       document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
       swatch.classList.add("active");
+
+      if (colorKey === "other") {
+        // Custom colour: show the text field, keep showing the current photos
+        // (no photography exists for an arbitrary typed colour).
+        customColorField?.classList.add("show");
+        const nameEl = document.querySelector(".selected-color-name");
+        if (nameEl) nameEl.textContent = "Custom (specify below)";
+        customColorInput?.focus();
+        return;
+      }
+
+      customColorField?.classList.remove("show");
+      currentColor = colorKey;
       const nameEl = document.querySelector(".selected-color-name");
       if (nameEl) nameEl.textContent = PRODUCT.colors[colorKey].label;
       loadColorImages(colorKey);
@@ -162,13 +177,25 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  /* ---------- Size selection ---------- */
-  document.querySelectorAll(".size-option:not(.disabled)").forEach((opt) => {
-    opt.addEventListener("click", () => {
-      document.querySelectorAll(".size-option").forEach((o) => o.classList.remove("active"));
-      opt.classList.add("active");
+  /* ---------- Size dropdown ---------- */
+  const sizeDropdown = document.querySelector(".size-dropdown");
+  if (sizeDropdown) {
+    const sizeBtn = sizeDropdown.querySelector(".size-dropdown-btn");
+    const sizeValue = sizeDropdown.querySelector(".size-dropdown-value");
+    sizeBtn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      sizeDropdown.classList.toggle("open");
     });
-  });
+    document.addEventListener("click", () => sizeDropdown.classList.remove("open"));
+    document.querySelectorAll(".size-dropdown-option:not(.disabled)").forEach((opt) => {
+      opt.addEventListener("click", () => {
+        document.querySelectorAll(".size-dropdown-option").forEach((o) => o.classList.remove("active"));
+        opt.classList.add("active");
+        sizeValue.textContent = opt.textContent.trim();
+        sizeDropdown.classList.remove("open");
+      });
+    });
+  }
 
   /* ---------- Quantity stepper ---------- */
   const qtyDisplay = document.querySelector(".qty-stepper span");
@@ -181,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
       qtyDisplay.textContent = qty;
     });
     qtyPlus.addEventListener("click", () => {
-      qty = Math.min(20, qty + 1);
+      qty = Math.min(50, qty + 1);
       qtyDisplay.textContent = qty;
     });
   }
