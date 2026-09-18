@@ -1,0 +1,209 @@
+/* ============================================
+   M. SAMUELS — SCHOOLWEAR LANDING PAGE STYLES
+   Zeco-pattern: logo stack, mega-menu overlay,
+   tabbed tinted panels, icon-grid categories.
+   ============================================ */
+
+body.ms-body { background: #000000; }
+
+/* ---------- MS Header ---------- */
+.ms-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28px 40px;
+}
+
+.ms-logo-stack {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+/* Placeholder wordmark — swap this <a> for <img src="assets/images/msamuels/logo.png">
+   once the real M. Samuels logo file is uploaded. No other markup needs to change. */
+.ms-logo {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+}
+.ms-est {
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 0.08em;
+  margin-top: 2px;
+}
+.ms-tagline {
+  font-size: 0.82rem;
+  color: #FFFFFF;
+  margin-top: 4px;
+}
+
+.ms-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+.ms-action-btn {
+  background: none; border: none;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 4px;
+  color: #FFFFFF;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.ms-action-btn svg { width: 20px; height: 20px; }
+.ms-menu-btn {
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,255,255,0.4);
+  display: flex; align-items: center; justify-content: center;
+  color: #FFFFFF;
+}
+.ms-menu-btn svg { width: 20px; height: 20px; }
+
+/* ---------- MS Hero ---------- */
+.ms-hero {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.ms-hero-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.55;
+}
+.ms-hero-content {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  text-align: center;
+  color: #FFFFFF;
+  padding: 0 24px;
+}
+.ms-hero-content h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400;
+  color: #FFFFFF;
+  margin-bottom: 28px;
+}
+.ms-hero-ctas { display: flex; gap: 14px; justify-content: center; }
+.btn-ms-outline {
+  border: 1px solid #FFFFFF;
+  color: #FFFFFF;
+  background: none;
+  padding: 12px 26px;
+  border-radius: 24px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.btn-ms-outline:hover { background: #FFFFFF; color: #000000; }
+
+/* ---------- Mega menu overlay ---------- */
+.ms-mega-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  background: #F5F0E6;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+  overflow-y: auto;
+}
+.ms-mega-overlay.open { opacity: 1; visibility: visible; transform: translateY(0); }
+
+.ms-mega-close {
+  position: fixed;
+  top: 30px; right: 40px;
+  z-index: 410;
+  background: none; border: none;
+  color: #1A1A1A;
+}
+.ms-mega-close svg { width: 26px; height: 26px; }
+
+.ms-mega-inner { padding: 90px 40px 60px; max-width: 1400px; margin: 0 auto; }
+
+.ms-mega-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  margin-bottom: 0;
+}
+.ms-tab {
+  background: #FFFFFF;
+  border: none;
+  border-right: 1px solid rgba(0,0,0,0.08);
+  padding: 22px 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #6B6B6B;
+  text-align: center;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.ms-tab:last-child { border-right: none; }
+.ms-tab svg { width: 30px; height: 30px; stroke: currentColor; }
+.ms-tab.active { color: #1A1A1A; }
+.ms-tab[data-tab="boys"].active   { background: #A9C1C6; }
+.ms-tab[data-tab="girls"].active  { background: #EFC3D6; }
+.ms-tab[data-tab="accessories"].active { background: #DCC9A3; }
+.ms-tab[data-tab="bespoke"].active { background: #B7CDB0; }
+
+.ms-mega-panel { display: none; padding: 40px 0; }
+.ms-mega-panel.active { display: block; }
+.ms-mega-panel[data-panel="boys"] { background: #A9C1C6; }
+.ms-mega-panel[data-panel="girls"] { background: #EFC3D6; }
+.ms-mega-panel[data-panel="accessories"] { background: #DCC9A3; }
+.ms-mega-panel[data-panel="bespoke"] { background: #B7CDB0; }
+.ms-mega-panel { margin: 0 -40px; padding: 40px; }
+
+.ms-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 36px 24px;
+}
+.ms-cat-item {
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  text-align: center;
+  color: #1A1A1A;
+}
+.ms-cat-item svg { width: 46px; height: 46px; stroke: #1A1A1A; fill: none; stroke-width: 1.3; }
+.ms-cat-item span { font-size: 0.85rem; font-weight: 600; }
+.ms-cat-item:hover svg { transform: translateY(-3px); }
+.ms-cat-item svg { transition: transform 0.2s ease; }
+
+.ms-mega-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 36px 0 10px;
+  max-width: 700px;
+}
+.ms-mega-footer a {
+  font-size: 0.85rem;
+  color: #1A1A1A;
+  padding: 6px 0;
+}
+.ms-mega-footer a:hover { text-decoration: underline; }
+
+.ms-mega-auth { display: flex; gap: 14px; margin-top: 20px; }
+.ms-mega-auth button {
+  padding: 11px 26px;
+  border-radius: 24px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.ms-mega-auth .register { background: #1A1A1A; color: #FFFFFF; border: 1px solid #1A1A1A; }
+.ms-mega-auth .login { background: none; color: #1A1A1A; border: 1px solid #1A1A1A; }
