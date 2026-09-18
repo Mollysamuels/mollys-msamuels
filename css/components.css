@@ -287,10 +287,10 @@
 
 /* ---------- Footer ---------- */
 .site-footer {
-  background: var(--umber-deep);
-  color: #D8CBB8;
+  background: var(--gold);
+  color: #1A1A1A;
   padding: 64px 0 28px;
-  border-top: 3px solid var(--gold);
+  border-top: 3px solid #000000;
 }
 .footer-grid {
   display: grid;
@@ -299,33 +299,34 @@
   margin-bottom: 48px;
 }
 .footer-grid h5 {
-  color: var(--white);
+  color: #000000;
   font-size: 0.85rem;
   letter-spacing: 0.02em;
   margin-bottom: 16px;
   font-weight: 600;
 }
 .footer-grid ul li { margin-bottom: 10px; }
-.footer-grid a { font-size: 0.85rem; color: #C9BBA5; transition: color 0.15s ease; }
-.footer-grid a:hover { color: var(--gold); }
-.footer-brand .logo-mark { color: var(--white); }
-.footer-brand .logo-mark span { color: var(--gold); }
-.footer-brand p { font-size: 0.85rem; color: #B4A48D; margin: 14px 0 20px; max-width: 34ch; }
+.footer-grid a { font-size: 0.85rem; color: #1A1A1A; transition: color 0.15s ease; }
+.footer-grid a:hover { color: #000000; text-decoration: underline; }
+.footer-brand .logo-mark { color: #000000; }
+.footer-brand .logo-mark span { color: #000000; text-decoration: underline; }
+.footer-brand p { font-size: 0.85rem; color: #2A2A2A; margin: 14px 0 20px; max-width: 34ch; }
 .social-row { display: flex; gap: 12px; }
 .social-row a {
   width: 34px; height: 34px;
-  border: 1px solid #5A4530;
+  border: 1px solid #000000;
+  color: #000000;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
 }
 .social-row svg { width: 15px; height: 15px; }
 .footer-bottom {
-  border-top: 1px solid #4A3722;
+  border-top: 1px solid #000000;
   padding-top: 22px;
   display: flex;
   justify-content: space-between;
   font-size: 0.8rem;
-  color: #A08F76;
+  color: #1A1A1A;
   flex-wrap: wrap;
   gap: 10px;
 }
