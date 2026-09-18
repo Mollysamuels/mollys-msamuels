@@ -75,6 +75,17 @@
   margin-bottom: 20px;
 }
 
+/* The Mollys panel sits on a bright yellow photo/background — dark text
+   needed there for contrast. The M. Samuels panel sits on black, so it
+   keeps the light text above. */
+.divisions .division-panel:first-child .division-content { color: #1A1A1A; }
+.divisions .division-panel:first-child .division-content .eyebrow { color: #000000; }
+.divisions .division-panel:first-child .division-content h3 { color: #000000; }
+.divisions .division-panel:first-child .division-content p { color: #2A2A2A; }
+.divisions .division-panel:first-child.division-panel::before {
+  background: linear-gradient(0deg, rgba(244,217,0,0.55) 0%, rgba(244,217,0,0.05) 55%);
+}
+
 /* ---------- Category strip ---------- */
 .category-strip {
   display: flex;
