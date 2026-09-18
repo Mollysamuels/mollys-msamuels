@@ -66,12 +66,22 @@ document.addEventListener("DOMContentLoaded", function () {
   };
   const dots = gallery.querySelectorAll(".gallery-dots span");
   const galleryLabel = gallery.querySelector(".gallery-label");
+  const thumbButtons = document.querySelectorAll(".thumbnail");
+  const thumbImgs = {
+    front: document.querySelector('.thumbnail img[data-thumb="front"]'),
+    back: document.querySelector('.thumbnail img[data-thumb="back"]'),
+    model: document.querySelector('.thumbnail img[data-thumb="model"]'),
+  };
 
   function loadColorImages(colorKey) {
     const color = PRODUCT.colors[colorKey];
     VIEW_ORDER.forEach((view) => {
       frameEls[view].src = color.images[view];
       frameEls[view].alt = `${PRODUCT.name} — ${color.label} — ${view} view`;
+      if (thumbImgs[view]) {
+        thumbImgs[view].src = color.images[view];
+        thumbImgs[view].alt = `${color.label} — ${view} view thumbnail`;
+      }
     });
   }
 
@@ -81,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
     Object.values(frameWrappers).forEach((el) => el.classList.remove("active"));
     frameWrappers[view].classList.add("active");
     dots.forEach((d, i) => d.classList.toggle("active", i === frameIndex));
+    thumbButtons.forEach((t) => t.classList.toggle("active", t.dataset.view === view));
     if (galleryLabel) galleryLabel.textContent = view;
   }
 
@@ -125,6 +136,15 @@ document.addEventListener("DOMContentLoaded", function () {
     dot.addEventListener("click", () => {
       stopAutoCycle();
       showFrame(i);
+    });
+  });
+
+  /* ---------- Thumbnail clicks (jump straight to that view) ---------- */
+  thumbButtons.forEach((thumb) => {
+    thumb.addEventListener("click", () => {
+      stopAutoCycle();
+      const view = thumb.dataset.view;
+      showFrame(VIEW_ORDER.indexOf(view));
     });
   });
 
