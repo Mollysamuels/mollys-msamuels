@@ -1,4 +1,4 @@
- /* ============================================
+/* ============================================
    MOLLYS × M. SAMUELS — MAIN STYLESHEET
    Design tokens, reset, typography, header, hero
    ============================================ */
@@ -9,10 +9,10 @@
   --cream-deep: #F1E9D8;
   --ink:        #211A12;
   --ink-soft:   #58493A;
-  --gold:       #D9A441;
-  --gold-deep:  #B9832A;
-  --umber:      #3E2A1A;
-  --umber-deep: #2A1B10;
+  --gold:       #F4D900;
+  --gold-deep:  #D6BE00;
+  --umber:      #1A1A1A;
+  --umber-deep: #000000;
   --line:       #E6DCC6;
   --white:      #FFFFFF;
 
@@ -171,7 +171,7 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   border: 1px solid var(--line);
   border-radius: var(--radius-m);
   min-width: 170px;
-  box-shadow: 0 12px 28px rgba(33, 26, 18, 0.12);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
   opacity: 0;
   visibility: hidden;
   transform: translateY(-6px);
@@ -349,5 +349,5 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 .hero-visual::after {
   content: "";
   position: absolute; inset: 0;
-  background: linear-gradient(100deg, rgba(42,27,16,0.55) 0%, rgba(42,27,16,0) 38%);
+  background: linear-gradient(100deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 38%);
 }
