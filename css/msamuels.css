@@ -255,14 +255,22 @@ body.ms-body { background: #000000; }
 .us-grid-section .ms-cat-item svg { width: 48px; height: 48px; }
 .us-grid-section .ms-cat-item span { font-size: 0.85rem; }
 
-/* The shared dashboard button, placed in the standard site header on this page */
-.ms-menu-btn.in-header {
-  width: 40px; height: 40px;
-  background: none;
-  border: 1px solid var(--line);
-  color: var(--umber-deep);
+/* M. Samuels dashboard: floating button (used on uniform-section.html),
+   separate from the header to avoid a duplicate hamburger on mobile. */
+.ms-menu-fab {
+  position: fixed;
+  bottom: 26px; left: 26px;
+  z-index: 200;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: #1A1A1A;
+  color: #F4D900;
+  border: none;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28);
 }
-.ms-menu-btn.in-header:hover { border-color: var(--gold); }
+.ms-menu-fab svg { width: 24px; height: 24px; }
+.ms-menu-fab:hover { background: #000000; }
 
 /* M. Samuels logo when placed inside the standard site header (uniform-section.html) */
 .ms-section-logo { display: inline-flex; align-items: center; }
