@@ -1,4 +1,4 @@
-// ============================================
+ // ============================================
 // M. SAMUELS LANDING PAGE — MEGA MENU LOGIC
 // Categories are rendered from data below, using a small
 // shared set of placeholder line-icons. Swap the ICONS paths
