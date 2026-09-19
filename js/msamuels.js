@@ -91,6 +91,12 @@ document.addEventListener("DOMContentLoaded", function () {
   if (closeBtn && overlay) {
     closeBtn.addEventListener("click", () => overlay.classList.remove("open"));
   }
+  // Clicking the dimmed background (outside the side panel) also closes it
+  if (overlay) {
+    overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) overlay.classList.remove("open");
+    });
+  }
 
   const tabs = document.querySelectorAll(".ms-tab");
   const panels = document.querySelectorAll(".ms-mega-panel");
