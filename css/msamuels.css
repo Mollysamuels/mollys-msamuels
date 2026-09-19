@@ -263,3 +263,7 @@ body.ms-body { background: #000000; }
   color: var(--umber-deep);
 }
 .ms-menu-btn.in-header:hover { border-color: var(--gold); }
+
+/* M. Samuels logo when placed inside the standard site header (uniform-section.html) */
+.ms-section-logo { display: inline-flex; align-items: center; }
+.ms-section-logo img { height: 44px; width: auto; display: block; }
