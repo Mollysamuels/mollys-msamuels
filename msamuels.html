@@ -43,13 +43,15 @@
 
 <!-- ============ MS HERO ============ -->
 <section class="ms-hero">
-  <!-- Video background: cycles through 3 clips continuously (hero-1 → hero-2 → hero-3 → repeat),
-       played back slightly slowed down. Upload your 3 files to assets/video/msamuels/
-       named exactly hero-1.mp4, hero-2.mp4, hero-3.mp4 — nothing else needs to change.
-       The image below is only shown as a fallback if video can't load at all. -->
-  <video class="ms-hero-bg" id="msHeroVideo" autoplay muted playsinline poster="assets/images/msamuels/hero-schoolwear.svg">
-    <source src="assets/video/msamuels/hero-1.mp4" type="video/mp4">
-  </video>
+  <!-- Hero background: 5 images crossfading continuously in an endless loop.
+       Upload your 5 images to assets/images/msamuels/hero/ named exactly
+       hero-1.jpg through hero-5.jpg — nothing else needs to change.
+       Never use GitHub's pencil/edit icon on these files — upload/delete-and-reupload only. -->
+  <img class="ms-hero-bg active" src="assets/images/msamuels/hero/hero-1.jpg" alt="M. Samuels schoolwear">
+  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-2.jpg" alt="">
+  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-3.jpg" alt="">
+  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-4.jpg" alt="">
+  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-5.jpg" alt="">
   <div class="ms-hero-content">
     <h1>Schoolwear You Can Trust</h1>
     <div class="ms-hero-ctas">
@@ -85,19 +87,6 @@
           <svg viewBox="0 0 40 40"></svg>
           bespoke school<br>uniform
         </button>
-      </div>
-
-      <div class="ms-mega-panel" data-panel="boys">
-        <div class="ms-cat-grid"><!-- populated by js/msamuels.js --></div>
-      </div>
-      <div class="ms-mega-panel" data-panel="girls">
-        <div class="ms-cat-grid"></div>
-      </div>
-      <div class="ms-mega-panel" data-panel="accessories">
-        <div class="ms-cat-grid"></div>
-      </div>
-      <div class="ms-mega-panel" data-panel="bespoke">
-        <div class="ms-cat-grid"></div>
       </div>
 
       <div class="ms-mega-footer">
