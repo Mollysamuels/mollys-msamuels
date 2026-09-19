@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // M. SAMUELS LANDING PAGE — MEGA MENU LOGIC
 // Categories are rendered from data below, using a small
 // shared set of placeholder line-icons. Swap the ICONS paths
@@ -78,32 +78,35 @@ function renderCategoryGrids() {
   });
 }
 
+const SECTION_LABELS = {
+  boys: "Boys School Uniform",
+  girls: "Girls School Uniform",
+  accessories: "School Uniform Accessories",
+  bespoke: "Bespoke School Uniform",
+};
+
+function renderSingleSection(sectionKey, gridEl) {
+  if (!CATEGORY_DATA[sectionKey] || !gridEl) return;
+  gridEl.innerHTML = CATEGORY_DATA[sectionKey].map(([name, icon]) => `
+    <a class="ms-cat-item" href="category.html?category=${slugify(name)}">
+      <svg viewBox="0 0 40 40">${ICONS[icon] || ICONS.generic}</svg>
+      <span>${name}</span>
+    </a>
+  `).join("");
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   renderCategoryGrids();
 
-  /* ---------- Hero video: cycle through 3 clips continuously, slowed slightly ---------- */
-  const heroVideo = document.getElementById("msHeroVideo");
-  if (heroVideo) {
-    const HERO_CLIPS = [
-      "assets/video/msamuels/hero-1.mp4",
-      "assets/video/msamuels/hero-2.mp4",
-      "assets/video/msamuels/hero-3.mp4",
-    ];
-    const PLAYBACK_RATE = 0.75; // slowed down a bit — adjust here if you want it slower/faster
-    let clipIndex = 0;
-
-    heroVideo.playbackRate = PLAYBACK_RATE;
-
-    heroVideo.addEventListener("loadedmetadata", () => {
-      heroVideo.playbackRate = PLAYBACK_RATE;
-    });
-
-    heroVideo.addEventListener("ended", () => {
-      clipIndex = (clipIndex + 1) % HERO_CLIPS.length;
-      heroVideo.src = HERO_CLIPS[clipIndex];
-      heroVideo.playbackRate = PLAYBACK_RATE;
-      heroVideo.play().catch(() => {});
-    });
+  /* ---------- Hero: crossfade through 5 images, endless loop ---------- */
+  const heroImgs = document.querySelectorAll(".ms-hero-bg");
+  if (heroImgs.length) {
+    let heroIndex = 0;
+    setInterval(() => {
+      heroImgs[heroIndex].classList.remove("active");
+      heroIndex = (heroIndex + 1) % heroImgs.length;
+      heroImgs[heroIndex].classList.add("active");
+    }, 4500);
   }
 
   const overlay = document.querySelector(".ms-mega-overlay");
@@ -123,14 +126,37 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  // Tabs navigate to the dedicated section page — they no longer expand
+  // a grid inline inside this panel.
   const tabs = document.querySelectorAll(".ms-tab");
-  const panels = document.querySelectorAll(".ms-mega-panel");
-
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      const target = tab.dataset.tab;
-      tabs.forEach((t) => t.classList.toggle("active", t === tab));
-      panels.forEach((p) => p.classList.toggle("active", p.dataset.panel === target));
+      window.location.href = `uniform-section.html?section=${tab.dataset.tab}`;
     });
   });
+
+  /* ---------- uniform-section.html specific: render the one section named in the URL ---------- */
+  const sectionGrid = document.getElementById("usCategoryGrid");
+  if (sectionGrid) {
+    const params = new URLSearchParams(window.location.search);
+    const section = params.get("section") || "boys";
+
+    renderSingleSection(section, sectionGrid);
+
+    const band = document.getElementById("usTintBand");
+    if (band) band.className = `us-tint-band us-tint-${section}`;
+
+    const titleEl = document.getElementById("usSectionTitle");
+    if (titleEl) titleEl.textContent = SECTION_LABELS[section] || "Uniforms";
+
+    const breadcrumbEl = document.getElementById("usBreadcrumbCurrent");
+    if (breadcrumbEl) breadcrumbEl.textContent = SECTION_LABELS[section] || "Uniforms";
+
+    document.title = `${SECTION_LABELS[section] || "Uniforms"} — Molly Samuels`;
+
+    // Highlight the matching tab if the shared dashboard panel is opened from here
+    document.querySelectorAll(".ms-tab").forEach((t) => {
+      t.classList.toggle("active", t.dataset.tab === section);
+    });
+  }
 });
