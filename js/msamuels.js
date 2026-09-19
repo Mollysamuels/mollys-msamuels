@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // M. SAMUELS LANDING PAGE — MEGA MENU LOGIC
 // Categories are rendered from data below, using a small
 // shared set of placeholder line-icons. Swap the ICONS paths
@@ -80,6 +80,31 @@ function renderCategoryGrids() {
 
 document.addEventListener("DOMContentLoaded", function () {
   renderCategoryGrids();
+
+  /* ---------- Hero video: cycle through 3 clips continuously, slowed slightly ---------- */
+  const heroVideo = document.getElementById("msHeroVideo");
+  if (heroVideo) {
+    const HERO_CLIPS = [
+      "assets/video/msamuels/hero-1.mp4",
+      "assets/video/msamuels/hero-2.mp4",
+      "assets/video/msamuels/hero-3.mp4",
+    ];
+    const PLAYBACK_RATE = 0.75; // slowed down a bit — adjust here if you want it slower/faster
+    let clipIndex = 0;
+
+    heroVideo.playbackRate = PLAYBACK_RATE;
+
+    heroVideo.addEventListener("loadedmetadata", () => {
+      heroVideo.playbackRate = PLAYBACK_RATE;
+    });
+
+    heroVideo.addEventListener("ended", () => {
+      clipIndex = (clipIndex + 1) % HERO_CLIPS.length;
+      heroVideo.src = HERO_CLIPS[clipIndex];
+      heroVideo.playbackRate = PLAYBACK_RATE;
+      heroVideo.play().catch(() => {});
+    });
+  }
 
   const overlay = document.querySelector(".ms-mega-overlay");
   const openBtn = document.querySelector(".ms-menu-btn");
