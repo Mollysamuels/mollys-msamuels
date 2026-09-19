@@ -83,7 +83,15 @@ body.ms-body { background: #000000; }
   position: absolute; inset: 0;
   width: 100%; height: 100%;
   object-fit: cover;
-  opacity: 0.55;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+}
+.ms-hero-bg.active { opacity: 0.55; }
+.ms-hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 1;
 }
 .ms-hero-content {
   position: relative;
@@ -129,7 +137,7 @@ body.ms-body { background: #000000; }
 .ms-menu-panel {
   position: absolute;
   top: 0; right: 0; bottom: 0;
-  width: min(820px, 92vw);
+  width: min(560px, 90vw);
   background: #F5F0E6;
   overflow-y: auto;
   transform: translateX(24px);
@@ -139,16 +147,16 @@ body.ms-body { background: #000000; }
 
 .ms-mega-close {
   position: sticky;
-  top: 24px;
+  top: 18px;
   float: right;
-  margin-right: 30px;
+  margin-right: 22px;
   z-index: 410;
   background: none; border: none;
   color: #1A1A1A;
 }
-.ms-mega-close svg { width: 24px; height: 24px; }
+.ms-mega-close svg { width: 22px; height: 22px; }
 
-.ms-mega-inner { padding: 90px 40px 60px; clear: both; }
+.ms-mega-inner { padding: 54px 28px 40px; clear: both; }
 
 .ms-mega-tabs {
   display: grid;
@@ -222,3 +230,36 @@ body.ms-body { background: #000000; }
 }
 .ms-mega-auth .register { background: #1A1A1A; color: #FFFFFF; border: 1px solid #1A1A1A; }
 .ms-mega-auth .login { background: none; color: #1A1A1A; border: 1px solid #1A1A1A; }
+
+/* ---------- uniform-section.html: tinted section band + grid ---------- */
+.us-tint-band {
+  padding: 56px 0 40px;
+}
+.us-tint-band h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 400;
+  color: #1A1A1A;
+}
+.us-tint-boys        { background: #A9C1C6; }
+.us-tint-girls       { background: #EFC3D6; }
+.us-tint-accessories { background: #DCC9A3; }
+.us-tint-bespoke     { background: #B7CDB0; }
+
+.us-grid-section { padding: 50px 0 90px; }
+.us-grid-section .ms-cat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 42px 24px;
+}
+.us-grid-section .ms-cat-item svg { width: 48px; height: 48px; }
+.us-grid-section .ms-cat-item span { font-size: 0.85rem; }
+
+/* The shared dashboard button, placed in the standard site header on this page */
+.ms-menu-btn.in-header {
+  width: 40px; height: 40px;
+  background: none;
+  border: 1px solid var(--line);
+  color: var(--umber-deep);
+}
+.ms-menu-btn.in-header:hover { border-color: var(--gold); }
