@@ -1,4 +1,4 @@
- /* ============================================
+/* ============================================
    M. SAMUELS — SCHOOLWEAR LANDING PAGE STYLES
    Zeco-pattern: logo stack, mega-menu overlay,
    tabbed tinted panels, icon-grid categories.
@@ -31,6 +31,9 @@ body.ms-body { background: #000000; }
   color: #FFFFFF;
   letter-spacing: 0.01em;
 }
+/* Real logo image */
+.ms-logo-img { display: inline-block; }
+.ms-logo-img img { height: 52px; width: auto; display: block; }
 .ms-est {
   font-size: 0.62rem;
   color: rgba(255,255,255,0.6);
@@ -40,7 +43,7 @@ body.ms-body { background: #000000; }
 .ms-tagline {
   font-size: 0.82rem;
   color: #FFFFFF;
-  margin-top: 4px;
+  margin-top: 6px;
 }
 
 .ms-header-actions {
@@ -115,25 +118,37 @@ body.ms-body { background: #000000; }
   position: fixed;
   inset: 0;
   z-index: 400;
-  background: #F5F0E6;
+  background: rgba(0,0,0,0.6);
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-12px);
-  transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
-  overflow-y: auto;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s;
 }
-.ms-mega-overlay.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.ms-mega-overlay.open { opacity: 1; visibility: visible; pointer-events: auto; }
+
+.ms-menu-panel {
+  position: absolute;
+  top: 0; right: 0; bottom: 0;
+  width: min(820px, 92vw);
+  background: #F5F0E6;
+  overflow-y: auto;
+  transform: translateX(24px);
+  transition: transform 0.32s ease;
+}
+.ms-mega-overlay.open .ms-menu-panel { transform: translateX(0); }
 
 .ms-mega-close {
-  position: fixed;
-  top: 30px; right: 40px;
+  position: sticky;
+  top: 24px;
+  float: right;
+  margin-right: 30px;
   z-index: 410;
   background: none; border: none;
   color: #1A1A1A;
 }
-.ms-mega-close svg { width: 26px; height: 26px; }
+.ms-mega-close svg { width: 24px; height: 24px; }
 
-.ms-mega-inner { padding: 90px 40px 60px; max-width: 1400px; margin: 0 auto; }
+.ms-mega-inner { padding: 90px 40px 60px; clear: both; }
 
 .ms-mega-tabs {
   display: grid;
@@ -171,16 +186,16 @@ body.ms-body { background: #000000; }
 
 .ms-cat-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 36px 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px 18px;
 }
 .ms-cat-item {
-  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
   text-align: center;
   color: #1A1A1A;
 }
-.ms-cat-item svg { width: 46px; height: 46px; stroke: #1A1A1A; fill: none; stroke-width: 1.3; }
-.ms-cat-item span { font-size: 0.85rem; font-weight: 600; }
+.ms-cat-item svg { width: 38px; height: 38px; stroke: #1A1A1A; fill: none; stroke-width: 1.3; }
+.ms-cat-item span { font-size: 0.78rem; font-weight: 600; }
 .ms-cat-item:hover svg { transform: translateY(-3px); }
 .ms-cat-item svg { transition: transform 0.2s ease; }
 
