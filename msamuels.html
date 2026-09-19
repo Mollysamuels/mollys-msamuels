@@ -43,10 +43,11 @@
 
 <!-- ============ MS HERO ============ -->
 <section class="ms-hero">
-  <!-- Video background: once you upload your video file, it plays here automatically,
-       muted, looping, no controls — exactly like the Zeco reference.
-       The image below is only shown as a fallback if the video can't load. -->
-  <video class="ms-hero-bg" autoplay muted loop playsinline poster="assets/images/msamuels/hero-schoolwear.svg">
+  <!-- Video background: cycles through 3 clips continuously (hero-1 → hero-2 → hero-3 → repeat),
+       played back slightly slowed down. Upload your 3 files to assets/video/msamuels/
+       named exactly hero-1.mp4, hero-2.mp4, hero-3.mp4 — nothing else needs to change.
+       The image below is only shown as a fallback if video can't load at all. -->
+  <video class="ms-hero-bg" id="msHeroVideo" autoplay muted playsinline poster="assets/images/msamuels/hero-schoolwear.svg">
     <source src="assets/video/msamuels/hero-1.mp4" type="video/mp4">
   </video>
   <div class="ms-hero-content">
@@ -68,7 +69,7 @@
     <div class="ms-mega-inner">
 
       <div class="ms-mega-tabs">
-        <button class="ms-tab active" data-tab="boys">
+        <button class="ms-tab" data-tab="boys">
           <svg viewBox="0 0 40 40"></svg>
           boys school<br>uniform
         </button>
@@ -86,7 +87,7 @@
         </button>
       </div>
 
-      <div class="ms-mega-panel active" data-panel="boys">
+      <div class="ms-mega-panel" data-panel="boys">
         <div class="ms-cat-grid"><!-- populated by js/msamuels.js --></div>
       </div>
       <div class="ms-mega-panel" data-panel="girls">
