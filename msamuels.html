@@ -43,7 +43,12 @@
 
 <!-- ============ MS HERO ============ -->
 <section class="ms-hero">
-  <img class="ms-hero-bg" src="assets/images/msamuels/hero-schoolwear.svg" alt="M. Samuels schoolwear — students in uniform">
+  <!-- Video background: once you upload your video file, it plays here automatically,
+       muted, looping, no controls — exactly like the Zeco reference.
+       The image below is only shown as a fallback if the video can't load. -->
+  <video class="ms-hero-bg" autoplay muted loop playsinline poster="assets/images/msamuels/hero-schoolwear.svg">
+    <source src="assets/video/msamuels/hero-1.mp4" type="video/mp4">
+  </video>
   <div class="ms-hero-content">
     <h1>Schoolwear You Can Trust</h1>
     <div class="ms-hero-ctas">
