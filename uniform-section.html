@@ -64,10 +64,9 @@
         <span class="badge cart-badge">0</span>
       </a>
 
-      <!-- Opens the shared M. Samuels dashboard panel (same one used on msamuels.html) -->
-      <button class="ms-menu-btn in-header" type="button" aria-label="Uniform sections menu">
-        <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      </button>
+      <!-- M. Samuels dashboard is opened via a separate floating button
+           (see bottom of page) — not from the header, to avoid duplicate
+           hamburger icons on mobile. -->
 
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -221,6 +220,16 @@
     </div>
   </div>
 </div>
+
+<!-- ============ FLOATING M. SAMUELS DASHBOARD BUTTON ============
+     Separate from the header entirely, so mobile never shows two
+     hamburger-style icons side by side. Sits bottom-left; the chat
+     bubble stays bottom-right. -->
+<button class="ms-menu-btn ms-menu-fab" type="button" aria-label="Browse uniform sections">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>
+</button>
 
 <script src="js/main.js"></script>
 <script src="js/msamuels.js"></script>
