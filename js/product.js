@@ -111,29 +111,54 @@ document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- Size dropdown: rebuild it for generic items based on division/category ---------- */
   if (!isBlazerDemo) {
+    const ONE_SIZE_SLUGS = new Set([
+      "school-bags", "ties", "water-bottles", "hair-accessories",
+      "name-tab-kit-and-hem-web-kit", "hats-and-scarves", "swimwear-accessories",
+      "shin-guards-and-gum-shields", "caps", "socks-and-sport-socks", "socks-and-tights",
+    ]);
+    const SHOE_SLUGS = new Set(["plimsolls"]);
+
+    const sizeBlock = document.querySelector(".size-dropdown")?.closest(".option-block");
     const sizeLabel = document.getElementById("sizeLabel");
     const menu = document.getElementById("sizeDropdownMenu");
     const valueEl = document.querySelector(".size-dropdown-value");
-    let sizeOptions, labelText;
+    const sizeDropdownEl = document.querySelector(".size-dropdown");
 
-    if (PRODUCT.division === "mollys") {
-      labelText = "Size";
-      sizeOptions = ["S", "M", "L", "XL", "XXL"];
-    } else if (PRODUCT.category.includes("shirt") && !PRODUCT.category.includes("sweatshirt")) {
-      labelText = "Collar size (in)";
-      sizeOptions = ["11", "11½", "12", "12½", "13", "13½", "14", "14½", "15", "15½", "16", "16½", "17"];
+    if (ONE_SIZE_SLUGS.has(PRODUCT.category)) {
+      // Accessories like bags, ties, bottles, caps — no garment sizing needed.
+      if (sizeLabel) sizeLabel.textContent = "Size";
+      if (sizeDropdownEl) sizeDropdownEl.style.display = "none";
+      if (sizeBlock) {
+        const note = document.createElement("p");
+        note.style.cssText = "font-size:0.9rem;color:var(--ink-soft);margin:0;";
+        note.textContent = "One size";
+        sizeBlock.appendChild(note);
+      }
     } else {
-      labelText = "Chest size (in)";
-      sizeOptions = ["24", "26", "28", "30", "32", "34", "36", "38", "40", "42", "44", "46"];
-    }
+      let sizeOptions, labelText;
+      if (PRODUCT.division === "mollys") {
+        labelText = "Size";
+        sizeOptions = ["S", "M", "L", "XL", "XXL"];
+      } else if (SHOE_SLUGS.has(PRODUCT.category)) {
+        labelText = "Shoe size (UK)";
+        sizeOptions = ["10", "11", "12", "13", "1", "2", "3", "4", "5", "6"];
+      } else if (PRODUCT.category.includes("shirt") && !PRODUCT.category.includes("sweatshirt")) {
+        labelText = "Collar size (in)";
+        sizeOptions = ["11", "11½", "12", "12½", "13", "13½", "14", "14½", "15", "15½", "16", "16½", "17"];
+      } else {
+        labelText = "Chest size (in)";
+        sizeOptions = ["24", "26", "28", "30", "32", "34", "36", "38", "40", "42", "44", "46"];
+      }
 
-    if (sizeLabel) sizeLabel.textContent = labelText;
-    if (menu) {
-      menu.innerHTML = sizeOptions.map((s, i) =>
-        `<button class="size-dropdown-option${i === 0 ? " active" : ""}" data-size="${s}">${s}${labelText.includes("Size") && PRODUCT.division === "mollys" ? "" : " in"}</button>`
-      ).join("");
+      if (sizeLabel) sizeLabel.textContent = labelText;
+      if (menu) {
+        const suffix = (PRODUCT.division === "mollys") ? "" : " in";
+        menu.innerHTML = sizeOptions.map((s, i) =>
+          `<button class="size-dropdown-option${i === 0 ? " active" : ""}" data-size="${s}">${s}${labelText.includes("Shoe") ? "" : suffix}</button>`
+        ).join("");
+      }
+      if (valueEl) valueEl.textContent = sizeOptions[0] + (PRODUCT.division === "mollys" || labelText.includes("Shoe") ? "" : " in");
     }
-    if (valueEl) valueEl.textContent = sizeOptions[0] + (PRODUCT.division === "mollys" ? "" : " in");
   }
 
   const ALL_VIEWS = ["front", "back", "model"];
