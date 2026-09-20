@@ -1,0 +1,79 @@
+/* ============================================
+   CATEGORY LISTING PAGE STYLES
+   ============================================ */
+
+.cat-banner {
+  position: relative;
+  min-height: 340px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  color: #FFFFFF;
+}
+.cat-banner img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.cat-banner::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.45);
+}
+.cat-banner-content { position: relative; z-index: 2; padding: 0 24px; max-width: 720px; }
+.cat-banner-content h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 2.9rem);
+  font-weight: 500;
+  font-style: italic;
+  color: #FFFFFF;
+  margin-bottom: 14px;
+}
+.cat-banner-content p {
+  font-size: 0.95rem;
+  color: #EFEFEF;
+  line-height: 1.6;
+}
+
+.cat-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.cat-count { font-size: 0.88rem; color: var(--ink-soft); }
+.cat-sort {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+.cat-sort select {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-s);
+  padding: 8px 14px;
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: var(--white);
+  color: var(--ink);
+}
+
+.cat-empty {
+  padding: 70px 0;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.cat-empty h3 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.4rem;
+  color: var(--umber-deep);
+  margin-bottom: 8px;
+}
+
+.cat-section { padding: 0 0 90px; }
