@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // PRODUCT PAGE JAVASCRIPT
 // ============================================
 
@@ -75,6 +75,10 @@ document.addEventListener("DOMContentLoaded", function () {
     headerLogo.innerHTML = '<img src="assets/images/msamuels/logo.png" alt="M. Samuels">';
   }
 
+  /* ---------- Floating M. Samuels dashboard button: only on M. Samuels products ---------- */
+  const prodFab = document.getElementById("prodMsFab");
+  if (prodFab) prodFab.style.display = PRODUCT.division === "msamuels" ? "flex" : "none";
+
   /* ---------- Title, price, breadcrumb, division tag, page <title> ---------- */
   document.title = `${PRODUCT.name} — Molly Samuels`;
   const titleEl = document.getElementById("prodTitle");
@@ -117,6 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
       "shin-guards-and-gum-shields", "caps", "socks-and-sport-socks", "socks-and-tights",
     ]);
     const SHOE_SLUGS = new Set(["plimsolls"]);
+    const AGE_RANGE_SLUGS = new Set([
+      "skirts-and-pinafores", "tartans", "summer-dresses", "leggings-and-leotards",
+      "multicultural-clothing", "pe-shorts-and-skorts", "boys-swimwear", "girls-swimwear",
+      "pe-shorts", "girls-trousers", "boys-trousers-and-shorts", "bespoke-tartan-skirts-and-pinafores",
+    ]);
 
     const sizeBlock = document.querySelector(".size-dropdown")?.closest(".option-block");
     const sizeLabel = document.getElementById("sizeLabel");
@@ -142,6 +151,9 @@ document.addEventListener("DOMContentLoaded", function () {
       } else if (SHOE_SLUGS.has(PRODUCT.category)) {
         labelText = "Shoe size (UK)";
         sizeOptions = ["10", "11", "12", "13", "1", "2", "3", "4", "5", "6"];
+      } else if (AGE_RANGE_SLUGS.has(PRODUCT.category)) {
+        labelText = "Age";
+        sizeOptions = ["3/4", "4/5", "5/6", "6/7", "7/8", "8/9", "9/10", "10/11", "11/12", "12/13", "13/14", "15/16", "17/18"];
       } else if (PRODUCT.category.includes("shirt") && !PRODUCT.category.includes("sweatshirt")) {
         labelText = "Collar size (in)";
         sizeOptions = ["11", "11½", "12", "12½", "13", "13½", "14", "14½", "15", "15½", "16", "16½", "17"];
@@ -152,12 +164,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (sizeLabel) sizeLabel.textContent = labelText;
       if (menu) {
-        const suffix = (PRODUCT.division === "mollys") ? "" : " in";
+        const noSuffix = PRODUCT.division === "mollys" || labelText.includes("Shoe") || labelText.includes("Age");
+        const suffix = noSuffix ? "" : " in";
         menu.innerHTML = sizeOptions.map((s, i) =>
-          `<button class="size-dropdown-option${i === 0 ? " active" : ""}" data-size="${s}">${s}${labelText.includes("Shoe") ? "" : suffix}</button>`
+          `<button class="size-dropdown-option${i === 0 ? " active" : ""}" data-size="${s}">${s}${labelText.includes("Age") ? " yrs" : suffix}</button>`
         ).join("");
       }
-      if (valueEl) valueEl.textContent = sizeOptions[0] + (PRODUCT.division === "mollys" || labelText.includes("Shoe") ? "" : " in");
+      if (valueEl) {
+        const noSuffix = PRODUCT.division === "mollys" || labelText.includes("Shoe") || labelText.includes("Age");
+        valueEl.textContent = sizeOptions[0] + (labelText.includes("Age") ? " yrs" : (noSuffix ? "" : " in"));
+      }
     }
   }
 
