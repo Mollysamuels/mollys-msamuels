@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="usPageTitle">Uniforms — Molly Samuels</title>
-<meta name="description" content="M. Samuels school uniform categories — boys, girls, accessories and bespoke uniform solutions.">
+<title id="catPageTitle">Shop — Molly Samuels</title>
+<meta name="description" content="Browse Molly Samuels — Mollys fashion and M. Samuels school uniforms.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/product.css">
 <link rel="stylesheet" href="css/msamuels.css">
+<link rel="stylesheet" href="css/category.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -21,12 +22,10 @@
 <!-- ============ ANNOUNCEMENT BAR ============ -->
 <div class="announce">Free shipping on orders above ₦50,000 &nbsp;|&nbsp; Easy 7-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
 
-<!-- ============ STANDARD SITE HEADER (same as every other page) ============ -->
+<!-- ============ STANDARD SITE HEADER ============ -->
 <header class="site-header">
   <div class="header-row">
-    <a href="msamuels.html" class="logo-mark ms-section-logo">
-      <img src="assets/images/msamuels/logo.png" alt="M. Samuels">
-    </a>
+    <a href="index.html" class="logo-mark" id="catHeaderLogo">Molly <span>Samuels</span></a>
 
     <nav class="main-nav">
       <a href="index.html">Home</a>
@@ -64,10 +63,6 @@
         <span class="badge cart-badge">0</span>
       </a>
 
-      <!-- M. Samuels dashboard is opened via a separate floating button
-           (see bottom of page) — not from the header, to avoid duplicate
-           hamburger icons on mobile. -->
-
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
@@ -98,26 +93,45 @@
 <div class="wrap">
   <div class="breadcrumb">
     <a href="index.html">Home</a><span>/</span>
-    <a href="msamuels.html">M. Samuels</a><span>/</span>
-    <span id="usBreadcrumbCurrent">Boys School Uniform</span>
+    <a href="mollys.html" id="catBreadcrumbDivision">Mollys</a><span>/</span>
+    <span id="catBreadcrumbCurrent">Category</span>
   </div>
 </div>
 
-<!-- ============ TINTED SECTION BAND ============ -->
-<section class="us-tint-band us-tint-boys" id="usTintBand">
-  <div class="wrap">
-    <h1 id="usSectionTitle">Boys School Uniform</h1>
+<!-- ============ CATEGORY BANNER ============ -->
+<section class="cat-banner">
+  <img id="catBannerImg" src="assets/images/category/mollys-banner.svg" alt="">
+  <div class="cat-banner-content">
+    <h1 id="catTitle">Category</h1>
+    <p id="catBannerDesc">Browse this collection.</p>
   </div>
 </section>
 
-<!-- ============ CATEGORY GRID ============ -->
-<section class="us-grid-section">
+<!-- ============ PRODUCT LISTING ============ -->
+<section class="cat-section">
   <div class="wrap">
-    <div class="ms-cat-grid" id="usCategoryGrid"><!-- populated by js/msamuels.js --></div>
+    <div class="cat-toolbar">
+      <span class="cat-count" id="catCount">0 products</span>
+      <div class="cat-sort">
+        <label for="catSort">Sort by</label>
+        <select id="catSort">
+          <option value="featured">Featured</option>
+          <option value="price-low">Price: Low to High</option>
+          <option value="price-high">Price: High to Low</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="product-grid" id="catProductGrid"><!-- populated by js/category.js --></div>
+
+    <div class="cat-empty" id="catEmptyState" style="display:none;">
+      <h3>No products found</h3>
+      <p>Check back soon — new items are added regularly.</p>
+    </div>
   </div>
 </section>
 
-<!-- ============ FOOTER (same as every other page) ============ -->
+<!-- ============ FOOTER ============ -->
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -175,34 +189,25 @@
   </div>
 </footer>
 
-<!-- ============ SHARED M. SAMUELS DASHBOARD OVERLAY (same as msamuels.html) ============ -->
+<!-- ============ M. SAMUELS FLOATING DASHBOARD BUTTON (shown only on M. Samuels categories) ============ -->
+<button class="ms-menu-btn ms-menu-fab" id="catMsFab" type="button" aria-label="Browse uniform sections" style="display:none;">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>
+</button>
+
 <div class="ms-mega-overlay">
   <div class="ms-menu-panel">
     <button class="ms-mega-close" aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"/></svg>
     </button>
-
     <div class="ms-mega-inner">
-
       <div class="ms-mega-tabs">
-        <button class="ms-tab" data-tab="boys">
-          <svg viewBox="0 0 40 40"></svg>
-          boys school<br>uniform
-        </button>
-        <button class="ms-tab" data-tab="girls">
-          <svg viewBox="0 0 40 40"></svg>
-          girls school<br>uniform
-        </button>
-        <button class="ms-tab" data-tab="accessories">
-          <svg viewBox="0 0 40 40"></svg>
-          school uniform<br>accessories
-        </button>
-        <button class="ms-tab" data-tab="bespoke">
-          <svg viewBox="0 0 40 40"></svg>
-          bespoke school<br>uniform
-        </button>
+        <button class="ms-tab" data-tab="boys"><svg viewBox="0 0 40 40"></svg>boys school<br>uniform</button>
+        <button class="ms-tab" data-tab="girls"><svg viewBox="0 0 40 40"></svg>girls school<br>uniform</button>
+        <button class="ms-tab" data-tab="accessories"><svg viewBox="0 0 40 40"></svg>school uniform<br>accessories</button>
+        <button class="ms-tab" data-tab="bespoke"><svg viewBox="0 0 40 40"></svg>bespoke school<br>uniform</button>
       </div>
-
       <div class="ms-mega-footer">
         <a href="about.html">about us</a>
         <a href="#">embroidery &amp; printing</a>
@@ -211,27 +216,25 @@
         <a href="#">ethical trading policy</a>
         <a href="contact.html">contact us</a>
       </div>
-
       <div class="ms-mega-auth">
         <a href="register.html" class="register">REGISTER</a>
         <a href="login.html" class="login">LOGIN</a>
       </div>
-
     </div>
   </div>
 </div>
 
-<!-- ============ FLOATING M. SAMUELS DASHBOARD BUTTON ============
-     Separate from the header entirely, so mobile never shows two
-     hamburger-style icons side by side. Sits bottom-left; the chat
-     bubble stays bottom-right. -->
-<button class="ms-menu-btn ms-menu-fab" type="button" aria-label="Browse uniform sections">
-  <svg viewBox="0 0 24 24" fill="none">
-    <path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-  </svg>
+<button class="chat-fab" aria-label="Chat with support">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 11-3.6-6.7L21 4l-1 4.2A8 8 0 0121 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/></svg>
 </button>
+
+<div class="toast">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span>Added to cart</span>
+</div>
 
 <script src="js/main.js"></script>
 <script src="js/msamuels.js"></script>
+<script src="js/category.js"></script>
 </body>
 </html>
