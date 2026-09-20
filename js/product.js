@@ -4,48 +4,142 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* ---------- Product data (demo: Tailored Corporate Blazer) ----------
-     Backend note: once Supabase is connected, this object is replaced
-     by a fetch() call using the product ID from the URL (?id=...). */
-  const PRODUCT = {
+document.addEventListener("DOMContentLoaded", function () {
+
+  /* ---------- Product data ----------
+     Backend note: once Supabase is connected, this whole block is replaced
+     by a fetch() call using the product ID from the URL.
+
+     Right now: the rich hand-built demo below ("blazer-classic") shows the
+     full pattern (multi-view gallery, real color photos, chest sizing).
+     Every other product clicked from a category page arrives here with its
+     own name/price/division/images passed in the URL and gets a simpler,
+     but still fully dynamic, generic version of this same page — correct
+     name, price, logo, and a size type chosen automatically for its
+     division/category (collar for shirts, chest for other M. Samuels
+     items, S–XXL for Mollys items). */
+
+  const BLAZER_DEMO = {
     name: "Tailored Corporate Blazer",
-    division: "msamuels", // "mollys" or "msamuels" — controls size system + gallery behaviour
+    division: "msamuels",
+    category: "unisex-blazers",
     price: 32000,
     currency: "₦",
     colors: {
       navy: {
         label: "Navy",
         hex: "#1B2A4A",
+        views: ["front", "back", "model"],
         images: {
           front: "assets/images/msamuels/prod-blazer-navy-front.svg",
           back:  "assets/images/msamuels/prod-blazer-navy-back.svg",
           model: "assets/images/msamuels/prod-blazer-navy-model.svg",
         }
       },
-      charcoal: {
-        label: "Charcoal",
-        hex: "#3A3A3A",
-        images: {
-          front: "assets/images/msamuels/prod-blazer-charcoal-front.svg",
-          back:  "assets/images/msamuels/prod-blazer-charcoal-back.svg",
-          model: "assets/images/msamuels/prod-blazer-charcoal-model.svg",
-        }
-      },
-      black: {
-        label: "Black",
-        hex: "#181410",
-        images: {
-          front: "assets/images/msamuels/prod-blazer-black-front.svg",
-          back:  "assets/images/msamuels/prod-blazer-black-back.svg",
-          model: "assets/images/msamuels/prod-blazer-black-model.svg",
-        }
-      }
+      charcoal: { label: "Charcoal", hex: "#3A3A3A", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-charcoal-front.svg" } },
+      black:    { label: "Black",    hex: "#181410", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-black-front.svg" } },
+      orange:   { label: "Orange",   hex: "#B85C2E", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-orange-front.svg" } },
+      blue:     { label: "Blue",     hex: "#2A4E8C", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-blue-front.svg" } },
+      oxblood:  { label: "Oxblood",  hex: "#5A1F22", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-oxblood-front.svg" } },
     },
     defaultColor: "navy",
-    sizesAvailable: [24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46], // sold out sizes simply omitted from this list
+    sizesAvailable: [24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46],
   };
 
-  const VIEW_ORDER = ["front", "back", "model"];
+  const params = new URLSearchParams(window.location.search);
+  const itemParam = params.get("item");
+  const isBlazerDemo = !itemParam || itemParam === "blazer-classic";
+
+  let PRODUCT;
+  if (isBlazerDemo) {
+    PRODUCT = BLAZER_DEMO;
+  } else {
+    // Generic product, fully built from what the category page passed in the URL.
+    const division = params.get("division") || "mollys";
+    const category = params.get("category") || "";
+    const name = params.get("name") ? decodeURIComponent(params.get("name")) : "Product";
+    const price = parseInt(params.get("price"), 10) || 0;
+    const img1 = params.get("img1") ? decodeURIComponent(params.get("img1")) : (division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg");
+
+    PRODUCT = {
+      name, division, category, price, currency: "₦",
+      colors: { default: { label: "Default", hex: "#000000", views: ["front"], images: { front: img1 } } },
+      defaultColor: "default",
+      sizesAvailable: null, // generic items don't use the blazer's chest-size disabled-list logic
+    };
+  }
+
+  /* ---------- Header logo: swap to the M. Samuels logo on M. Samuels products ---------- */
+  const headerLogo = document.getElementById("prodHeaderLogo");
+  if (headerLogo && PRODUCT.division === "msamuels") {
+    headerLogo.href = "msamuels.html";
+    headerLogo.classList.add("ms-section-logo");
+    headerLogo.innerHTML = '<img src="assets/images/msamuels/logo.png" alt="M. Samuels">';
+  }
+
+  /* ---------- Title, price, breadcrumb, division tag, page <title> ---------- */
+  document.title = `${PRODUCT.name} — Molly Samuels`;
+  const titleEl = document.getElementById("prodTitle");
+  if (titleEl) titleEl.textContent = PRODUCT.name;
+  const priceEl = document.getElementById("prodPrice");
+  if (priceEl) priceEl.textContent = `₦${PRODUCT.price.toLocaleString()}`;
+  const divisionTagEl = document.getElementById("prodDivisionTag");
+  if (divisionTagEl) {
+    divisionTagEl.textContent = PRODUCT.division === "msamuels" ? "M. SAMUELS — SCHOOL UNIFORM" : "MOLLYS — FASHION & LIFESTYLE";
+  }
+  const bcDivision = document.getElementById("prodBreadcrumbDivision");
+  if (bcDivision) {
+    bcDivision.textContent = PRODUCT.division === "msamuels" ? "M. Samuels" : "Mollys";
+    bcDivision.href = PRODUCT.division === "msamuels" ? "msamuels.html" : "mollys.html";
+  }
+  const bcCategory = document.getElementById("prodBreadcrumbCategory");
+  if (bcCategory && PRODUCT.category) {
+    bcCategory.textContent = PRODUCT.category.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
+    bcCategory.href = `category.html?category=${PRODUCT.category}`;
+  }
+  const bcCurrent = document.getElementById("prodBreadcrumbCurrent");
+  if (bcCurrent) bcCurrent.textContent = PRODUCT.name;
+
+  /* ---------- Color swatches: hide the blazer's specific real colors for generic items ---------- */
+  if (!isBlazerDemo) {
+    document.querySelectorAll(".blazer-only").forEach((el) => { el.style.display = "none"; });
+    // Auto-select "Other" so the custom-colour field is the only option shown
+    const otherSwatch = document.querySelector('.color-swatch[data-color="other"]');
+    if (otherSwatch) otherSwatch.classList.add("active");
+    const nameEl = document.querySelector(".selected-color-name");
+    if (nameEl) nameEl.textContent = "Specify below";
+    document.querySelector(".custom-color-field")?.classList.add("show");
+  }
+
+  /* ---------- Size dropdown: rebuild it for generic items based on division/category ---------- */
+  if (!isBlazerDemo) {
+    const sizeLabel = document.getElementById("sizeLabel");
+    const menu = document.getElementById("sizeDropdownMenu");
+    const valueEl = document.querySelector(".size-dropdown-value");
+    let sizeOptions, labelText;
+
+    if (PRODUCT.division === "mollys") {
+      labelText = "Size";
+      sizeOptions = ["S", "M", "L", "XL", "XXL"];
+    } else if (PRODUCT.category.includes("shirt") && !PRODUCT.category.includes("sweatshirt")) {
+      labelText = "Collar size (in)";
+      sizeOptions = ["11", "11½", "12", "12½", "13", "13½", "14", "14½", "15", "15½", "16", "16½", "17"];
+    } else {
+      labelText = "Chest size (in)";
+      sizeOptions = ["24", "26", "28", "30", "32", "34", "36", "38", "40", "42", "44", "46"];
+    }
+
+    if (sizeLabel) sizeLabel.textContent = labelText;
+    if (menu) {
+      menu.innerHTML = sizeOptions.map((s, i) =>
+        `<button class="size-dropdown-option${i === 0 ? " active" : ""}" data-size="${s}">${s}${labelText.includes("Size") && PRODUCT.division === "mollys" ? "" : " in"}</button>`
+      ).join("");
+    }
+    if (valueEl) valueEl.textContent = sizeOptions[0] + (PRODUCT.division === "mollys" ? "" : " in");
+  }
+
+  const ALL_VIEWS = ["front", "back", "model"];
+  let currentViews = ["front", "back", "model"];
   let currentColor = PRODUCT.defaultColor;
   let frameIndex = 0;
   let autoTimer;
@@ -65,7 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
     model: gallery.querySelector('[data-view="model"]'),
   };
   const dots = gallery.querySelectorAll(".gallery-dots span");
+  const galleryHint = gallery.querySelector(".gallery-hint");
   const galleryLabel = gallery.querySelector(".gallery-label");
+  const thumbRow = document.querySelector(".thumbnail-row");
   const thumbButtons = document.querySelectorAll(".thumbnail");
   const thumbImgs = {
     front: document.querySelector('.thumbnail img[data-thumb="front"]'),
@@ -75,19 +171,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadColorImages(colorKey) {
     const color = PRODUCT.colors[colorKey];
-    VIEW_ORDER.forEach((view) => {
-      frameEls[view].src = color.images[view];
+    currentViews = color.views && color.views.length ? color.views : ["front"];
+
+    // Fill every view's image — views not offered for this colour just reuse
+    // the front photo, so nothing breaks if something still references them.
+    ALL_VIEWS.forEach((view) => {
+      const src = color.images[view] || color.images.front;
+      frameEls[view].src = src;
       frameEls[view].alt = `${PRODUCT.name} — ${color.label} — ${view} view`;
       if (thumbImgs[view]) {
-        thumbImgs[view].src = color.images[view];
+        thumbImgs[view].src = src;
         thumbImgs[view].alt = `${color.label} — ${view} view thumbnail`;
       }
     });
+
+    // Show only the thumbnails / dots this colour actually has photography for.
+    const multiView = currentViews.length > 1;
+    thumbButtons.forEach((t) => {
+      t.style.display = currentViews.includes(t.dataset.view) ? "" : "none";
+    });
+    dots.forEach((d, i) => { d.style.display = i < currentViews.length ? "" : "none"; });
+    if (thumbRow) thumbRow.style.display = multiView ? "" : "none";
+    if (galleryHint) galleryHint.style.display = multiView ? "" : "none";
+    if (galleryLabel) galleryLabel.style.display = multiView ? "" : "none";
   }
 
   function showFrame(index) {
-    frameIndex = ((index % VIEW_ORDER.length) + VIEW_ORDER.length) % VIEW_ORDER.length;
-    const view = VIEW_ORDER[frameIndex];
+    if (currentViews.length <= 1) { frameIndex = 0; }
+    else {
+      frameIndex = ((index % currentViews.length) + currentViews.length) % currentViews.length;
+    }
+    const view = currentViews[frameIndex];
     Object.values(frameWrappers).forEach((el) => el.classList.remove("active"));
     frameWrappers[view].classList.add("active");
     dots.forEach((d, i) => d.classList.toggle("active", i === frameIndex));
@@ -98,7 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function startAutoCycle() {
     clearInterval(autoTimer);
     autoTimer = setInterval(() => {
-      if (!userHasInteracted) showFrame(frameIndex + 1);
+      if (!userHasInteracted && currentViews.length > 1) showFrame(frameIndex + 1);
     }, 2800);
   }
 
@@ -144,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function () {
     thumb.addEventListener("click", () => {
       stopAutoCycle();
       const view = thumb.dataset.view;
-      showFrame(VIEW_ORDER.indexOf(view));
+      showFrame(currentViews.indexOf(view));
     });
   });
 
