@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -381,12 +381,48 @@
   <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 11-3.6-6.7L21 4l-1 4.2A8 8 0 0121 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/></svg>
 </button>
 
+<!-- M. Samuels dashboard: floating button, shown only on M. Samuels products -->
+<button class="ms-menu-btn ms-menu-fab" id="prodMsFab" type="button" aria-label="Browse uniform sections" style="display:none;">
+  <svg viewBox="0 0 24 24" fill="none">
+    <path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>
+</button>
+
+<div class="ms-mega-overlay">
+  <div class="ms-menu-panel">
+    <button class="ms-mega-close" aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"/></svg>
+    </button>
+    <div class="ms-mega-inner">
+      <div class="ms-mega-tabs">
+        <button class="ms-tab" data-tab="boys"><svg viewBox="0 0 40 40"></svg>boys school<br>uniform</button>
+        <button class="ms-tab" data-tab="girls"><svg viewBox="0 0 40 40"></svg>girls school<br>uniform</button>
+        <button class="ms-tab" data-tab="accessories"><svg viewBox="0 0 40 40"></svg>school uniform<br>accessories</button>
+        <button class="ms-tab" data-tab="bespoke"><svg viewBox="0 0 40 40"></svg>bespoke school<br>uniform</button>
+      </div>
+      <div class="ms-mega-footer">
+        <a href="about.html">about us</a>
+        <a href="#">embroidery &amp; printing</a>
+        <a href="#">solution to the pollution</a>
+        <a href="size-guide.html">size guides</a>
+        <a href="#">ethical trading policy</a>
+        <a href="contact.html">contact us</a>
+      </div>
+      <div class="ms-mega-auth">
+        <a href="register.html" class="register">REGISTER</a>
+        <a href="login.html" class="login">LOGIN</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast">
   <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <span>Added to cart</span>
 </div>
 
 <script src="js/main.js"></script>
+<script src="js/msamuels.js"></script>
 <script src="js/product.js"></script>
 <script>
   // Wire the main Add to Cart / quick-add buttons on this page into the shared toast
