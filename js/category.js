@@ -32,31 +32,54 @@ function generatePlaceholderProducts(slug, name, division, count) {
 
   const products = [];
   for (let i = 0; i < count; i++) {
+    // The very first Unisex Blazers card links to the fully-built rich
+    // demo page instead of the generic template, so there's at least one
+    // complete example of the full pattern (multi-view gallery, real
+    // colour photos) reachable from an actual category page.
+    const isRichDemo = slug === "unisex-blazers" && i === 0;
+
     products.push({
-      name: `${name} — ${styleLabels[i % styleLabels.length]}`,
-      price: basePrice + i * 1500,
+      name: isRichDemo ? "Tailored Corporate Blazer" : `${name} — ${styleLabels[i % styleLabels.length]}`,
+      price: isRichDemo ? 32000 : basePrice + i * 1500,
       img1, img2,
       slug: `${slug}-${i + 1}`,
+      division,
+      category: slug,
+      linkOverride: isRichDemo ? "product.html?item=blazer-classic" : null,
     });
   }
   return products;
 }
 
+function buildProductLink(product) {
+  if (product.linkOverride) return product.linkOverride;
+  const params = new URLSearchParams({
+    item: product.slug,
+    name: product.name,
+    price: product.price,
+    division: product.division,
+    category: product.category,
+    img1: product.img1,
+  });
+  return `product.html?${params.toString()}`;
+}
+
 function renderProductCard(product) {
+  const link = buildProductLink(product);
   return `
     <div class="product-card">
       <div class="product-media">
         <button class="wish-btn" aria-label="Add to wishlist">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
-        <a href="product.html">
+        <a href="${link}">
           <img class="main" src="${product.img1}" alt="${product.name}">
           <img class="alt" src="${product.img2}" alt="${product.name}, alternate view">
         </a>
         <button class="quick-add">Quick add</button>
       </div>
       <div class="product-info">
-        <a href="product.html" style="color:inherit;"><h4>${product.name}</h4></a>
+        <a href="${link}" style="color:inherit;"><h4>${product.name}</h4></a>
         <div class="product-price"><span class="now">₦${product.price.toLocaleString()}</span></div>
       </div>
     </div>
