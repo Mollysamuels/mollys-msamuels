@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/product.css">
+<link rel="stylesheet" href="css/msamuels.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -23,7 +24,7 @@
 <!-- ============ HEADER ============ -->
 <header class="site-header">
   <div class="header-row">
-    <a href="index.html" class="logo-mark">Molly <span>Samuels</span></a>
+    <a href="index.html" class="logo-mark" id="prodHeaderLogo">Molly <span>Samuels</span></a>
 
     <nav class="main-nav">
       <a href="index.html">Home</a>
@@ -91,9 +92,9 @@
   <!-- ============ BREADCRUMB ============ -->
   <div class="breadcrumb">
     <a href="index.html">Home</a><span>/</span>
-    <a href="msamuels.html">M. Samuels</a><span>/</span>
-    <a href="category.html?category=blazers">Blazers</a><span>/</span>
-    Tailored Corporate Blazer
+    <a href="msamuels.html" id="prodBreadcrumbDivision">M. Samuels</a><span>/</span>
+    <a href="category.html?category=blazers" id="prodBreadcrumbCategory">Blazers</a><span>/</span>
+    <span id="prodBreadcrumbCurrent">Tailored Corporate Blazer</span>
   </div>
 
   <!-- ============ PRODUCT LAYOUT ============ -->
@@ -127,10 +128,10 @@
     <!-- RIGHT: Product info -->
     <div class="product-info-col">
       <div class="product-title-block">
-        <span class="product-division-tag">M. SAMUELS — PROFESSIONAL WEAR</span>
-        <h1>Tailored Corporate Blazer</h1>
+        <span class="product-division-tag" id="prodDivisionTag">M. SAMUELS — PROFESSIONAL WEAR</span>
+        <h1 id="prodTitle">Tailored Corporate Blazer</h1>
         <div class="product-price-row">
-          <span class="now">₦32,000</span>
+          <span class="now" id="prodPrice">₦32,000</span>
         </div>
         <span class="stock-status"><span class="stock-dot"></span> In stock — ready to ship</span>
       </div>
@@ -140,15 +141,24 @@
         <div class="option-label-row">
           <label>Colour — <span class="selected-color-name">Navy</span></label>
         </div>
-        <div class="color-swatches">
-          <button class="color-swatch active" data-color="navy" aria-label="Navy">
+        <div class="color-swatches" id="colorSwatchesRow">
+          <button class="color-swatch active blazer-only" data-color="navy" aria-label="Navy">
             <span class="swatch-fill" style="background:#1B2A4A;"></span>
           </button>
-          <button class="color-swatch" data-color="charcoal" aria-label="Charcoal">
+          <button class="color-swatch blazer-only" data-color="charcoal" aria-label="Charcoal">
             <span class="swatch-fill" style="background:#3A3A3A;"></span>
           </button>
-          <button class="color-swatch" data-color="black" aria-label="Black">
+          <button class="color-swatch blazer-only" data-color="black" aria-label="Black">
             <span class="swatch-fill" style="background:#181410;"></span>
+          </button>
+          <button class="color-swatch blazer-only" data-color="orange" aria-label="Orange">
+            <span class="swatch-fill" style="background:#B85C2E;"></span>
+          </button>
+          <button class="color-swatch blazer-only" data-color="blue" aria-label="Blue">
+            <span class="swatch-fill" style="background:#2A4E8C;"></span>
+          </button>
+          <button class="color-swatch blazer-only" data-color="oxblood" aria-label="Oxblood">
+            <span class="swatch-fill" style="background:#5A1F22;"></span>
           </button>
           <button class="color-swatch color-swatch-other" data-color="other" aria-label="Other — specify your own colour">
             <span class="swatch-fill swatch-other-fill">+</span>
@@ -160,10 +170,10 @@
         </div>
       </div>
 
-      <!-- Size — numeric 22-50, M. Samuels -->
+      <!-- Size — numeric 22-50, M. Samuels (rebuilt dynamically by JS for non-blazer items) -->
       <div class="option-block">
         <div class="option-label-row">
-          <label>Chest size (in)</label>
+          <label id="sizeLabel">Chest size (in)</label>
           <a href="size-guide.html" class="size-guide-link">Size guide</a>
         </div>
         <div class="size-dropdown">
@@ -171,7 +181,7 @@
             <span class="size-dropdown-value">28 in</span>
             <svg width="11" height="11" viewBox="0 0 10 10" fill="none"><path d="M1 3l4 4 4-4" stroke="currentColor" stroke-width="1.4"/></svg>
           </button>
-          <div class="size-dropdown-menu">
+          <div class="size-dropdown-menu" id="sizeDropdownMenu">
             <button class="size-dropdown-option disabled" disabled>22 in — sold out</button>
             <button class="size-dropdown-option" data-size="24">24 in</button>
             <button class="size-dropdown-option" data-size="26">26 in</button>
