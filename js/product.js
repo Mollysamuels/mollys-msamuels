@@ -1,8 +1,6 @@
-// ============================================
+ // ============================================
 // PRODUCT PAGE JAVASCRIPT
 // ============================================
-
-document.addEventListener("DOMContentLoaded", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
 
