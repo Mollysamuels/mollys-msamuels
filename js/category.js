@@ -1,4 +1,4 @@
-// ============================================
+ // ============================================
 // CATEGORY LISTING PAGE — reusable for every category
 // via category.html?category=<slug>
 // ============================================
