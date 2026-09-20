@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // CATEGORY LISTING PAGE — reusable for every category
 // via category.html?category=<slug>
 // ============================================
@@ -39,8 +39,8 @@ function generatePlaceholderProducts(slug, name, division, count) {
     const isRichDemo = slug === "unisex-blazers" && i === 0;
 
     products.push({
-      name: isRichDemo ? "Tailored Corporate Blazer" : `${name} — ${styleLabels[i % styleLabels.length]}`,
-      price: isRichDemo ? 32000 : basePrice + i * 1500,
+      name: isRichDemo ? "School Blazer" : `${name} — ${styleLabels[i % styleLabels.length]}`,
+      price: isRichDemo ? 35500 : basePrice + i * 1500,
       img1, img2,
       slug: `${slug}-${i + 1}`,
       division,
