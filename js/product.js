@@ -18,10 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
      items, S–XXL for Mollys items). */
 
   const BLAZER_DEMO = {
-    name: "Tailored Corporate Blazer",
+    name: "School Blazer",
     division: "msamuels",
     category: "unisex-blazers",
-    price: 32000,
+    price: 35500,
     currency: "₦",
     colors: {
       navy: {
@@ -174,6 +174,22 @@ document.addEventListener("DOMContentLoaded", function () {
         const noSuffix = PRODUCT.division === "mollys" || labelText.includes("Shoe") || labelText.includes("Age");
         valueEl.textContent = sizeOptions[0] + (labelText.includes("Age") ? " yrs" : (noSuffix ? "" : " in"));
       }
+    }
+  }
+
+  /* ---------- Description / Product Details: generic text for non-blazer items ---------- */
+  if (!isBlazerDemo) {
+    const descEl = document.getElementById("prodDescription");
+    if (descEl) {
+      descEl.textContent = PRODUCT.division === "msamuels"
+        ? `A ${PRODUCT.name.toLowerCase()} made for daily school wear — durable fabric, built to handle regular washing and everyday use.`
+        : `${PRODUCT.name} — a considered piece from the Mollys collection, selected for everyday style.`;
+    }
+    const detailsEl = document.getElementById("prodDetails");
+    if (detailsEl) {
+      detailsEl.innerHTML = PRODUCT.division === "msamuels"
+        ? `<ul><li>Fabric: durable, easy-care blend</li><li>Fit: true to size</li><li>Care: machine washable</li><li>Custom school branding available on request</li></ul>`
+        : `<ul><li>Fabric: quality blend, selected for comfort</li><li>Fit: true to size</li><li>Care: see garment label</li></ul>`;
     }
   }
 
