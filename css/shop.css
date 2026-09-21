@@ -1,0 +1,12 @@
+.shop-header { padding: 50px 0 30px; }
+.shop-header h1 { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 2.1rem; }
+.shop-filters { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-bottom: 26px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+.shop-filter-group { display: flex; gap: 10px; }
+.shop-filter-btn {
+  padding: 8px 18px; border-radius: 20px; border: 1px solid var(--line);
+  background: var(--white); font-size: 0.85rem; color: var(--ink-soft);
+}
+.shop-filter-btn.active { background: var(--umber-deep); border-color: var(--umber-deep); color: #fff; }
+.shop-sort-group { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; }
+.shop-sort-group select { border: 1px solid var(--line); border-radius: var(--radius-s); padding: 8px 14px; font-family: inherit; font-size: 0.85rem; background: var(--white); }
+.shop-count { font-size: 0.85rem; color: var(--ink-soft); }
