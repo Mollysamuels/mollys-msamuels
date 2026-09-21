@@ -2,20 +2,18 @@
 // PRODUCT PAGE JAVASCRIPT
 // ============================================
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
 
   /* ---------- Product data ----------
-     Backend note: once Supabase is connected, this whole block is replaced
-     by a fetch() call using the product ID from the URL.
-
-     Right now: the rich hand-built demo below ("blazer-classic") shows the
-     full pattern (multi-view gallery, real color photos, chest sizing).
-     Every other product clicked from a category page arrives here with its
-     own name/price/division/images passed in the URL and gets a simpler,
-     but still fully dynamic, generic version of this same page — correct
-     name, price, logo, and a size type chosen automatically for its
-     division/category (collar for shirts, chest for other M. Samuels
-     items, S–XXL for Mollys items). */
+     Three ways this page gets its product, in priority order:
+     1. ?id=<uuid>  — a REAL product fetched live from Supabase. Colours and
+        sizes are built dynamically from whatever the database returns, so
+        this works for any product with any set of colours/sizes, not just
+        the blazer's specific 6.
+     2. ?item=blazer-classic (or no params at all) — the hand-built demo,
+        kept as a visual reference for the multi-view gallery pattern.
+     3. Any other ?name=&price=&... — the generic URL-driven fallback used
+        by every category page today, for products not yet in Supabase. */
 
   const BLAZER_DEMO = {
     name: "School Blazer",
@@ -46,10 +44,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const params = new URLSearchParams(window.location.search);
   const itemParam = params.get("item");
-  const isBlazerDemo = !itemParam || itemParam === "blazer-classic";
+  const supabaseId = params.get("id");
+  const isBlazerDemo = !supabaseId && (!itemParam || itemParam === "blazer-classic");
+
+  // Set by whichever branch loads a real Supabase row — tells the swatch/size
+  // code below to build inputs dynamically instead of using the blazer's
+  // static hardcoded HTML.
+  let isLiveProduct = false;
+  let liveSizes = null; // [{label, inStock}] when loaded from Supabase
 
   let PRODUCT;
-  if (isBlazerDemo) {
+  if (supabaseId) {
+    isLiveProduct = true;
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*, categories(slug), product_colors(*), product_sizes(*)")
+      .eq("id", supabaseId)
+      .single();
+
+    if (error || !data) {
+      console.error("Supabase product fetch failed:", error);
+      PRODUCT = { name: "Product not found", division: "mollys", category: "", price: 0, currency: "₦",
+        colors: { default: { label: "Default", hex: "#000", views: ["front"], images: { front: "assets/images/category/mollys-product.svg" } } },
+        defaultColor: "default" };
+    } else {
+      const colors = {};
+      (data.product_colors || []).forEach((c) => {
+        const key = c.color_name.toLowerCase().replace(/\s+/g, "-");
+        const views = ["front"];
+        if (c.back_image_url) views.push("back");
+        if (c.model_image_url) views.push("model");
+        colors[key] = {
+          label: c.color_name, hex: c.hex_code || "#000000", views,
+          images: { front: c.front_image_url, back: c.back_image_url, model: c.model_image_url },
+        };
+      });
+      const hasRealColors = Object.keys(colors).length > 0;
+      if (!hasRealColors) {
+        colors.default = { label: "Default", hex: "#000000", views: ["front"],
+          images: { front: (data.division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg") } };
+      }
+      liveSizes = (data.product_sizes || []).map((s) => ({ label: s.size_label, inStock: s.in_stock }));
+
+      PRODUCT = {
+        name: data.name, division: data.division, category: (data.categories && data.categories.slug) || "",
+        price: data.price_ngn, currency: "₦",
+        description: data.description, sizeType: data.size_type,
+        colors, defaultColor: Object.keys(colors)[0], hasRealColors,
+      };
+    }
+  } else if (isBlazerDemo) {
     PRODUCT = BLAZER_DEMO;
   } else {
     // Generic product, fully built from what the category page passed in the URL.
@@ -102,8 +146,23 @@ document.addEventListener("DOMContentLoaded", function () {
   const bcCurrent = document.getElementById("prodBreadcrumbCurrent");
   if (bcCurrent) bcCurrent.textContent = PRODUCT.name;
 
-  /* ---------- Color swatches: hide the blazer's specific real colors for generic items ---------- */
-  if (!isBlazerDemo) {
+  /* ---------- Color swatches ---------- */
+  if (isLiveProduct && PRODUCT.hasRealColors) {
+    // Real product with real colours from Supabase — build swatch buttons dynamically.
+    const row = document.getElementById("colorSwatchesRow");
+    if (row) {
+      const buttons = Object.entries(PRODUCT.colors).map(([key, c], i) => `
+        <button class="color-swatch${i === 0 ? " active" : ""}" data-color="${key}" aria-label="${c.label}">
+          <span class="swatch-fill" style="background:${c.hex};"></span>
+        </button>`).join("");
+      row.innerHTML = buttons + `
+        <button class="color-swatch color-swatch-other" data-color="other" aria-label="Other — specify your own colour">
+          <span class="swatch-fill swatch-other-fill">+</span>
+        </button>`;
+      const nameEl = document.querySelector(".selected-color-name");
+      if (nameEl) nameEl.textContent = Object.values(PRODUCT.colors)[0].label;
+    }
+  } else if (!isBlazerDemo) {
     document.querySelectorAll(".blazer-only").forEach((el) => { el.style.display = "none"; });
     // Auto-select "Other" so the custom-colour field is the only option shown
     const otherSwatch = document.querySelector('.color-swatch[data-color="other"]');
@@ -113,8 +172,21 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelector(".custom-color-field")?.classList.add("show");
   }
 
-  /* ---------- Size dropdown: rebuild it for generic items based on division/category ---------- */
-  if (!isBlazerDemo) {
+  /* ---------- Size dropdown: real products use real sizes + real stock from Supabase ---------- */
+  if (isLiveProduct && liveSizes && liveSizes.length) {
+    const sizeLabel = document.getElementById("sizeLabel");
+    const menu = document.getElementById("sizeDropdownMenu");
+    const valueEl = document.querySelector(".size-dropdown-value");
+    const LABELS = { clothing: "Size", chest: "Chest size (in)", collar: "Collar size (in)", age: "Age", shoe: "Shoe size (UK)", onesize: "Size" };
+    if (sizeLabel) sizeLabel.textContent = LABELS[PRODUCT.sizeType] || "Size";
+    const firstInStock = liveSizes.find((s) => s.inStock) || liveSizes[0];
+    if (menu) {
+      menu.innerHTML = liveSizes.map((s) =>
+        `<button class="size-dropdown-option${s === firstInStock ? " active" : ""}${s.inStock ? "" : " disabled"}" ${s.inStock ? `data-size="${s.label}"` : "disabled"}>${s.label}${s.inStock ? "" : " — sold out"}</button>`
+      ).join("");
+    }
+    if (valueEl) valueEl.textContent = firstInStock.label;
+  } else if (!isBlazerDemo) {
     const ONE_SIZE_SLUGS = new Set([
       "school-bags", "ties", "water-bottles", "hair-accessories",
       "name-tab-kit-and-hem-web-kit", "hats-and-scarves", "swimwear-accessories",
@@ -177,8 +249,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  /* ---------- Description / Product Details: generic text for non-blazer items ---------- */
-  if (!isBlazerDemo) {
+  /* ---------- Description / Product Details ---------- */
+  if (isLiveProduct && PRODUCT.description) {
+    const descEl = document.getElementById("prodDescription");
+    if (descEl) descEl.textContent = PRODUCT.description;
+  } else if (!isBlazerDemo) {
     const descEl = document.getElementById("prodDescription");
     if (descEl) {
       descEl.textContent = PRODUCT.division === "msamuels"
@@ -382,12 +457,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ---------- Info accordion tabs ---------- */
-  document.querySelectorAll(".info-tab-head").forEach((head) => {
-    head.addEventListener("click", () => {
-      head.closest(".info-tab").classList.toggle("open");
-    });
-  });
+  /* ---------- Info accordion tabs: now handled globally by js/main.js ---------- */
 
   /* ---------- Init ---------- */
   loadColorImages(currentColor);
