@@ -4,6 +4,29 @@
 
 document.addEventListener("DOMContentLoaded", function () {
 
+  /* ---------- Rotating announcement bar (shared across every page) ---------- */
+  const ANNOUNCE_MESSAGES = [
+    "Trusted by 500+ schools&nbsp;&nbsp;|&nbsp;&nbsp;Easy 14-day returns&nbsp;&nbsp;|&nbsp;&nbsp;Bulk uniform orders available",
+    "Best selling items&nbsp;&nbsp;|&nbsp;&nbsp;5 star rated&nbsp;&nbsp;|&nbsp;&nbsp;Premium quality products",
+    "Free delivery on bulk orders&nbsp;&nbsp;|&nbsp;&nbsp;Discounted prices&nbsp;&nbsp;|&nbsp;&nbsp;Fast processing",
+    "Trusted by 500+ schools&nbsp;&nbsp;|&nbsp;&nbsp;Nigeria &amp; UK delivery&nbsp;&nbsp;|&nbsp;&nbsp;Secure checkout",
+  ];
+  const announceBar = document.querySelector(".announce");
+  if (announceBar) {
+    let announceIndex = 0;
+    announceBar.innerHTML = `<span class="announce-text">${ANNOUNCE_MESSAGES[0]}</span>`;
+    const announceSpan = announceBar.querySelector(".announce-text");
+    setInterval(() => {
+      announceSpan.style.opacity = "0";
+      setTimeout(() => {
+        announceIndex = (announceIndex + 1) % ANNOUNCE_MESSAGES.length;
+        announceSpan.innerHTML = ANNOUNCE_MESSAGES[announceIndex];
+        announceSpan.style.opacity = "1";
+      }, 400);
+    }, 4500);
+  }
+
+
   /* ---------- Hero rotating quotes ---------- */
   const quotes = document.querySelectorAll(".hero-quote");
   const dots = document.querySelectorAll(".hero-dots button");
@@ -48,8 +71,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.querySelectorAll(".market-menu button").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const label = btn.querySelector(".label")?.textContent || btn.textContent;
-        marketBtn.querySelector(".label").textContent = label.trim();
+        const flag = btn.querySelector("span:first-child")?.textContent || "";
+        const shortLabel = btn.dataset.short || "";
+        marketBtn.querySelector("span:first-child").textContent = flag;
+        marketBtn.querySelector(".label").textContent = shortLabel;
         marketSelector.classList.remove("open");
         // Backend note: when Supabase is connected, store the chosen market
         // (e.g. localStorage + user profile) and re-fetch prices/availability here.
