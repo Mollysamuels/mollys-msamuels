@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -421,6 +421,15 @@
   <span>Added to cart</span>
 </div>
 
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
 <script src="js/main.js"></script>
 <script src="js/msamuels.js"></script>
 <script src="js/product.js"></script>
