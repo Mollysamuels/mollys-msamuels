@@ -1,0 +1,14 @@
+.apf-color-row { margin-bottom: 22px; padding-bottom: 18px; }
+.apf-color-row hr { border: none; border-top: 1px solid var(--line); margin-top: 18px; }
+.apf-remove-color { background: none; border: none; color: #B23A3A; font-size: 0.8rem; text-decoration: underline; margin-top: 4px; }
+
+.apf-size-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.apf-size-chip {
+  border: 1px solid var(--line); border-radius: var(--radius-s);
+  padding: 10px 6px; text-align: center; font-size: 0.85rem;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; user-select: none;
+}
+.apf-size-chip input { width: auto; margin: 0; }
+.apf-size-chip.sold-out { opacity: 0.5; text-decoration: line-through; }
+@media (max-width: 640px) { .apf-size-grid { grid-template-columns: repeat(3, 1fr); } }
