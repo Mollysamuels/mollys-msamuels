@@ -125,17 +125,32 @@
   width: 260px;
 }
 
-/* ---------- Promo band (reuse pattern, Mollys tone) ---------- */
+/* ---------- Promo band (full-bleed background, blended, slow zoom) ---------- */
 .mo-promo {
-  background: var(--umber-deep);
-  padding: 70px 0;
+  position: relative;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.mo-promo-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  animation: heroZoom 18s ease-in-out infinite alternate;
+}
+.mo-promo::before {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(100deg, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.42) 45%, rgba(0,0,0,0.12) 75%);
+  z-index: 1;
 }
 .mo-promo .wrap {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 48px;
-  align-items: center;
+  position: relative;
+  z-index: 2;
+  display: block;
 }
+.mo-promo-content { max-width: 520px; }
 .mo-promo h2 {
   color: #FFFFFF;
   font-size: clamp(1.7rem, 2.8vw, 2.4rem);
@@ -144,14 +159,8 @@
   margin-bottom: 16px;
 }
 .mo-promo p {
-  color: #D8CBB8;
+  color: #EAEAEA;
   font-size: 1rem;
   margin-bottom: 26px;
   max-width: 44ch;
 }
-.mo-promo .visual {
-  border-radius: var(--radius-m);
-  overflow: hidden;
-  aspect-ratio: 5/4;
-}
-.mo-promo .visual img { width: 100%; height: 100%; object-fit: cover; }
