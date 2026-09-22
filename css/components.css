@@ -1,4 +1,4 @@
- /* ============================================
+/* ============================================
    MOLLYS × M. SAMUELS — COMPONENT STYLES
    ============================================ */
 
@@ -27,7 +27,7 @@
   font-size: 0.88rem;
   font-weight: 600;
   color: var(--umber-deep);
-  border-bottom: 1px solid var(--gold-deep);
+  border-bottom: 1px solid var(--gold);
   padding-bottom: 2px;
   white-space: nowrap;
 }
@@ -48,7 +48,7 @@
 .division-panel img {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: cover; object-position: top;
   transition: transform 0.6s ease;
 }
 .division-panel:hover img { transform: scale(1.045); }
@@ -75,14 +75,13 @@
   margin-bottom: 20px;
 }
 
-/* The Mollys panel sits on a bright yellow photo/background — dark text
-   needed there for contrast. The M. Samuels panel sits on black, so it
-   keeps the light text above. */
-.divisions .division-panel:first-child .division-content { color: #1A1A1A; }
-.divisions .division-panel:first-child .division-content .eyebrow { color: #000000; }
-.divisions .division-panel:first-child .division-content h3 { color: #000000; }
-.divisions .division-panel:first-child .division-content p { color: #2A2A2A; }
-.divisions .division-panel:first-child.division-panel::before {
+/* The M. Samuels panel's photo needs dark text for contrast; Mollys keeps
+   the light text treatment. */
+.divisions .division-panel:last-child .division-content { color: #1A1A1A; }
+.divisions .division-panel:last-child .division-content .eyebrow { color: #000000; }
+.divisions .division-panel:last-child .division-content h3 { color: #000000; }
+.divisions .division-panel:last-child .division-content p { color: #2A2A2A; }
+.divisions .division-panel:last-child.division-panel::before {
   background: linear-gradient(0deg, rgba(244,217,0,0.55) 0%, rgba(244,217,0,0.05) 55%);
 }
 
@@ -109,10 +108,10 @@
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
 .category-item:hover .circle {
-  border-color: var(--gold-deep);
   transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.22);
 }
-.category-item .circle img { width: 100%; height: 100%; object-fit: cover; }
+.category-item .circle img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 .category-item span {
   font-size: 0.82rem;
   color: var(--ink-soft);
@@ -135,7 +134,7 @@
   margin-bottom: 14px;
 }
 .product-media img {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover; object-position: top;
   position: absolute; inset: 0;
   transition: opacity 0.4s ease;
 }
@@ -237,7 +236,7 @@
   overflow: hidden;
   aspect-ratio: 5/4;
 }
-.promo-band .visual img { width: 100%; height: 100%; object-fit: cover; }
+.promo-band .visual img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
 
 /* ---------- Feature strip (Why choose us) ---------- */
 .feature-strip {
@@ -257,7 +256,7 @@
   gap: 12px;
   flex: 1 1 180px;
 }
-.feature-strip svg { width: 26px; height: 26px; color: var(--gold-deep); flex-shrink: 0; }
+.feature-strip svg { width: 26px; height: 26px; color: var(--gold); flex-shrink: 0; }
 .feature-strip strong { display: block; font-size: 0.9rem; color: var(--umber-deep); }
 .feature-strip span { font-size: 0.8rem; color: var(--ink-soft); }
 
@@ -306,9 +305,9 @@
 }
 .footer-grid ul li { margin-bottom: 10px; }
 .footer-grid a { font-size: 0.85rem; color: #1A1A1A; transition: color 0.15s ease; }
-.footer-grid a:hover { color: var(--gold-deep); text-decoration: underline; }
+.footer-grid a:hover { color: var(--gold); text-decoration: underline; }
 .footer-brand .logo-mark { color: #000000; }
-.footer-brand .logo-mark span { color: var(--gold-deep); text-decoration: none; }
+.footer-brand .logo-mark span { color: var(--gold); text-decoration: none; }
 .footer-brand p { font-size: 0.85rem; color: #2A2A2A; margin: 14px 0 20px; max-width: 34ch; }
 .social-row { display: flex; gap: 12px; }
 .social-row a {
@@ -373,7 +372,7 @@
   transition: transform 0.25s ease;
 }
 .promo-popup-backdrop.show .promo-popup { transform: translateY(0) scale(1); }
-.promo-popup .eyebrow { color: var(--gold-deep); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em; }
+.promo-popup .eyebrow { color: var(--gold); font-weight: 700; font-size: 0.78rem; letter-spacing: 0.05em; }
 .promo-popup h3 { font-size: 1.6rem; font-style: italic; font-weight: 500; margin: 10px 0 12px; }
 .promo-popup p { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 22px; }
 .promo-popup .close-x {
@@ -383,7 +382,7 @@
 }
 .promo-code {
   display: inline-block;
-  border: 1px dashed var(--gold-deep);
+  border: 1px dashed var(--gold);
   padding: 8px 18px;
   border-radius: var(--radius-s);
   font-weight: 700;
