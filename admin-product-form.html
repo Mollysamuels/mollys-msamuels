@@ -70,9 +70,10 @@
 
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>Photos</h2></div>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">Photos are uploaded to GitHub first (by the web developer, for consistent positioning and quality), then their file path is entered here.</p>
     <div class="checkout-grid-2">
-      <div class="auth-field"><label>Main image</label><div class="file-upload-field">Click or drag to upload — main product photo</div></div>
-      <div class="auth-field"><label>Alt image (hover)</label><div class="file-upload-field">Click or drag to upload — shown on hover</div></div>
+      <div class="auth-field"><label>Main image path</label><input type="text" placeholder="assets/images/mollys/prod-example-1.jpg"></div>
+      <div class="auth-field"><label>Alt image path (hover)</label><input type="text" placeholder="assets/images/mollys/prod-example-2.jpg"></div>
     </div>
   </div>
 
@@ -90,10 +91,10 @@
           <div class="auth-field"><label>Swatch colour</label><input type="color" value="#1B2A4A"></div>
         </div>
         <div class="checkout-grid-2">
-          <div class="auth-field"><label>Front photo</label><div class="file-upload-field">Upload</div></div>
-          <div class="auth-field"><label>Back photo (optional)</label><div class="file-upload-field">Upload</div></div>
+          <div class="auth-field"><label>Front photo path</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-front.jpg"></div>
+          <div class="auth-field"><label>Back photo path (optional)</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-back.jpg"></div>
         </div>
-        <div class="auth-field"><label>Model photo (optional)</label><div class="file-upload-field">Upload</div></div>
+        <div class="auth-field"><label>Model photo path (optional)</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-model.jpg"></div>
         <button type="button" class="apf-remove-color">Remove this colour</button>
         <hr>
       </div>
