@@ -85,6 +85,13 @@
   background: linear-gradient(0deg, rgba(244,217,0,0.55) 0%, rgba(244,217,0,0.05) 55%);
 }
 
+/* Belt-and-suspenders: force both CTA buttons to the exact same gold-button
+   look, regardless of which panel's text-color rules surround them. */
+.division-content .btn-gold {
+  background: var(--gold) !important;
+  color: #1A1A1A !important;
+}
+
 /* ---------- Category strip ---------- */
 .category-strip {
   display: flex;
