@@ -25,8 +25,8 @@ function titleCaseFromSlug(slug) {
 }
 
 function generatePlaceholderProducts(slug, name, division, count) {
-  const img1 = division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg";
-  const img2 = division === "msamuels" ? "assets/images/category/msamuels-product-alt.svg" : "assets/images/category/mollys-product-alt.svg";
+  const img1 = division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
+  const img2 = division === "msamuels" ? "assets/images/category/msamuels-product-alt.jpg" : "assets/images/category/mollys-product-alt.jpg";
   const basePrice = division === "msamuels" ? 12000 : 8000;
   const styleLabels = ["Classic", "Everyday", "Signature", "Essential", "Premium", "Original"];
 
@@ -122,7 +122,7 @@ function renderGrid(products) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const grid = document.getElementById("catProductGrid");
   if (!grid) return; // not on category.html
 
@@ -130,6 +130,38 @@ document.addEventListener("DOMContentLoaded", function () {
   const slug = params.get("category") || "gowns";
   const division = MSAMUELS_SLUGS.has(slug) ? "msamuels" : "mollys";
   const name = titleCaseFromSlug(slug);
+
+  // Try real Supabase products for this category first. Only fall back to
+  // the placeholder generator if this category has no real products yet —
+  // so categories without data keep working exactly as before, and any
+  // category we populate with real products switches over automatically.
+  // (Writes to the module-level `currentProducts` declared above — no
+  // `let` here, so the later sort-dropdown code can still see it.)
+  currentProducts = null;
+  try {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*, categories!inner(slug), product_colors(*)")
+      .eq("categories.slug", slug);
+
+    if (!error && data && data.length > 0) {
+      currentProducts = data.map((p) => {
+        const firstColor = (p.product_colors && p.product_colors[0]) || null;
+        const fallbackImg = division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
+        return {
+          name: p.name, price: p.price_ngn, division: p.division, category: slug,
+          img1: (firstColor && firstColor.front_image_url) || fallbackImg,
+          img2: (firstColor && firstColor.back_image_url) || (firstColor && firstColor.front_image_url) || fallbackImg,
+          linkOverride: `product.html?id=${p.id}`,
+        };
+      });
+    }
+  } catch (e) {
+    console.error("Supabase category fetch failed, using placeholders:", e);
+  }
+  if (!currentProducts) {
+    currentProducts = generatePlaceholderProducts(slug, name, division, 6);
+  }
 
   // Page title / breadcrumb / banner
   document.title = `${name} — Molly Samuels`;
@@ -155,8 +187,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const bannerImg = document.getElementById("catBannerImg");
   if (bannerImg) {
     bannerImg.src = division === "msamuels"
-      ? "assets/images/category/msamuels-banner.svg"
-      : "assets/images/category/mollys-banner.svg";
+      ? "assets/images/category/msamuels-banner.jpg"
+      : "assets/images/category/mollys-banner.jpg";
   }
   const bannerDesc = document.getElementById("catBannerDesc");
   if (bannerDesc) {
@@ -169,8 +201,8 @@ document.addEventListener("DOMContentLoaded", function () {
   const fab = document.getElementById("catMsFab");
   if (fab) fab.style.display = division === "msamuels" ? "flex" : "none";
 
-  // Generate and render placeholder products (6 per category, demo data)
-  currentProducts = generatePlaceholderProducts(slug, name, division, 6);
+  // currentProducts was already set above (real Supabase data, or the
+  // placeholder fallback) — just render whichever it ended up being.
   const countEl = document.getElementById("catCount");
   if (countEl) countEl.textContent = `${currentProducts.length} products`;
   renderGrid(currentProducts);
