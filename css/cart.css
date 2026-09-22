@@ -2,7 +2,7 @@
 .cart-layout { display: grid; grid-template-columns: 1.6fr 1fr; gap: 50px; padding: 40px 0 90px; align-items: start; }
 .cart-title { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 2rem; margin-bottom: 28px; }
 .cart-item { display: grid; grid-template-columns: 96px 1fr auto; gap: 18px; padding: 22px 0; border-bottom: 1px solid var(--line); align-items: center; }
-.cart-item img { width: 96px; height: 120px; object-fit: cover; border-radius: var(--radius-s); background: var(--cream-deep); }
+.cart-item img { width: 96px; height: 120px; object-fit: cover; object-position: top; border-radius: var(--radius-s); background: var(--cream-deep); }
 .cart-item-info h4 { font-family: var(--font-body); font-weight: 500; font-size: 0.95rem; margin: 0 0 6px; }
 .cart-item-meta { font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 10px; }
 .cart-item-qty { display: flex; align-items: center; gap: 12px; }
