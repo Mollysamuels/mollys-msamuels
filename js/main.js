@@ -1,10 +1,27 @@
-// ============================================
+ // ============================================
 // MOLLYS × M. SAMUELS — MAIN JAVASCRIPT
 // ============================================
 
 document.addEventListener("DOMContentLoaded", function () {
 
-  /* ---------- Rotating announcement bar (shared across every page) ---------- */
+  /* ---------- Homepage hero: 5-image crossfade (endless loop) ---------- */
+  const homeHeroImgs = document.querySelectorAll(".home-hero-bg");
+  if (homeHeroImgs.length) {
+    let homeHeroIndex = 0;
+    setInterval(() => {
+      homeHeroImgs[homeHeroIndex].classList.remove("active");
+      homeHeroIndex = (homeHeroIndex + 1) % homeHeroImgs.length;
+      homeHeroImgs[homeHeroIndex].classList.add("active");
+    }, 4500);
+  }
+
+  /* ---------- Generic accordion (FAQ, and any other info-tab usage) ---------- */
+  document.querySelectorAll(".info-tab-head").forEach((head) => {
+    head.addEventListener("click", () => {
+      head.closest(".info-tab").classList.toggle("open");
+    });
+  });
+
   const ANNOUNCE_MESSAGES = [
     "Trusted by 500+ schools&nbsp;&nbsp;|&nbsp;&nbsp;Easy 14-day returns&nbsp;&nbsp;|&nbsp;&nbsp;Bulk uniform orders available",
     "Best selling items&nbsp;&nbsp;|&nbsp;&nbsp;5 star rated&nbsp;&nbsp;|&nbsp;&nbsp;Premium quality products",
