@@ -75,4 +75,36 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchAndPrepend("newArrivalsGrid", (p) => p.is_new && p.division === "mollys");
   fetchAndPrepend("mollysFeaturedGrid", (p) => p.division === "mollys" && p.is_featured);
   fetchAndPrepend("msamuelsFeaturedGrid", (p) => p.division === "msamuels" && p.is_featured);
+
+  /* ---------- New Arrivals: continuous auto-drift, edge to edge, looping forever ---------- */
+  const track = document.getElementById("newArrivalsGrid");
+  const prevBtn = document.getElementById("homeScrollPrev");
+  const nextBtn = document.getElementById("homeScrollNext");
+  if (track) {
+    const scrollAmount = 280;
+    if (prevBtn) prevBtn.addEventListener("click", () => track.scrollBy({ left: -scrollAmount, behavior: "smooth" }));
+    if (nextBtn) nextBtn.addEventListener("click", () => track.scrollBy({ left: scrollAmount, behavior: "smooth" }));
+
+    let autoPaused = false;
+    const driftSpeed = 0.6;
+    function driftLoop() {
+      if (!autoPaused) {
+        const maxScroll = track.scrollWidth - track.clientWidth;
+        if (maxScroll > 0) {
+          if (track.scrollLeft >= maxScroll - 1) {
+            track.scrollLeft = 0;
+          } else {
+            track.scrollLeft += driftSpeed;
+          }
+        }
+      }
+      requestAnimationFrame(driftLoop);
+    }
+    requestAnimationFrame(driftLoop);
+
+    track.addEventListener("mouseenter", () => { autoPaused = true; });
+    track.addEventListener("mouseleave", () => { autoPaused = false; });
+    track.addEventListener("touchstart", () => { autoPaused = true; }, { passive: true });
+    track.addEventListener("touchend", () => { setTimeout(() => { autoPaused = false; }, 1500); });
+  }
 });
