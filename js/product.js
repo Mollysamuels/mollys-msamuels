@@ -67,6 +67,10 @@ document.addEventListener("DOMContentLoaded", async function () {
       PRODUCT = { name: "Product not found", division: "mollys", category: "", price: 0, currency: "₦",
         colors: { default: { label: "Default", hex: "#000", views: ["front"], images: { front: "assets/images/category/mollys-product.svg" } } },
         defaultColor: "default" };
+    } else if (data.status === "discontinued") {
+      PRODUCT = { name: "This product is no longer available", division: data.division, category: "", price: 0, currency: "₦",
+        colors: { default: { label: "Default", hex: "#000", views: ["front"], images: { front: "assets/images/category/mollys-product.svg" } } },
+        defaultColor: "default" };
     } else {
       const colors = {};
       (data.product_colors || []).forEach((c) => {
