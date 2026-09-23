@@ -2,6 +2,42 @@
 // MOLLYS × M. SAMUELS — MAIN JAVASCRIPT
 // ============================================
 
+// ---------- Real, persistent shopping cart (shared by every page) ----------
+const CART_KEY = "molly_samuels_cart";
+
+function getCart() {
+  try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+  catch (e) { return []; }
+}
+function saveCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartBadges();
+}
+// item: { product_id, name, price, img, division, size, color, qty }
+function addToCart(item) {
+  const cart = getCart();
+  const existing = cart.find((c) => c.product_id === item.product_id && c.size === item.size && c.color === item.color);
+  if (existing) { existing.qty += item.qty || 1; }
+  else { cart.push({ ...item, qty: item.qty || 1 }); }
+  saveCart(cart);
+}
+function removeFromCart(index) {
+  const cart = getCart();
+  cart.splice(index, 1);
+  saveCart(cart);
+}
+function updateCartQty(index, qty) {
+  const cart = getCart();
+  if (cart[index]) { cart[index].qty = Math.max(1, qty); saveCart(cart); }
+}
+function clearCart() { saveCart([]); }
+function cartCount() { return getCart().reduce((sum, item) => sum + item.qty, 0); }
+function updateCartBadges() {
+  const count = cartCount();
+  document.querySelectorAll(".cart-badge").forEach((el) => { el.textContent = count; });
+}
+document.addEventListener("DOMContentLoaded", updateCartBadges);
+
 document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- Homepage hero: 5-image crossfade (endless loop) ---------- */
