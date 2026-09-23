@@ -3,22 +3,36 @@
 // via category.html?category=<slug>
 // ============================================
 
-// Every M. Samuels category slug, so we can tell at a glance which
-// division a given category belongs to (anything not in this set
-// is treated as a Mollys category).
-const MSAMUELS_SLUGS = new Set([
+// M. Samuels categories, grouped by section — used both to detect division
+// and to pick the correct section banner (Boys/Girls/Accessories/Bespoke).
+const BOYS_SLUGS = new Set([
   "unisex-blazers", "boys-shirts", "boys-trousers-and-shorts", "t-shirts-and-polo-shirts",
   "sweatshirts-and-bottoms", "knitwear-and-fleeces", "pe-shorts", "boys-swimwear",
-  "socks-and-sport-socks", "jackets-and-coats", "rugby-jerseys",
-  "girls-blazers", "blouses", "skirts-and-pinafores", "tartans", "girls-trousers",
+  "socks-and-sport-socks", "jackets-and-coats", "rugby-jerseys", "joggers", "sportswear",
+]);
+const GIRLS_SLUGS = new Set([
+  "girls-blazers", "blouses", "girls-blouses", "skirts-and-pinafores", "tartans", "girls-trousers",
   "socks-and-tights", "girls-swimwear", "summer-dresses", "pe-shorts-and-skorts",
   "leggings-and-leotards", "multicultural-clothing",
+]);
+const ACCESSORIES_SLUGS = new Set([
   "school-bags", "plimsolls", "shin-guards-and-gum-shields", "swimwear-accessories",
   "hair-accessories", "aprons-and-lab-coats", "caps", "hats-and-scarves",
-  "name-tab-kit-and-hem-web-kit", "ties", "water-bottles",
+  "name-tab-kit-and-hem-web-kit", "ties", "water-bottles", "knitwear-and-cardigans",
+]);
+const BESPOKE_SLUGS = new Set([
   "bespoke-blazers-and-jackets", "bespoke-shirts-and-blouses", "bespoke-knitwear",
   "bespoke-tartan-skirts-and-pinafores",
 ]);
+const MSAMUELS_SLUGS = new Set([...BOYS_SLUGS, ...GIRLS_SLUGS, ...ACCESSORIES_SLUGS, ...BESPOKE_SLUGS]);
+
+function getMsamuelsSection(slug) {
+  if (BOYS_SLUGS.has(slug)) return "boys";
+  if (GIRLS_SLUGS.has(slug)) return "girls";
+  if (ACCESSORIES_SLUGS.has(slug)) return "accessories";
+  if (BESPOKE_SLUGS.has(slug)) return "bespoke";
+  return "boys"; // sensible fallback for any future slug not yet categorised
+}
 
 function titleCaseFromSlug(slug) {
   return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ").replace(/\bAnd\b/g, "&");
@@ -188,8 +202,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   const bannerImg = document.getElementById("catBannerImg");
   if (bannerImg) {
     bannerImg.src = division === "msamuels"
-      ? "assets/images/category/msamuels-banner.jpg"
-      : "assets/images/category/mollys-banner.jpg";
+      ? `assets/images/category/msamuels-${getMsamuelsSection(slug)}-banner.jpg`
+      : `assets/images/category/mollys-${slug}-banner.jpg`;
   }
   const bannerDesc = document.getElementById("catBannerDesc");
   if (bannerDesc) {
