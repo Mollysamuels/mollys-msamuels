@@ -114,7 +114,18 @@
       });
     }
 
-    window.location.href = new URLSearchParams(window.location.search).get("redirect") || "shop.html";
+    // If email confirmation is required, there's no real session yet —
+    // sending them to a protected page now would just look broken.
+    if (!data.session) {
+      errorEl.style.color = "#2D6B3B";
+      errorEl.textContent = "Account created! Please check your email and click the confirmation link before logging in.";
+      errorEl.style.display = "block";
+      btn.textContent = "Create Account";
+      btn.disabled = false;
+      return;
+    }
+
+    window.location.href = new URLSearchParams(window.location.search).get("redirect") || "index.html";
   });
 </script>
 </body>
