@@ -84,9 +84,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     grid.querySelectorAll(".wish-btn").forEach((btn) => btn.addEventListener("click", (e) => { e.preventDefault(); btn.classList.toggle("active"); }));
   }
 
-  let currentDivision = "all";
+  let currentDivision = "mollys";
   function apply() {
-    let list = ALL_PRODUCTS.filter((p) => currentDivision === "all" || p.division === currentDivision);
+    let list = ALL_PRODUCTS.filter((p) => p.division === currentDivision);
     const sortVal = document.getElementById("shopSort").value;
     if (sortVal === "price-low") list = [...list].sort((a, b) => a.price - b.price);
     if (sortVal === "price-high") list = [...list].sort((a, b) => b.price - a.price);
