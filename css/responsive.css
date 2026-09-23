@@ -48,12 +48,12 @@
 }
 
 /* ---------- Mobile header simplification ----------
-   Matches spec: mobile header shows only Logo, Search, Cart, Menu.
-   Account, Wishlist and Market selector move inside the slide-out menu. */
+   Wishlist and Market selector move inside the slide-out menu;
+   Account stays visible in the header bar (kept accessible directly, not
+   just via the hamburger menu). */
 @media (max-width: 860px) {
   .header-actions { gap: 10px; }
   .market-selector { display: none; }
-  a.icon-btn[aria-label="Account"] { display: none; }
   a.icon-btn[aria-label="Wishlist"] { display: none; }
   .mobile-menu-extra {
     display: flex;
