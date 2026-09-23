@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -20,12 +20,67 @@
     <a href="admin-login.html" class="logo-mark">Molly <span>Samuels</span></a>
     <span class="admin-tag">Admin Panel</span>
     <h1>Sign in</h1>
-    <form onsubmit="return false;">
-      <div class="auth-field"><label>Email address</label><input type="email" required></div>
-      <div class="auth-field"><label>Password</label><input type="password" required></div>
-      <button type="submit" class="btn btn-gold auth-submit" onclick="window.location.href='admin-dashboard.html'">Sign In</button>
+    <p id="loginError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:16px;"></p>
+    <form id="adminLoginForm">
+      <div class="auth-field"><label>Email address</label><input type="email" id="loginEmail" required></div>
+      <div class="auth-field"><label>Password</label><input type="password" id="loginPassword" required></div>
+      <button type="submit" class="btn btn-gold auth-submit" id="loginSubmitBtn">Sign In</button>
     </form>
   </div>
 </div>
+
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  const form = document.getElementById("adminLoginForm");
+  const errorEl = document.getElementById("loginError");
+  const submitBtn = document.getElementById("loginSubmitBtn");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorEl.style.display = "none";
+    submitBtn.textContent = "Signing in...";
+    submitBtn.disabled = true;
+
+    const email = document.getElementById("loginEmail").value;
+    const password = document.getElementById("loginPassword").value;
+
+    // Step 1: does this email/password combination exist at all?
+    const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+    if (authError) {
+      errorEl.textContent = "Incorrect email or password.";
+      errorEl.style.display = "block";
+      submitBtn.textContent = "Sign In";
+      submitBtn.disabled = false;
+      return;
+    }
+
+    // Step 2: is this specific person actually listed as an admin?
+    const { data: adminRow } = await supabaseClient
+      .from("admin_users")
+      .select("id")
+      .eq("id", authData.user.id)
+      .single();
+
+    if (!adminRow) {
+      errorEl.textContent = "This account exists but is not an admin account.";
+      errorEl.style.display = "block";
+      await supabaseClient.auth.signOut(); // don't leave them signed in with no admin access
+      submitBtn.textContent = "Sign In";
+      submitBtn.disabled = false;
+      return;
+    }
+
+    // Both checks passed — genuinely a real, logged-in admin.
+    window.location.href = "admin-dashboard.html";
+  });
+</script>
 </body>
 </html>
