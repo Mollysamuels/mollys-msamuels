@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-<div class="announce">Free shipping on orders above ₦50,000 &nbsp;|&nbsp; Easy 7-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
+<div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
 
 <header class="site-header">
   <div class="header-row">
@@ -79,23 +79,25 @@
 <div class="wrap">
   <div class="page-hero" style="text-align:center;"><h1>Request Bulk Pricing</h1><p style="margin:8px auto 0;">Ordering in larger quantities? Let's talk numbers.</p></div>
   <div class="order-form-layout">
-    <form onsubmit="return false;">
-      <div class="auth-field"><label>Product</label><input type="text" placeholder="e.g. School Blazer"></div>
+    <form id="bulkOrderForm">
+      <div class="auth-field"><label>Product</label><input type="text" id="boProduct" placeholder="e.g. School Blazer"></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Quantity</label><input type="number" min="1"></div>
-        <div class="auth-field"><label>Required date</label><input type="date"></div>
+        <div class="auth-field"><label>Quantity</label><input type="number" id="boQuantity" min="1"></div>
+        <div class="auth-field"><label>Required date</label><input type="date" id="boDate"></div>
       </div>
-      <div class="auth-field"><label>Size breakdown</label><textarea placeholder="e.g. 20 x Age 8, 30 x Age 10, 25 x Age 12"></textarea></div>
-      <div class="auth-field"><label>Colour</label><input type="text"></div>
+      <div class="auth-field"><label>Size breakdown</label><textarea id="boSizeBreakdown" placeholder="e.g. 20 x Age 8, 30 x Age 10, 25 x Age 12"></textarea></div>
+      <div class="auth-field"><label>Colour</label><input type="text" id="boColour"></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Organisation</label><input type="text"></div>
-        <div class="auth-field"><label>Delivery location</label><input type="text"></div>
+        <div class="auth-field"><label>Organisation</label><input type="text" id="boOrg"></div>
+        <div class="auth-field"><label>Delivery location</label><input type="text" id="boLocation"></div>
       </div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Contact name</label><input type="text"></div>
-        <div class="auth-field"><label>Phone / Email</label><input type="text"></div>
+        <div class="auth-field"><label>Contact name</label><input type="text" id="boContactName"></div>
+        <div class="auth-field"><label>Phone / Email</label><input type="text" id="boContactInfo"></div>
       </div>
-      <button type="submit" class="btn btn-gold auth-submit">Request Bulk Pricing</button>
+      <p id="boError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
+      <p id="boSuccess" style="display:none;color:#2D6B3B;font-size:0.9rem;margin-bottom:10px;">Thank you — your request has been received. We'll be in touch shortly.</p>
+      <button type="submit" class="btn btn-gold auth-submit" id="boSubmitBtn">Request Bulk Pricing</button>
     </form>
   </div>
 </div>
@@ -166,6 +168,49 @@
 </div>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  document.getElementById("bulkOrderForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById("boError");
+    const successEl = document.getElementById("boSuccess");
+    const btn = document.getElementById("boSubmitBtn");
+    errorEl.style.display = "none";
+    successEl.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    const { error } = await supabaseClient.from("bulk_order_requests").insert({
+      product_name: document.getElementById("boProduct").value.trim(),
+      quantity: parseInt(document.getElementById("boQuantity").value, 10) || null,
+      size_breakdown: document.getElementById("boSizeBreakdown").value.trim(),
+      colour: document.getElementById("boColour").value.trim(),
+      organisation: document.getElementById("boOrg").value.trim(),
+      delivery_location: document.getElementById("boLocation").value.trim(),
+      contact_name: document.getElementById("boContactName").value.trim(),
+      contact_info: document.getElementById("boContactInfo").value.trim(),
+    });
+
+    if (error) {
+      console.error(error);
+      errorEl.textContent = "Something went wrong sending your request. Please try again.";
+      errorEl.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Request Bulk Pricing";
+      return;
+    }
+
+    successEl.style.display = "block";
+    document.getElementById("bulkOrderForm").reset();
+    btn.textContent = "Request Bulk Pricing";
+    btn.disabled = false;
+  });
+</script>
 
 </body>
 </html>
