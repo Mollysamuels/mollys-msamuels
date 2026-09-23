@@ -56,10 +56,8 @@ function wireCardInteractions(scope) {
     btn.dataset.wired = "1";
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      const toast = document.querySelector(".toast");
-      if (toast) { toast.querySelector("span").textContent = "Added to cart"; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2400); }
-      const badge = document.querySelector(".cart-badge");
-      if (badge) badge.textContent = parseInt(badge.textContent || "0", 10) + 1;
+      const card = btn.closest(".product-card");
+      if (card) addToCartFromCard(card);
     });
   });
   scope.querySelectorAll(".wish-btn").forEach((btn) => {
