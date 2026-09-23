@@ -197,7 +197,7 @@
       </div>
       <a href="shop.html" class="view-all">View all →</a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid" id="newArrivalsGrid">
 
       <div class="product-card">
         <div class="product-media">
@@ -243,21 +243,6 @@
         </div>
       </div>
 
-      <div class="product-card">
-        <div class="product-media">
-          <span class="product-tag">New</span>
-          <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
-          <a href="product.html?id=e47a1b84-16ed-4a25-986c-c8a5f4fcefdf"><img class="main" src="assets/images/msamuels/prod-blazer-navy-front.jpg" alt="School Blazer"></a>
-          <img class="alt" src="assets/images/msamuels/prod-blazer-navy-back.jpg" alt="School Blazer, alternate view">
-          <button class="quick-add">Quick add</button>
-        </div>
-        <div class="product-info">
-          <a href="product.html?id=e47a1b84-16ed-4a25-986c-c8a5f4fcefdf" style="color:inherit;"><h4>School Blazer</h4></a>
-          <div class="product-price"><span class="now">₦35,500</span></div>
-          <div class="swatches"><span style="background:#2a1b10"></span><span style="background:#4a3a2a"></span></div>
-        </div>
-      </div>
-
     </div>
   </div>
 </section>
@@ -272,7 +257,7 @@
       </div>
       <a href="mollys.html" class="view-all">View all Mollys →</a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid" id="mollysFeaturedGrid">
       <div class="product-card">
         <div class="product-media">
           <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
@@ -323,7 +308,7 @@
       </div>
       <a href="msamuels.html" class="view-all">View all M. Samuels →</a>
     </div>
-    <div class="product-grid">
+    <div class="product-grid" id="msamuelsFeaturedGrid">
       <div class="product-card">
         <div class="product-media">
           <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
@@ -507,5 +492,15 @@
 </div>
 
 <script src="js/main.js"></script>
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "YOUR_SUPABASE_URL_HERE",
+    "YOUR_SUPABASE_ANON_KEY_HERE"
+  );
+</script>
+<script src="js/homepage-live.js"></script>
 </body>
 </html>
