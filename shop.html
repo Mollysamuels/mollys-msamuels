@@ -166,6 +166,15 @@
 </div>
 
 <script src="js/main.js"></script>
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "YOUR_SUPABASE_URL_HERE",
+    "YOUR_SUPABASE_ANON_KEY_HERE"
+  );
+</script>
 <script src="js/shop.js"></script>
 </body>
 </html>
