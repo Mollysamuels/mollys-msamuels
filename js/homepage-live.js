@@ -70,7 +70,9 @@ function wireCardInteractions(scope) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  fetchAndPrepend("newArrivalsGrid", (p) => p.is_new);
+  // New Arrivals is Mollys-only — M. Samuels' uniform-focused products
+  // don't fit a "new arrivals" fashion concept, per the boss's direction.
+  fetchAndPrepend("newArrivalsGrid", (p) => p.is_new && p.division === "mollys");
   fetchAndPrepend("mollysFeaturedGrid", (p) => p.division === "mollys" && p.is_featured);
   fetchAndPrepend("msamuelsFeaturedGrid", (p) => p.division === "msamuels" && p.is_featured);
 });
