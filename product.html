@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -427,23 +427,35 @@
 <script>
   const supabaseClient = supabase.createClient(
     "https://vdlwnflklclenavtpamp.supabase.co",
-    " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 </script>
 <script src="js/main.js"></script>
 <script src="js/msamuels.js"></script>
 <script src="js/product.js"></script>
 <script>
-  // Wire the main Add to Cart / quick-add buttons on this page into the shared toast
+  // Wire the real Add to Cart button — pulls whatever is actually selected
+  // right now (size, colour, quantity) and saves a real cart line item.
   document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+    const params = new URLSearchParams(window.location.search);
+    const productId = params.get("id") || params.get("item") || "unknown";
+    const name = document.getElementById("prodTitle")?.textContent || "Product";
+    const priceText = document.getElementById("prodPrice")?.textContent || "₦0";
+    const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
+    const division = (document.getElementById("prodDivisionTag")?.textContent || "").toLowerCase().includes("samuels") ? "msamuels" : "mollys";
+    const size = document.querySelector(".size-dropdown-value")?.textContent.trim() || "";
+    const color = document.querySelector(".selected-color-name")?.textContent.trim() || "";
+    const qty = parseInt(document.querySelector(".qty-stepper span")?.textContent, 10) || 1;
+    const activeImg = document.querySelector(".gallery-frame.active img")?.src || "";
+
+    addToCart({ product_id: productId, name, price, img: activeImg, division, size, color, qty });
+
     const toast = document.querySelector(".toast");
     if (toast) {
       toast.querySelector("span").textContent = "Added to cart";
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 2400);
     }
-    const badge = document.querySelector(".cart-badge");
-    if (badge) badge.textContent = parseInt(badge.textContent || "0", 10) + 1;
   });
 </script>
 </body>
