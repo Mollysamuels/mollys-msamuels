@@ -21,7 +21,7 @@
 <script>
   const supabaseClient = supabase.createClient(
     "https://vdlwnflklclenavtpamp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+    "YeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 </script>
 <script src="js/admin-auth.js"></script>
@@ -57,20 +57,63 @@
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>All Customers</h2></div>
     <div class="admin-search-row">
-      <input type="text" placeholder="Search customers...">
-      <select><option>All Markets</option><option>Nigeria</option><option>United Kingdom</option></select>
+      <input type="text" id="acSearch" placeholder="Search customers...">
     </div>
+    <p style="font-size:0.78rem;color:var(--ink-soft);margin-bottom:14px;">Email addresses aren't shown here — they're stored securely in Supabase's authentication system, not queryable from this table directly.</p>
     <table class="admin-table">
-      <tr><th>Name</th><th>Email</th><th>Market</th><th>Orders</th><th>Total Spent</th><th>Joined</th></tr>
-      <tr><td>Jane Doe</td><td>jane@example.com</td><td>🇳🇬 Nigeria</td><td>4</td><td>₦186,200</td><td>Mar 2026</td></tr>
-      <tr><td>Chidi Okafor</td><td>chidi@example.com</td><td>🇳🇬 Nigeria</td><td>2</td><td>₦71,000</td><td>May 2026</td></tr>
-      <tr><td>Amara Bello</td><td>amara@example.com</td><td>🇳🇬 Nigeria</td><td>1</td><td>₦26,500</td><td>Aug 2026</td></tr>
-      <tr><td>Sarah Williams</td><td>sarah@example.co.uk</td><td>🇬🇧 United Kingdom</td><td>3</td><td>£215.00</td><td>Jun 2026</td></tr>
+      <tr><th>Name</th><th>Phone</th><th>Market</th><th>Orders</th><th>Total Spent</th><th>Joined</th></tr>
+      <tbody id="acRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading customers…</td></tr></tbody>
     </table>
   </div>
 </div>
 </main>
 </div>
+<script>
+  let allCustomers = [];
 
+  document.addEventListener("adminReady", async () => {
+    const { data: customers, error: custErr } = await supabaseClient.from("customers").select("*");
+    const { data: orders } = await supabaseClient.from("orders").select("customer_id, total");
+
+    if (custErr) {
+      document.getElementById("acRows").innerHTML = `<tr><td colspan="6" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load customers.</td></tr>`;
+      console.error(custErr);
+      return;
+    }
+
+    allCustomers = (customers || []).map((c) => {
+      const theirOrders = (orders || []).filter((o) => o.customer_id === c.id);
+      return {
+        ...c,
+        orderCount: theirOrders.length,
+        totalSpent: theirOrders.reduce((sum, o) => sum + Number(o.total), 0),
+      };
+    });
+
+    renderCustomers();
+    document.getElementById("acSearch").addEventListener("input", renderCustomers);
+  });
+
+  function renderCustomers() {
+    const search = document.getElementById("acSearch").value.toLowerCase();
+    const filtered = allCustomers.filter((c) => (c.full_name || "").toLowerCase().includes(search));
+    const tbody = document.getElementById("acRows");
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">No customers found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((c) => `
+      <tr>
+        <td>${c.full_name || "(no name set)"}</td>
+        <td>${c.phone || "—"}</td>
+        <td>${c.preferred_market === "uk" ? "🇬🇧 United Kingdom" : "🇳🇬 Nigeria"}</td>
+        <td>${c.orderCount}</td>
+        <td>₦${c.totalSpent.toLocaleString()}</td>
+        <td>${new Date(c.created_at).toLocaleDateString()}</td>
+      </tr>`).join("");
+  }
+</script>
 </body>
 </html>
