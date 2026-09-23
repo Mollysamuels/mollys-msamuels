@@ -38,6 +38,30 @@ function updateCartBadges() {
 }
 document.addEventListener("DOMContentLoaded", updateCartBadges);
 
+// Reads whatever a product card actually displays (works for real Supabase
+// products and static placeholder cards alike) and saves a real cart line.
+// Used by every "Quick add" button site-wide.
+function addToCartFromCard(card) {
+  const link = card.querySelector("a[href*='product.html']");
+  const href = link ? link.getAttribute("href") : "";
+  const params = new URLSearchParams(href.split("?")[1] || "");
+  const productId = params.get("id") || params.get("item") || (card.querySelector("h4")?.textContent || "product");
+  const name = card.querySelector(".product-info h4, h4")?.textContent.trim() || "Product";
+  const priceText = card.querySelector(".product-price .now, .now")?.textContent || "₦0";
+  const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
+  const img = card.querySelector(".product-media img.main, img.main")?.src || "";
+  const division = params.get("division") || (href.includes("msamuels") ? "msamuels" : "mollys");
+
+  addToCart({ product_id: productId, name, price, img, division, size: "", color: "", qty: 1 });
+
+  const toast = document.querySelector(".toast");
+  if (toast) {
+    toast.querySelector("span").textContent = "Added to cart";
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2400);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
   /* ---------- Homepage hero: 5-image crossfade (endless loop) ---------- */
@@ -170,17 +194,11 @@ document.addEventListener("DOMContentLoaded", function () {
   document.querySelectorAll(".quick-add").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      showToast("Added to cart");
-      bumpCartBadge();
+      const card = btn.closest(".product-card");
+      if (card) { addToCartFromCard(card); }
+      else { showToast("Added to cart"); }
     });
   });
-
-  function bumpCartBadge() {
-    const badge = document.querySelector(".cart-badge");
-    if (!badge) return;
-    const count = parseInt(badge.textContent || "0", 10) + 1;
-    badge.textContent = count;
-  }
 
   /* ---------- Toast ---------- */
   function showToast(message) {
