@@ -142,7 +142,8 @@ document.addEventListener("DOMContentLoaded", async function () {
     const { data, error } = await supabaseClient
       .from("products")
       .select("*, categories!inner(slug), product_colors(*)")
-      .eq("categories.slug", slug);
+      .eq("categories.slug", slug)
+      .neq("status", "discontinued");
 
     if (!error && data && data.length > 0) {
       currentProducts = data.map((p) => {
