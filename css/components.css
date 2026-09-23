@@ -82,16 +82,6 @@
   margin-bottom: 20px;
 }
 
-/* The M. Samuels panel's photo needs dark text for contrast; Mollys keeps
-   the light text treatment. */
-.divisions .division-panel:last-child .division-content { color: #1A1A1A; }
-.divisions .division-panel:last-child .division-content .eyebrow { color: #000000; }
-.divisions .division-panel:last-child .division-content h3 { color: #000000; }
-.divisions .division-panel:last-child .division-content p { color: #2A2A2A; }
-.divisions .division-panel:last-child.division-panel::before {
-  background: linear-gradient(0deg, rgba(244,217,0,0.55) 0%, rgba(244,217,0,0.05) 55%);
-}
-
 /* Belt-and-suspenders: force both CTA buttons to the exact same gold-button
    look, regardless of which panel's text-color rules surround them. */
 .division-content .btn-gold {
