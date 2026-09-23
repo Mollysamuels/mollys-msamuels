@@ -1,28 +1,53 @@
 // ============================================
 // SHOP.HTML — all products across both divisions
+// Real Supabase products are fetched first; these hardcoded ones fill in
+// for everything not in the database yet. The School Blazer placeholder
+// below is intentionally removed — it's now the real Supabase product.
 // ============================================
 
 const SHOP_PRODUCTS = [
-  { name: "School Blazer", price: 35500, division: "msamuels", category: "unisex-blazers", img: "assets/images/msamuels/prod-blazer-navy-front.svg", isRich: true },
-  { name: "Emerald Wrap Gown", price: 26500, division: "mollys", category: "gowns", img: "assets/images/mollys/prod-gown-1.svg" },
-  { name: "Structured Crossbody Bag", price: 19500, division: "mollys", category: "bags", img: "assets/images/mollys/prod-bag-1.svg" },
-  { name: "Ankle-Strap Heels", price: 17800, division: "mollys", category: "heels", img: "assets/images/mollys/prod-heels-1.svg" },
-  { name: "Layered Gold Necklace", price: 10500, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-necklace-1.svg" },
-  { name: "Woven Slide Sandals", price: 13200, division: "mollys", category: "sandals", img: "assets/images/mollys/prod-sandals-1.svg" },
-  { name: "Linen Wrap Top", price: 12800, division: "mollys", category: "tops", img: "assets/images/mollys/prod-top-1.svg" },
-  { name: "Gold Hoop Earrings", price: 6200, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-earrings-1.svg" },
-  { name: "Boys Short Sleeve Shirt", price: 9800, division: "msamuels", category: "boys-shirts", img: "assets/images/msamuels/prod-labcoat-1.svg" },
-  { name: "Classic Lab Coat", price: 19500, division: "msamuels", category: "aprons-and-lab-coats", img: "assets/images/msamuels/prod-labcoat-1.svg" },
-  { name: "Zip Front Pinafore", price: 16500, division: "msamuels", category: "skirts-and-pinafores", img: "assets/images/msamuels/prod-uniform-1.svg" },
-  { name: "Varsity Jacket", price: 21500, division: "msamuels", category: "jackets-and-coats", img: "assets/images/msamuels/prod-sportswear-1.svg" },
+  { name: "Emerald Wrap Gown", price: 26500, division: "mollys", category: "gowns", img: "assets/images/mollys/prod-gown-1.jpg" },
+  { name: "Structured Crossbody Bag", price: 19500, division: "mollys", category: "bags", img: "assets/images/mollys/prod-bag-1.jpg" },
+  { name: "Ankle-Strap Heels", price: 17800, division: "mollys", category: "heels", img: "assets/images/mollys/prod-heels-1.jpg" },
+  { name: "Layered Gold Necklace", price: 10500, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-necklace-1.jpg" },
+  { name: "Woven Slide Sandals", price: 13200, division: "mollys", category: "sandals", img: "assets/images/mollys/prod-sandals-1.jpg" },
+  { name: "Linen Wrap Top", price: 12800, division: "mollys", category: "tops", img: "assets/images/mollys/prod-top-1.jpg" },
+  { name: "Gold Hoop Earrings", price: 6200, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-earrings-1.jpg" },
+  { name: "Boys Short Sleeve Shirt", price: 9800, division: "msamuels", category: "boys-shirts", img: "assets/images/msamuels/prod-labcoat-1.jpg" },
+  { name: "Classic Lab Coat", price: 19500, division: "msamuels", category: "aprons-and-lab-coats", img: "assets/images/msamuels/prod-labcoat-1.jpg" },
+  { name: "Zip Front Pinafore", price: 16500, division: "msamuels", category: "skirts-and-pinafores", img: "assets/images/msamuels/prod-uniform-1.jpg" },
+  { name: "Varsity Jacket", price: 21500, division: "msamuels", category: "jackets-and-coats", img: "assets/images/msamuels/prod-sportswear-1.jpg" },
 ];
+
+async function fetchRealProducts() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*, categories(slug), product_colors(*)")
+      .neq("status", "discontinued");
+    if (error || !data) return [];
+    return data.map((p) => {
+      const firstColor = (p.product_colors && p.product_colors[0]) || null;
+      const fallbackImg = p.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
+      return {
+        name: p.name, price: p.price_ngn, division: p.division,
+        category: (p.categories && p.categories.slug) || "",
+        img: (firstColor && firstColor.front_image_url) || fallbackImg,
+        linkOverride: `product.html?id=${p.id}`,
+      };
+    });
+  } catch (e) {
+    console.error("Shop: Supabase fetch failed, using placeholders only:", e);
+    return [];
+  }
+}
 
 function renderShopCard(p, index) {
   const params = new URLSearchParams({
-    item: p.isRich ? "blazer-classic" : `shop-${index}`,
+    item: `shop-${index}`,
     name: p.name, price: p.price, division: p.division, category: p.category, img1: p.img,
   });
-  const link = p.isRich ? "product.html?item=blazer-classic" : `product.html?${params.toString()}`;
+  const link = p.linkOverride || `product.html?${params.toString()}`;
   return `
     <div class="product-card" data-division="${p.division}" data-price="${p.price}">
       <div class="product-media">
@@ -37,9 +62,12 @@ function renderShopCard(p, index) {
     </div>`;
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const grid = document.getElementById("shopGrid");
   if (!grid) return;
+
+  const realProducts = await fetchRealProducts();
+  const ALL_PRODUCTS = [...realProducts, ...SHOP_PRODUCTS]; // real products shown first
 
   function render(list) {
     grid.innerHTML = list.map(renderShopCard).join("");
@@ -58,7 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let currentDivision = "all";
   function apply() {
-    let list = SHOP_PRODUCTS.filter((p) => currentDivision === "all" || p.division === currentDivision);
+    let list = ALL_PRODUCTS.filter((p) => currentDivision === "all" || p.division === currentDivision);
     const sortVal = document.getElementById("shopSort").value;
     if (sortVal === "price-low") list = [...list].sort((a, b) => a.price - b.price);
     if (sortVal === "price-high") list = [...list].sort((a, b) => b.price - a.price);
