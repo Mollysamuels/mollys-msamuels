@@ -1,4 +1,4 @@
- // ============================================
+// ============================================
 // MOLLYS × M. SAMUELS — MAIN JAVASCRIPT
 // ============================================
 
@@ -13,6 +13,17 @@ document.addEventListener("DOMContentLoaded", function () {
       homeHeroIndex = (homeHeroIndex + 1) % homeHeroImgs.length;
       homeHeroImgs[homeHeroIndex].classList.add("active");
     }, 4500);
+  }
+
+  /* ---------- Homepage "Two Divisions" — M. Samuels 3-image crossfade ---------- */
+  const divisionSlides = document.querySelectorAll(".division-slide");
+  if (divisionSlides.length) {
+    let divIndex = 0;
+    setInterval(() => {
+      divisionSlides[divIndex].classList.remove("active");
+      divIndex = (divIndex + 1) % divisionSlides.length;
+      divisionSlides[divIndex].classList.add("active");
+    }, 4000);
   }
 
   /* ---------- Generic accordion (FAQ, and any other info-tab usage) ---------- */
