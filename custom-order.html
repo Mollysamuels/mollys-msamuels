@@ -79,34 +79,36 @@
 <div class="wrap">
   <div class="page-hero" style="text-align:center;"><h1>Create Your Organisation's Uniform</h1><p style="margin:8px auto 0;">Tell us what you need — we'll follow up with a quote.</p></div>
   <div class="order-form-layout">
-    <form onsubmit="return false;">
+    <form id="customOrderForm">
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Organisation name</label><input type="text" required></div>
-        <div class="auth-field"><label>Contact person</label><input type="text" required></div>
+        <div class="auth-field"><label>Organisation name</label><input type="text" id="coOrgName" required></div>
+        <div class="auth-field"><label>Contact person</label><input type="text" id="coContact" required></div>
       </div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Email</label><input type="email" required></div>
-        <div class="auth-field"><label>Phone</label><input type="tel" required></div>
+        <div class="auth-field"><label>Email</label><input type="email" id="coEmail" required></div>
+        <div class="auth-field"><label>Phone</label><input type="tel" id="coPhone" required></div>
       </div>
       <div class="auth-field">
         <label>Organisation type</label>
-        <select style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:0.92rem;">
+        <select id="coOrgType" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:0.92rem;">
           <option>School</option><option>Hospital</option><option>Company</option><option>Hotel</option><option>Restaurant</option><option>Sports Organisation</option><option>Security</option><option>Other</option>
         </select>
       </div>
-      <div class="auth-field"><label>Uniform type</label><input type="text" placeholder="e.g. Blazers, shirts, PE kits"></div>
+      <div class="auth-field"><label>Uniform type</label><input type="text" id="coUniformType" placeholder="e.g. Blazers, shirts, PE kits"></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Quantity</label><input type="number" min="1"></div>
-        <div class="auth-field"><label>Required date</label><input type="date"></div>
+        <div class="auth-field"><label>Quantity</label><input type="number" id="coQuantity" min="1"></div>
+        <div class="auth-field"><label>Required date</label><input type="date" id="coDate"></div>
       </div>
-      <div class="auth-field"><label>Sizes needed</label><input type="text" placeholder="e.g. Age 8-14, chest 28-36"></div>
-      <div class="auth-field"><label>Preferred colours</label><input type="text"></div>
+      <div class="auth-field"><label>Sizes needed</label><input type="text" id="coSizes" placeholder="e.g. Age 8-14, chest 28-36"></div>
+      <div class="auth-field"><label>Preferred colours</label><input type="text" id="coColours"></div>
       <div class="auth-field">
         <label>Logo / branding artwork</label>
         <div class="file-upload-field">Drag a file here or click to upload (not yet functional — visual only)</div>
       </div>
-      <div class="auth-field"><label>Additional notes</label><textarea></textarea></div>
-      <button type="submit" class="btn btn-gold auth-submit">Request a Quote</button>
+      <div class="auth-field"><label>Additional notes</label><textarea id="coNotes"></textarea></div>
+      <p id="coError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
+      <p id="coSuccess" style="display:none;color:#2D6B3B;font-size:0.9rem;margin-bottom:10px;">Thank you — your request has been received. We'll be in touch shortly.</p>
+      <button type="submit" class="btn btn-gold auth-submit" id="coSubmitBtn">Request a Quote</button>
     </form>
   </div>
 </div>
@@ -177,6 +179,52 @@
 </div>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  document.getElementById("customOrderForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById("coError");
+    const successEl = document.getElementById("coSuccess");
+    const btn = document.getElementById("coSubmitBtn");
+    errorEl.style.display = "none";
+    successEl.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    const { error } = await supabaseClient.from("custom_order_requests").insert({
+      organisation_name: document.getElementById("coOrgName").value.trim(),
+      contact_person: document.getElementById("coContact").value.trim(),
+      email: document.getElementById("coEmail").value.trim(),
+      phone: document.getElementById("coPhone").value.trim(),
+      organisation_type: document.getElementById("coOrgType").value,
+      uniform_type: document.getElementById("coUniformType").value.trim(),
+      quantity: parseInt(document.getElementById("coQuantity").value, 10) || null,
+      required_date: document.getElementById("coDate").value || null,
+      sizes_needed: document.getElementById("coSizes").value.trim(),
+      preferred_colours: document.getElementById("coColours").value.trim(),
+      notes: document.getElementById("coNotes").value.trim(),
+    });
+
+    if (error) {
+      console.error(error);
+      errorEl.textContent = "Something went wrong sending your request. Please try again.";
+      errorEl.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Request a Quote";
+      return;
+    }
+
+    successEl.style.display = "block";
+    document.getElementById("customOrderForm").reset();
+    btn.textContent = "Request a Quote";
+    btn.disabled = false;
+  });
+</script>
 
 </body>
 </html>
