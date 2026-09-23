@@ -77,7 +77,9 @@
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
     if (error) {
-      errorEl.textContent = "Incorrect email or password.";
+      errorEl.textContent = error.message.includes("Email not confirmed")
+        ? "Please confirm your email first — check your inbox for the confirmation link we sent."
+        : "Incorrect email or password.";
       errorEl.style.display = "block";
       btn.textContent = "Log In";
       btn.disabled = false;
