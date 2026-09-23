@@ -431,3 +431,9 @@ a:focus-visible, button:focus-visible, input:focus-visible {
 @media (max-width: 720px) {
   .home-hero-content { padding: 0 24px; }
 }
+
+/* ---------- Force New Arrivals to always have real horizontal overflow,
+   regardless of total card count or monitor width ---------- */
+#newArrivalsGrid {
+  max-width: 900px;
+}
