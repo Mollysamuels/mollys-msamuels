@@ -1,32 +1,26 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="catPageTitle">Shop — Molly Samuels</title>
-<meta name="description" content="Browse Molly Samuels — Mollys fashion and M. Samuels school uniforms.">
-
+<title>Checkout — Molly Samuels</title>
+<meta name="description" content="Complete your order on Molly Samuels.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/product.css">
-<link rel="stylesheet" href="css/msamuels.css">
-<link rel="stylesheet" href="css/category.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/cart.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-
-<!-- ============ ANNOUNCEMENT BAR ============ -->
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
 
-<!-- ============ STANDARD SITE HEADER ============ -->
 <header class="site-header">
   <div class="header-row">
-    <a href="index.html" class="logo-mark" id="catHeaderLogo">Molly <span>Samuels</span></a>
-
+    <a href="index.html" class="logo-mark">Molly <span>Samuels</span></a>
     <nav class="main-nav">
       <a href="index.html">Home</a>
       <a href="shop.html">Shop</a>
@@ -36,7 +30,6 @@
       <a href="about.html">About</a>
       <a href="contact.html">Contact</a>
     </nav>
-
     <div class="header-actions">
       <div class="market-selector">
         <button class="market-btn" type="button">
@@ -48,7 +41,6 @@
           <button type="button" data-short="UK"><span>🇬🇧</span><span class="label">United Kingdom — £ GBP</span></button>
         </div>
       </div>
-
       <button class="icon-btn" type="button" aria-label="Search">
         <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
@@ -60,15 +52,13 @@
       </a>
       <a class="icon-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 11.5a2 2 0 01-2 1.5H7.5a2 2 0 01-2-1.5L4 7z" stroke="currentColor" stroke-width="1.5"/><path d="M8 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="badge cart-badge">0</span>
+        <span class="badge cart-badge">3</span>
       </a>
-
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
       </button>
     </div>
   </div>
-
   <nav class="mobile-menu">
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
@@ -88,50 +78,60 @@
     </div>
   </nav>
 </header>
-
-<!-- ============ BREADCRUMB ============ -->
 <div class="wrap">
-  <div class="breadcrumb">
-    <a href="index.html">Home</a><span>/</span>
-    <a href="mollys.html" id="catBreadcrumbDivision">Mollys</a><span>/</span>
-    <span id="catBreadcrumbCurrent">Category</span>
-  </div>
-</div>
+  <div class="breadcrumb"><a href="index.html">Home</a><span>/</span> <a href="cart.html">Cart</a><span>/</span> Checkout</div>
+  <div class="page-hero"><h1>Checkout</h1></div>
 
-<!-- ============ CATEGORY BANNER ============ -->
-<section class="cat-banner">
-  <img id="catBannerImg" src="assets/images/category/mollys-banner.svg" alt="">
-  <div class="cat-banner-content">
-    <h1 id="catTitle">Category</h1>
-    <p id="catBannerDesc">Browse this collection.</p>
+  <div class="login-gate" id="loginGate">
+    <p><strong>Almost there — please log in to complete your order.</strong>An account is required to check out on Molly Samuels. You can browse and add to cart freely, but purchasing requires you to be signed in.</p>
+    <div class="actions">
+      <a href="login.html?redirect=checkout.html" class="btn btn-gold">Log In</a>
+      <a href="register.html?redirect=checkout.html" class="btn btn-outline" style="border-color:var(--line); color:var(--umber-deep);">Create Account</a>
+    </div>
   </div>
-</section>
 
-<!-- ============ PRODUCT LISTING ============ -->
-<section class="cat-section">
-  <div class="wrap">
-    <div class="cat-toolbar">
-      <span class="cat-count" id="catCount">0 products</span>
-      <div class="cat-sort">
-        <label for="catSort">Sort by</label>
-        <select id="catSort">
-          <option value="featured">Featured</option>
-          <option value="price-low">Price: Low to High</option>
-          <option value="price-high">Price: High to Low</option>
-        </select>
+  <p id="checkoutError" style="display:none;color:#B23A3A;font-size:0.9rem;margin-bottom:16px;"></p>
+
+  <div class="checkout-layout">
+    <div>
+      <div class="checkout-section">
+        <h3>Customer Information</h3>
+        <div class="checkout-grid-2">
+          <div class="auth-field"><label>Full name</label><input type="text" id="coName"></div>
+          <div class="auth-field"><label>Email</label><input type="email" id="coEmail" disabled></div>
+        </div>
+        <div class="auth-field"><label>Phone</label><input type="tel" id="coPhone"></div>
+      </div>
+
+      <div class="checkout-section">
+        <h3>Delivery Address</h3>
+        <div class="auth-field"><label>Address</label><input type="text" id="coAddress"></div>
+        <div class="checkout-grid-2">
+          <div class="auth-field"><label>City</label><input type="text" id="coCity"></div>
+          <div class="auth-field"><label>State / County</label><input type="text" id="coState"></div>
+        </div>
+      </div>
+
+      <div class="checkout-section">
+        <h3>Payment</h3>
+        <div class="payment-option">
+          <svg class="pay-icon" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.4"/></svg>
+          <div><strong>Pay securely with Flutterwave</strong><div style="font-size:0.82rem;color:var(--ink-soft);">Card, bank transfer or USSD — connected at the payments phase. For now, "Place Order" records your order without processing real payment.</div></div>
+        </div>
       </div>
     </div>
 
-    <div class="product-grid" id="catProductGrid"><!-- populated by js/category.js --></div>
-
-    <div class="cat-empty" id="catEmptyState" style="display:none;">
-      <h3>No products found</h3>
-      <p>Check back soon — new items are added regularly.</p>
+    <div class="cart-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row"><span>School Blazer</span><span>₦35,500</span></div>
+      <div class="summary-row"><span>Emerald Wrap Gown</span><span>₦26,500</span></div>
+      <div class="summary-row"><span>Boys Short Sleeve Shirt</span><span>₦9,800</span></div>
+      <div class="summary-row"><span>Delivery</span><span>₦2,500</span></div>
+      <div class="summary-row total"><span>Total</span><span>₦74,300</span></div>
+      <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:18px;" id="placeOrderBtn" disabled>Log in to Pay</button>
     </div>
   </div>
-</section>
-
-<!-- ============ FOOTER ============ -->
+</div>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -145,42 +145,10 @@
           <a href="#" aria-label="TikTok"><svg viewBox="0 0 24 24" fill="none"><path d="M14 4v9.5a3 3 0 11-2.4-2.94V7.2A6 6 0 0018 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
-      <div>
-        <h5>Shop</h5>
-        <ul>
-          <li><a href="mollys.html">Mollys</a></li>
-          <li><a href="msamuels.html">M. Samuels</a></li>
-          <li><a href="shop.html">Shop All</a></li>
-          <li><a href="new-arrivals.html">New Arrivals</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Customer Care</h5>
-        <ul>
-          <li><a href="contact.html">Contact</a></li>
-          <li><a href="faq.html">FAQ</a></li>
-          <li><a href="shipping.html">Shipping</a></li>
-          <li><a href="returns.html">Returns &amp; Exchanges</a></li>
-          <li><a href="track-order.html">Track Order</a></li>
-          <li><a href="size-guide.html">Size Guide</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Company</h5>
-        <ul>
-          <li><a href="about.html">About Us</a></li>
-          <li><a href="custom-order.html">Custom Orders</a></li>
-          <li><a href="bulk-order.html">Bulk Orders</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5>Legal</h5>
-        <ul>
-          <li><a href="privacy.html">Privacy Policy</a></li>
-          <li><a href="terms.html">Terms &amp; Conditions</a></li>
-          <li><a href="returns.html">Returns Policy</a></li>
-        </ul>
-      </div>
+      <div><h5>Shop</h5><ul><li><a href="mollys.html">Mollys</a></li><li><a href="msamuels.html">M. Samuels</a></li><li><a href="shop.html">Shop All</a></li><li><a href="new-arrivals.html">New Arrivals</a></li></ul></div>
+      <div><h5>Customer Care</h5><ul><li><a href="contact.html">Contact</a></li><li><a href="faq.html">FAQ</a></li><li><a href="shipping.html">Shipping</a></li><li><a href="returns.html">Returns &amp; Exchanges</a></li><li><a href="track-order.html">Track Order</a></li><li><a href="size-guide.html">Size Guide</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="custom-order.html">Custom Orders</a></li><li><a href="bulk-order.html">Bulk Orders</a></li></ul></div>
+      <div><h5>Legal</h5><ul><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms &amp; Conditions</a></li><li><a href="returns.html">Returns Policy</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <span>© 2026 Molly Samuels. All rights reserved.</span>
@@ -189,52 +157,114 @@
   </div>
 </footer>
 
-<!-- ============ M. SAMUELS FLOATING DASHBOARD BUTTON (shown only on M. Samuels categories) ============ -->
-<button class="ms-menu-btn ms-menu-fab" id="catMsFab" type="button" aria-label="Browse uniform sections" style="display:none;">
-  <svg viewBox="0 0 24 24" fill="none">
-    <path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-  </svg>
-</button>
-
-<div class="ms-mega-overlay">
-  <div class="ms-menu-panel">
-    <button class="ms-mega-close" aria-label="Close menu">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"/></svg>
-    </button>
-    <div class="ms-mega-inner">
-      <div class="ms-mega-tabs">
-        <button class="ms-tab" data-tab="boys"><svg viewBox="0 0 40 40"></svg>boys school<br>uniform</button>
-        <button class="ms-tab" data-tab="girls"><svg viewBox="0 0 40 40"></svg>girls school<br>uniform</button>
-        <button class="ms-tab" data-tab="accessories"><svg viewBox="0 0 40 40"></svg>school uniform<br>accessories</button>
-        <button class="ms-tab" data-tab="bespoke"><svg viewBox="0 0 40 40"></svg>bespoke school<br>uniform</button>
-      </div>
-      <div class="ms-mega-footer">
-        <a href="about.html">about us</a>
-        <a href="#">embroidery &amp; printing</a>
-        <a href="#">solution to the pollution</a>
-        <a href="size-guide.html">size guides</a>
-        <a href="#">ethical trading policy</a>
-        <a href="contact.html">contact us</a>
-      </div>
-      <div class="ms-mega-auth">
-        <a href="register.html" class="register">REGISTER</a>
-        <a href="login.html" class="login">LOGIN</a>
-      </div>
-    </div>
-  </div>
-</div>
-
 <button class="chat-fab" aria-label="Chat with support">
   <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 11-3.6-6.7L21 4l-1 4.2A8 8 0 0121 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/></svg>
 </button>
 
-<div class="toast">
-  <svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-  <span>Added to cart</span>
-</div>
-
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
 <script src="js/main.js"></script>
-<script src="js/msamuels.js"></script>
-<script src="js/category.js"></script>
+<script>
+  // NOTE: real cart persistence doesn't exist yet — the 3 line items shown
+  // are the same fixed demo set used on cart.html. This proves the real
+  // order-creation pipeline (login -> real order -> real order_items row)
+  // rather than a fully dynamic cart, which is a separate future task.
+  const DEMO_LINE_ITEMS = [
+    { name: "School Blazer", price: 35500, product_id: "e47a1b84-16ed-4a25-986c-c8a5f4fcefdf", size_label: "30 in", color_name: "Navy" },
+    { name: "Emerald Wrap Gown", price: 26500, product_id: null, size_label: "M", color_name: null },
+    { name: "Boys Short Sleeve Shirt", price: 9800, product_id: null, size_label: "13 in", color_name: "White" },
+  ];
+  const DELIVERY_FEE = 2500;
+
+  let currentCustomer = null;
+
+  document.addEventListener("DOMContentLoaded", async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    if (session) {
+      const { data: profile } = await supabaseClient.from("customers").select("*").eq("id", session.user.id).single();
+      currentCustomer = { id: session.user.id, email: session.user.email, full_name: (profile && profile.full_name) || "", phone: (profile && profile.phone) || "" };
+
+      document.getElementById("loginGate").style.display = "none";
+      document.getElementById("coName").value = currentCustomer.full_name;
+      document.getElementById("coEmail").value = currentCustomer.email;
+      document.getElementById("coPhone").value = currentCustomer.phone;
+
+      const btn = document.getElementById("placeOrderBtn");
+      btn.disabled = false;
+      btn.textContent = "Place Order";
+      btn.addEventListener("click", placeOrder);
+    }
+    // If no session, the login gate (visible by default) and disabled
+    // button already communicate everything needed — no redirect.
+  });
+
+  async function placeOrder() {
+    const errorEl = document.getElementById("checkoutError");
+    const btn = document.getElementById("placeOrderBtn");
+    errorEl.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Placing order...";
+
+    const address = document.getElementById("coAddress").value.trim();
+    const city = document.getElementById("coCity").value.trim();
+    if (!address || !city) {
+      errorEl.textContent = "Please fill in your delivery address and city.";
+      errorEl.style.display = "block";
+      btn.disabled = false; btn.textContent = "Place Order";
+      return;
+    }
+
+    const subtotal = DEMO_LINE_ITEMS.reduce((sum, item) => sum + item.price, 0);
+    const total = subtotal + DELIVERY_FEE;
+    const orderNumber = `MS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const { data: order, error: orderError } = await supabaseClient.from("orders").insert({
+      order_number: orderNumber,
+      customer_id: currentCustomer.id,
+      status: "new",
+      subtotal, delivery_fee: DELIVERY_FEE, total,
+      currency: "NGN",
+      delivery_address: `${address}, ${city}, ${document.getElementById("coState").value.trim()}`,
+    }).select("id").single();
+
+    if (orderError) {
+      console.error("Order creation failed:", orderError);
+      errorEl.textContent = "Something went wrong placing your order. Please try again.";
+      errorEl.style.display = "block";
+      btn.disabled = false; btn.textContent = "Place Order";
+      return;
+    }
+
+    const itemRows = DEMO_LINE_ITEMS.map((item) => ({
+      order_id: order.id,
+      product_id: item.product_id,
+      size_label: item.size_label,
+      color_name: item.color_name,
+      quantity: 1,
+      unit_price: item.price,
+    }));
+    await supabaseClient.from("order_items").insert(itemRows);
+
+    // Fire the order confirmation + admin notification emails. This doesn't
+    // block checkout if it fails — the order itself is already saved either way.
+    try {
+      await supabaseClient.functions.invoke("send-order-email", {
+        body: { orderNumber, customerEmail: currentCustomer.email, customerName: currentCustomer.full_name, total },
+      });
+    } catch (emailError) {
+      console.error("Order email failed to send (order itself was still placed fine):", emailError);
+    }
+
+    window.location.href = `order-success.html?order=${orderNumber}`;
+  }
+</script>
 </body>
 </html>
