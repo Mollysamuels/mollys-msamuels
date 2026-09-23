@@ -56,38 +56,33 @@
 <div class="admin-content" style="max-width:900px;">
 
   <div class="admin-panel">
-    <div class="admin-panel-head"><h2>Basic Information</h2></div>
-    <div class="checkout-grid-2">
-      <div class="auth-field"><label>Product name</label><input type="text" placeholder="e.g. Boys Short Sleeve Shirt"></div>
-      <div class="auth-field"><label>SKU</label><input type="text" placeholder="e.g. BS3096"></div>
+    <div class="admin-panel-head"><h2 id="apfFormTitle">Add Product</h2></div>
+    <div class="auth-field"><label>Product name</label><input type="text" id="apfName" placeholder="e.g. Boys Short Sleeve Shirt"></div>
+    <div class="auth-field"><label>Description</label><textarea id="apfDescription" placeholder="A short paragraph shown to customers on the product page"></textarea></div>
+    <div class="auth-field">
+      <label>Product Details (one line each — fabric, fit, care, etc.)</label>
+      <textarea id="apfDetails" placeholder="Fabric: durable, easy-care blend&#10;Fit: true to size&#10;Care: machine washable"></textarea>
     </div>
-    <div class="auth-field"><label>Description</label><textarea placeholder="Product description shown to customers"></textarea></div>
     <div class="checkout-grid-2">
       <div class="auth-field">
         <label>Division</label>
         <select id="apfDivision"><option value="mollys">Mollys</option><option value="msamuels" selected>M. Samuels</option></select>
       </div>
-      <div class="auth-field"><label>Category</label><input type="text" placeholder="e.g. boys-shirts"></div>
-    </div>
-    <div class="checkout-grid-2">
-      <div class="auth-field"><label>Price — Nigeria (₦)</label><input type="number" placeholder="9800"></div>
-      <div class="auth-field"><label>Price — UK (£)</label><input type="number" placeholder="12.50"></div>
-    </div>
-    <div class="checkout-grid-2">
-      <div class="auth-field"><label>Stock quantity</label><input type="number" placeholder="120"></div>
-      <div class="auth-field" style="display:flex;gap:20px;align-items:flex-end;padding-bottom:10px;">
-        <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" style="width:auto;"> Featured</label>
-        <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" style="width:auto;"> New Arrival</label>
+      <div class="auth-field">
+        <label>Category</label>
+        <select id="apfCategory"><option value="">Loading categories…</option></select>
       </div>
     </div>
-  </div>
-
-  <div class="admin-panel">
-    <div class="admin-panel-head"><h2>Photos</h2></div>
-    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">Photos are uploaded to GitHub first (by the web developer, for consistent positioning and quality), then their file path is entered here.</p>
     <div class="checkout-grid-2">
-      <div class="auth-field"><label>Main image path</label><input type="text" placeholder="assets/images/mollys/prod-example-1.jpg"></div>
-      <div class="auth-field"><label>Alt image path (hover)</label><input type="text" placeholder="assets/images/mollys/prod-example-2.jpg"></div>
+      <div class="auth-field"><label>Price — Nigeria (₦)</label><input type="number" id="apfPriceNgn" placeholder="9800"></div>
+      <div class="auth-field"><label>Price — UK (£)</label><input type="number" id="apfPriceGbp" placeholder="12.50"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field" id="apfStockQtyField"><label>Stock quantity</label><input type="number" id="apfStockQty" placeholder="120"></div>
+      <div class="auth-field" style="display:flex;gap:20px;align-items:flex-end;padding-bottom:10px;">
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" id="apfFeatured" style="width:auto;"> Featured</label>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:400;"><input type="checkbox" id="apfNew" style="width:auto;"> New Arrival</label>
+      </div>
     </div>
   </div>
 
@@ -96,19 +91,14 @@
       <h2>Colours</h2>
       <button type="button" class="btn btn-outline" id="apfAddColor" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">+ Add Colour</button>
     </div>
-    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">Leave empty for a single-colour product — customers will see a plain "Other, please specify" option instead of swatches.</p>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">Leave empty for a single-colour product — customers will see a plain "Other, please specify" option instead of swatches. Photos for each colour are attached separately by the web developer.</p>
     <div id="apfColorList"></div>
     <template id="apfColorTemplate">
       <div class="apf-color-row">
         <div class="checkout-grid-2">
-          <div class="auth-field"><label>Colour name</label><input type="text" placeholder="e.g. Navy"></div>
-          <div class="auth-field"><label>Swatch colour</label><input type="color" value="#1B2A4A"></div>
+          <div class="auth-field"><label>Colour name</label><input type="text" class="apf-color-name" placeholder="e.g. Navy"></div>
+          <div class="auth-field"><label>Swatch colour</label><input type="color" class="apf-color-hex" value="#1B2A4A"></div>
         </div>
-        <div class="checkout-grid-2">
-          <div class="auth-field"><label>Front photo path</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-front.jpg"></div>
-          <div class="auth-field"><label>Back photo path (optional)</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-back.jpg"></div>
-        </div>
-        <div class="auth-field"><label>Model photo path (optional)</label><input type="text" placeholder="assets/images/msamuels/prod-blazer-navy-model.jpg"></div>
         <button type="button" class="apf-remove-color">Remove this colour</button>
         <hr>
       </div>
@@ -128,13 +118,13 @@
         <option value="onesize">One size</option>
       </select>
     </div>
-    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:12px;">Untick a size to mark it sold out. Customers will see it greyed out.</p>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:12px;">Untick a size to mark it sold out. Customers will see it greyed out. (For "One size" products, use the Stock quantity field above instead.)</p>
     <div id="apfSizeGrid" class="apf-size-grid"></div>
   </div>
 
+  <p id="apfSaveError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:14px;"></p>
   <div style="display:flex;gap:12px;padding-bottom:60px;">
-    <button type="button" class="btn btn-gold">Publish Product</button>
-    <button type="button" class="btn btn-outline" style="border-color:var(--line);color:var(--umber-deep);">Save as Draft</button>
+    <button type="button" class="btn btn-gold" id="apfSaveBtn">Publish Product</button>
   </div>
 
 </div>
