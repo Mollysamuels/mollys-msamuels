@@ -12,6 +12,7 @@
 
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/mollys.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -193,11 +194,21 @@
     <div class="section-head">
       <div>
         <h2>New arrivals</h2>
-        <p>Fresh across Mollys and M. Samuels</p>
+        <p>Fresh from Mollys</p>
       </div>
-      <a href="shop.html" class="view-all">View all →</a>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="mo-scroll-controls">
+          <button class="mo-scroll-btn" id="homeScrollPrev" aria-label="Scroll left">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="mo-scroll-btn" id="homeScrollNext" aria-label="Scroll right">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <a href="shop.html" class="view-all">View all →</a>
+      </div>
     </div>
-    <div class="product-grid" id="newArrivalsGrid">
+    <div class="mo-scroll-track" id="newArrivalsGrid">
 
       <div class="product-card">
         <div class="product-media">
@@ -497,8 +508,8 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   const supabaseClient = supabase.createClient(
-    "YOUR_SUPABASE_URL_HERE",
-    "YOUR_SUPABASE_ANON_KEY_HERE"
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 </script>
 <script src="js/homepage-live.js"></script>
