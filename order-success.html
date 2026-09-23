@@ -82,7 +82,7 @@
     <h1>Order Confirmed</h1>
     <p>Thank you — your order has been received and is being processed.</p>
     <div class="order-detail-card">
-      <div class="order-detail-row"><span>Order Number</span><strong>MS-20260921-0142</strong></div>
+      <div class="order-detail-row"><span>Order Number</span><strong id="orderNumberDisplay">MS-20260921-0142</strong></div>
       <div class="order-detail-row"><span>Customer</span><span>Jane Doe</span></div>
       <div class="order-detail-row"><span>Date</span><span>21 September 2026</span></div>
       <div class="order-detail-row"><span>Items</span><span>3</span></div>
@@ -163,5 +163,9 @@
 
 <script src="js/main.js"></script>
 
+<script>
+  const realOrder = new URLSearchParams(window.location.search).get("order");
+  if (realOrder) document.getElementById("orderNumberDisplay").textContent = realOrder;
+</script>
 </body>
 </html>
