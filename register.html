@@ -53,7 +53,7 @@
         </div>
         <button type="submit" class="btn btn-gold auth-submit" id="regBtn">Create Account</button>
       </form>
-      <p class="auth-switch">Already have an account? <a href="login.html">Log in</a></p>
+      <p class="auth-switch">Already have an account? <a href="login.html" id="loginLink">Log in</a></p>
     </div>
   </div>
 </div>
@@ -66,6 +66,11 @@
     "https://vdlwnflklclenavtpamp.supabase.co",
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
+
+  const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+  if (redirectParam) {
+    document.getElementById("loginLink").href = `login.html?redirect=${encodeURIComponent(redirectParam)}`;
+  }
 
   document.getElementById("registerForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -109,7 +114,7 @@
       });
     }
 
-    window.location.href = "account.html";
+    window.location.href = new URLSearchParams(window.location.search).get("redirect") || "shop.html";
   });
 </script>
 </body>
