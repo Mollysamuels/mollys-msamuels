@@ -88,11 +88,12 @@
 }
 .account-nav a:hover::after { opacity: 1; transform: translateX(0); }
 .account-nav a.active {
-  background: var(--umber-deep);
-  color: #fff;
-  border-color: var(--umber-deep);
+  background: var(--gold);
+  color: var(--umber-deep);
+  border-color: var(--gold);
+  box-shadow: 0 4px 14px rgba(244,217,0,0.35);
 }
-.account-nav a.active::after { opacity: 1; transform: translateX(0); color: var(--gold); }
+.account-nav a.active::after { opacity: 1; transform: translateX(0); color: var(--umber-deep); }
 .account-nav a.customer-logout { color: #B23A3A; border-color: #F0D8D8; }
 .account-nav a.customer-logout:hover { border-color: #B23A3A; background: #FDF3F3; }
 .account-panel {
