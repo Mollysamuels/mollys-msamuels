@@ -45,7 +45,7 @@
         </div>
         <button type="submit" class="btn btn-gold auth-submit" id="loginBtn">Log In</button>
       </form>
-      <p class="auth-switch">Don't have an account? <a href="register.html">Create one</a></p>
+      <p class="auth-switch">Don't have an account? <a href="register.html" id="createAccountLink">Create one</a></p>
     </div>
   </div>
 </div>
@@ -59,8 +59,12 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 
-  document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+  if (redirectParam) {
+    document.getElementById("createAccountLink").href = `register.html?redirect=${encodeURIComponent(redirectParam)}`;
+  }
+
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {    e.preventDefault();
     const errorEl = document.getElementById("loginError");
     const btn = document.getElementById("loginBtn");
     errorEl.style.display = "none";
@@ -79,7 +83,8 @@
       btn.disabled = false;
       return;
     }
-    window.location.href = "account.html";
+    const redirect = new URLSearchParams(window.location.search).get("redirect");
+    window.location.href = redirect || "account.html";
   });
 </script>
 </body>
