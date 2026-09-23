@@ -55,49 +55,114 @@
 </div>
 <div class="admin-content">
   <div class="admin-panel">
-    <div class="admin-panel-head">
-      <h2>Mollys Categories</h2>
-      <button type="button" class="btn btn-outline" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">+ Add Category</button>
+    <div class="admin-panel-head"><h2>Add New Category</h2></div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Category name</label><input type="text" id="acatName" placeholder="e.g. Blouses"></div>
+      <div class="auth-field">
+        <label>Division</label>
+        <select id="acatDivision"><option value="mollys">Mollys</option><option value="msamuels">M. Samuels</option></select>
+      </div>
     </div>
-    <table class="admin-table">
-      <tr><th>Category</th><th>Division</th><th>Status</th><th></th></tr>
-      <tr><td>Gowns</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Tops</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Heels</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Sandals</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Crocs</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Bags</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Jewellery</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Accessories</td><td>Mollys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-
-    </table>
+    <p id="acatError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
+    <button type="button" class="btn btn-gold" id="acatAddBtn" style="padding:9px 18px;font-size:0.85rem;">+ Add Category</button>
   </div>
 
   <div class="admin-panel">
-    <div class="admin-panel-head">
-      <h2>M. Samuels — Boys School Uniform</h2>
-      <button type="button" class="btn btn-outline" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">+ Add Category</button>
+    <div class="admin-panel-head"><h2>All Categories</h2></div>
+    <div class="admin-search-row">
+      <input type="text" id="acatSearch" placeholder="Search categories...">
+      <select id="acatFilter"><option value="">All Divisions</option><option value="mollys">Mollys</option><option value="msamuels">M. Samuels</option></select>
     </div>
     <table class="admin-table">
-      <tr><th>Category</th><th>Division</th><th>Status</th><th></th></tr>
-      <tr><td>Unisex Blazers</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Boys Shirts</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Boys Trousers & Shorts</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>T-Shirts & Polo Shirts</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Sweatshirts & Bottoms</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Knitwear & Fleeces</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>PE Shorts</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Boys Swimwear</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Socks & Sport Socks</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Jackets & Coats</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-<tr><td>Rugby Jerseys</td><td>M. Samuels — Boys</td><td><span class="admin-status-pill active">In Stock</span></td><td class="admin-table-actions"><button>Edit</button><button>Delete</button></td></tr>
-
+      <tr><th>Category</th><th>Division</th><th>Products</th><th></th></tr>
+      <tbody id="acatRows"><tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading categories…</td></tr></tbody>
     </table>
-    <p style="font-size:0.82rem;color:var(--ink-soft);margin-top:14px;">Girls, Accessories, and Bespoke category groups follow the same pattern — 42 M. Samuels categories total across all four sections.</p>
   </div>
 </div>
 </main>
 </div>
+<script>
+  let allCategories = [];
 
+  document.addEventListener("adminReady", async () => {
+    await loadCategories();
+    document.getElementById("acatSearch").addEventListener("input", renderCategories);
+    document.getElementById("acatFilter").addEventListener("change", renderCategories);
+    document.getElementById("acatAddBtn").addEventListener("click", addCategory);
+  });
+
+  function slugify(text) {
+    return text.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  }
+
+  async function loadCategories() {
+    const { data: cats, error } = await supabaseClient.from("categories").select("*").order("division").order("name");
+    const { data: products } = await supabaseClient.from("products").select("category_id");
+    if (error) {
+      document.getElementById("acatRows").innerHTML = `<tr><td colspan="4" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load categories.</td></tr>`;
+      console.error(error);
+      return;
+    }
+    allCategories = (cats || []).map((c) => ({
+      ...c,
+      productCount: (products || []).filter((p) => p.category_id === c.id).length,
+    }));
+    renderCategories();
+  }
+
+  function renderCategories() {
+    const search = document.getElementById("acatSearch").value.toLowerCase();
+    const division = document.getElementById("acatFilter").value;
+    const filtered = allCategories.filter((c) => {
+      if (division && c.division !== division) return false;
+      if (search && !c.name.toLowerCase().includes(search)) return false;
+      return true;
+    });
+
+    const tbody = document.getElementById("acatRows");
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:30px;">No categories found.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((c) => `
+      <tr>
+        <td>${c.name}</td>
+        <td>${c.division === "msamuels" ? "M. Samuels" : "Mollys"}</td>
+        <td>${c.productCount}</td>
+        <td class="admin-table-actions"><button class="acat-delete" data-id="${c.id}" data-count="${c.productCount}">Delete</button></td>
+      </tr>`).join("");
+
+    tbody.querySelectorAll(".acat-delete").forEach((btn) => {
+      btn.addEventListener("click", async () => {
+        if (parseInt(btn.dataset.count, 10) > 0) {
+          alert("This category still has products in it — move or delete those first before removing the category.");
+          return;
+        }
+        if (!confirm("Delete this category? This can't be undone.")) return;
+        const { error } = await supabaseClient.from("categories").delete().eq("id", btn.dataset.id);
+        if (error) { alert("Couldn't delete — please try again."); console.error(error); return; }
+        await loadCategories();
+      });
+    });
+  }
+
+  async function addCategory() {
+    const errorEl = document.getElementById("acatError");
+    errorEl.style.display = "none";
+    const name = document.getElementById("acatName").value.trim();
+    const division = document.getElementById("acatDivision").value;
+    if (!name) { errorEl.textContent = "Please enter a category name."; errorEl.style.display = "block"; return; }
+
+    const { error } = await supabaseClient.from("categories").insert({ name, slug: slugify(name), division });
+    if (error) {
+      errorEl.textContent = error.message.includes("duplicate") ? "A category with this name already exists." : "Something went wrong — please try again.";
+      errorEl.style.display = "block";
+      return;
+    }
+    document.getElementById("acatName").value = "";
+    await loadCategories();
+  }
+</script>
 </body>
 </html>
