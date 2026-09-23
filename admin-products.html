@@ -61,41 +61,20 @@
       <a href="admin-product-form.html" class="btn btn-gold" style="padding:9px 18px;font-size:0.85rem;">+ Add Product</a>
     </div>
     <div class="admin-search-row">
-      <input type="text" placeholder="Search products...">
-      <select><option>All Divisions</option><option>Mollys</option><option>M. Samuels</option></select>
-      <select><option>All Stock</option><option>In Stock</option><option>Low Stock</option></select>
+      <input type="text" id="apSearch" placeholder="Search products...">
+      <select id="apDivisionFilter"><option value="">All Divisions</option><option value="mollys">Mollys</option><option value="msamuels">M. Samuels</option></select>
     </div>
     <table class="admin-table">
-      <tr><th></th><th>Product</th><th>Division</th><th>Category</th><th>Price</th><th>Stock</th><th></th></tr>
-      <tr>
-        <td><img src="assets/images/msamuels/prod-blazer-navy-front.svg" alt=""></td>
-        <td>School Blazer</td><td>M. Samuels</td><td>Unisex Blazers</td><td>₦35,500</td>
-        <td><span class="admin-status-pill active">In Stock</span></td>
-        <td class="admin-table-actions"><button aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></button><button aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.5"/></svg></button></td>
-      </tr>
-      <tr>
-        <td><img src="assets/images/mollys/prod-gown-1.svg" alt=""></td>
-        <td>Emerald Wrap Gown</td><td>Mollys</td><td>Gowns</td><td>₦26,500</td>
-        <td><span class="admin-status-pill active">In Stock</span></td>
-        <td class="admin-table-actions"><button aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></button><button aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.5"/></svg></button></td>
-      </tr>
-      <tr>
-        <td><img src="assets/images/msamuels/prod-labcoat-1.svg" alt=""></td>
-        <td>Classic Lab Coat</td><td>M. Samuels</td><td>Aprons &amp; Lab Coats</td><td>₦19,500</td>
-        <td><span class="admin-status-pill low">Low Stock</span></td>
-        <td class="admin-table-actions"><button aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></button><button aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.5"/></svg></button></td>
-      </tr>
-      <tr>
-        <td><img src="assets/images/mollys/prod-heels-1.svg" alt=""></td>
-        <td>Ankle-Strap Heels</td><td>Mollys</td><td>Heels</td><td>₦17,800</td>
-        <td><span class="admin-status-pill active">In Stock</span></td>
-        <td class="admin-table-actions"><button aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></button><button aria-label="Delete"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.5"/></svg></button></td>
-      </tr>
+      <tr><th>Product</th><th>Division</th><th>Price (₦)</th><th>Stock</th><th>Status</th><th></th></tr>
+      <tbody id="apProductRows">
+        <tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading products…</td></tr>
+      </tbody>
     </table>
   </div>
 
 </div>
 </main>
 </div>
+<script src="js/admin-products-list.js"></script>
 </body>
 </html>
