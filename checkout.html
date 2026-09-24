@@ -171,7 +171,7 @@
 <script>
   // Reads the real, actual cart — same cart shown on cart.html, built by
   // js/main.js's getCart(). Whatever's really in the cart is what checks out.
-  const DELIVERY_FEE = 2500;
+  let DELIVERY_FEE = 2500; // real value loaded from admin settings on page load
   const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
   let currentCustomer = null;
@@ -193,11 +193,15 @@
       `<div class="summary-row"><span>${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}</span><span>₦${(item.price * item.qty).toLocaleString()}</span></div>`
     ).join("");
 
+    document.getElementById("coDeliveryFee").textContent = `₦${DELIVERY_FEE.toLocaleString()}`;
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     totalEl.textContent = `₦${(subtotal + DELIVERY_FEE).toLocaleString()}`;
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
+    const { data: settings } = await supabaseClient.from("site_settings").select("delivery_fee_ngn").eq("id", 1).single();
+    if (settings) DELIVERY_FEE = settings.delivery_fee_ngn;
+
     renderSummary();
 
     const { data: { session } } = await supabaseClient.auth.getSession();
