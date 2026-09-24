@@ -19,11 +19,26 @@
       .eq("id", session.user.id)
       .single();
 
+    let finalProfile = profile;
+
+    // First real login after a signup that couldn't save the profile yet
+    // (no session existed at that moment) — create it now, using the
+    // name/phone that were safely tucked into the account's own metadata.
+    if (!profile) {
+      const meta = session.user.user_metadata || {};
+      const { data: created } = await supabaseClient
+        .from("customers")
+        .insert({ id: session.user.id, full_name: meta.full_name || "", phone: meta.phone || "" })
+        .select()
+        .single();
+      finalProfile = created;
+    }
+
     window.currentCustomer = {
       id: session.user.id,
       email: session.user.email,
-      full_name: (profile && profile.full_name) || "",
-      phone: (profile && profile.phone) || "",
+      full_name: (finalProfile && finalProfile.full_name) || "",
+      phone: (finalProfile && finalProfile.phone) || "",
     };
 
     document.dispatchEvent(new CustomEvent("customerReady", { detail: window.currentCustomer }));
