@@ -163,10 +163,9 @@
      Project URL and anon public key from Settings > Data API before uploading. -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  const supabaseClient = supabase.createClient(
-    "https://vdlwnflklclenavtpamp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
-  );
+  const SUPABASE_URL = "https://vdlwnflklclenavtpamp.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
 <script src="js/main.js"></script>
 <script>
@@ -281,12 +280,23 @@
 
     clearCart(); // the order is placed — empty the cart, same as any real store
 
-    // Fire the order confirmation + admin notification emails. This doesn't
-    // block checkout if it fails — the order itself is already saved either way.
+    // Fire the order confirmation + admin notification emails. Using a
+    // direct fetch here (instead of supabase.functions.invoke) so we can
+    // see and control exactly what's sent — this doesn't block checkout if
+    // it fails, the order itself is already saved either way.
     try {
-      await supabaseClient.functions.invoke("send-order-email", {
-        body: { orderNumber, customerEmail: currentCustomer.email, customerName: currentCustomer.full_name, total },
+      const emailPayload = { orderNumber, customerEmail: currentCustomer.email, customerName: currentCustomer.full_name, total };
+      console.log("Sending order email with payload:", emailPayload);
+
+      const emailRes = await fetch(`${SUPABASE_URL}/functions/v1/send-order-email`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify(emailPayload),
       });
+      console.log("Order email function responded with status:", emailRes.status);
     } catch (emailError) {
       console.error("Order email failed to send (order itself was still placed fine):", emailError);
     }
