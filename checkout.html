@@ -237,7 +237,7 @@
 
     if (orderError) {
       console.error("Order creation failed:", orderError);
-      errorEl.textContent = "Something went wrong placing your order. Please try again.";
+      errorEl.textContent = `Something went wrong: ${orderError.message}`;
       errorEl.style.display = "block";
       btn.disabled = false; btn.textContent = "Place Order";
       return;
@@ -252,6 +252,16 @@
       unit_price: item.price,
     }));
     await supabaseClient.from("order_items").insert(itemRows);
+
+    // Fire the order confirmation + admin notification emails. This doesn't
+    // block checkout if it fails — the order itself is already saved either way.
+    try {
+      await supabaseClient.functions.invoke("send-order-email", {
+        body: { orderNumber, customerEmail: currentCustomer.email, customerName: currentCustomer.full_name, total },
+      });
+    } catch (emailError) {
+      console.error("Order email failed to send (order itself was still placed fine):", emailError);
+    }
 
     window.location.href = `order-success.html?order=${orderNumber}`;
   }
