@@ -93,7 +93,10 @@
     btn.textContent = "Creating account...";
     btn.disabled = true;
 
-    const { data, error } = await supabaseClient.auth.signUp({ email, password });
+    const { data, error } = await supabaseClient.auth.signUp({
+      email, password,
+      options: { data: { full_name: name, phone: phone } },
+    });
 
     if (error) {
       console.error("Supabase signUp error:", error);
@@ -106,14 +109,10 @@
       return;
     }
 
-    // Save the extra profile info (name, phone) alongside the new login.
-    if (data.user) {
-      await supabaseClient.from("customers").insert({
-        id: data.user.id,
-        full_name: name,
-        phone: phone,
-      });
-    }
+    // Name/phone are tucked into the account's own metadata above — the real
+    // customers table row gets created safely on first real login instead
+    // (see js/customer-auth.js), since that's the moment a real session
+    // actually exists to satisfy the security rule protecting that table.
 
     // If email confirmation is required, there's no real session yet —
     // sending them to a protected page now would just look broken.
