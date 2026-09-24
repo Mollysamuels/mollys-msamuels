@@ -123,11 +123,9 @@
 
     <div class="cart-summary">
       <h3>Order Summary</h3>
-      <div class="summary-row"><span>School Blazer</span><span>₦35,500</span></div>
-      <div class="summary-row"><span>Emerald Wrap Gown</span><span>₦26,500</span></div>
-      <div class="summary-row"><span>Boys Short Sleeve Shirt</span><span>₦9,800</span></div>
-      <div class="summary-row"><span>Delivery</span><span>₦2,500</span></div>
-      <div class="summary-row total"><span>Total</span><span>₦74,300</span></div>
+      <div id="coSummaryItems"></div>
+      <div class="summary-row"><span>Delivery</span><span id="coDeliveryFee">₦2,500</span></div>
+      <div class="summary-row total"><span>Total</span><span id="coTotal">₦0</span></div>
       <button class="btn btn-gold" style="width:100%;justify-content:center;margin-top:18px;" id="placeOrderBtn" disabled>Log in to Pay</button>
     </div>
   </div>
@@ -172,20 +170,37 @@
 </script>
 <script src="js/main.js"></script>
 <script>
-  // NOTE: real cart persistence doesn't exist yet — the 3 line items shown
-  // are the same fixed demo set used on cart.html. This proves the real
-  // order-creation pipeline (login -> real order -> real order_items row)
-  // rather than a fully dynamic cart, which is a separate future task.
-  const DEMO_LINE_ITEMS = [
-    { name: "School Blazer", price: 35500, product_id: "e47a1b84-16ed-4a25-986c-c8a5f4fcefdf", size_label: "30 in", color_name: "Navy" },
-    { name: "Emerald Wrap Gown", price: 26500, product_id: null, size_label: "M", color_name: null },
-    { name: "Boys Short Sleeve Shirt", price: 9800, product_id: null, size_label: "13 in", color_name: "White" },
-  ];
+  // Reads the real, actual cart — same cart shown on cart.html, built by
+  // js/main.js's getCart(). Whatever's really in the cart is what checks out.
   const DELIVERY_FEE = 2500;
+  const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
   let currentCustomer = null;
 
+  function renderSummary() {
+    const cart = getCart();
+    const itemsEl = document.getElementById("coSummaryItems");
+    const totalEl = document.getElementById("coTotal");
+    const placeBtn = document.getElementById("placeOrderBtn");
+
+    if (!cart.length) {
+      itemsEl.innerHTML = `<p style="font-size:0.85rem;color:var(--ink-soft);">Your cart is empty. <a href="shop.html" style="color:var(--umber-deep);text-decoration:underline;">Go shopping →</a></p>`;
+      totalEl.textContent = "₦0";
+      if (placeBtn) placeBtn.disabled = true;
+      return;
+    }
+
+    itemsEl.innerHTML = cart.map((item) =>
+      `<div class="summary-row"><span>${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}</span><span>₦${(item.price * item.qty).toLocaleString()}</span></div>`
+    ).join("");
+
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+    totalEl.textContent = `₦${(subtotal + DELIVERY_FEE).toLocaleString()}`;
+  }
+
   document.addEventListener("DOMContentLoaded", async () => {
+    renderSummary();
+
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (session) {
@@ -198,8 +213,7 @@
       document.getElementById("coPhone").value = currentCustomer.phone;
 
       const btn = document.getElementById("placeOrderBtn");
-      btn.disabled = false;
-      btn.textContent = "Place Order";
+      if (getCart().length) { btn.disabled = false; btn.textContent = "Place Order"; }
       btn.addEventListener("click", placeOrder);
     }
     // If no session, the login gate (visible by default) and disabled
@@ -210,6 +224,14 @@
     const errorEl = document.getElementById("checkoutError");
     const btn = document.getElementById("placeOrderBtn");
     errorEl.style.display = "none";
+
+    const cart = getCart();
+    if (!cart.length) {
+      errorEl.textContent = "Your cart is empty.";
+      errorEl.style.display = "block";
+      return;
+    }
+
     btn.disabled = true;
     btn.textContent = "Placing order...";
 
@@ -222,7 +244,7 @@
       return;
     }
 
-    const subtotal = DEMO_LINE_ITEMS.reduce((sum, item) => sum + item.price, 0);
+    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
     const total = subtotal + DELIVERY_FEE;
     const orderNumber = `MS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
 
@@ -243,15 +265,21 @@
       return;
     }
 
-    const itemRows = DEMO_LINE_ITEMS.map((item) => ({
+    // A cart item's product_id might not be a real UUID (e.g. it came from
+    // an older placeholder-style card) — save it as null in that case rather
+    // than letting one bad value silently break every item in the order.
+    const itemRows = cart.map((item) => ({
       order_id: order.id,
-      product_id: item.product_id,
-      size_label: item.size_label,
-      color_name: item.color_name,
-      quantity: 1,
+      product_id: UUID_PATTERN.test(item.product_id) ? item.product_id : null,
+      size_label: item.size || null,
+      color_name: item.color || null,
+      quantity: item.qty,
       unit_price: item.price,
     }));
-    await supabaseClient.from("order_items").insert(itemRows);
+    const { error: itemsError } = await supabaseClient.from("order_items").insert(itemRows);
+    if (itemsError) console.error("Order items failed to save (order itself was still placed):", itemsError);
+
+    clearCart(); // the order is placed — empty the cart, same as any real store
 
     // Fire the order confirmation + admin notification emails. This doesn't
     // block checkout if it fails — the order itself is already saved either way.
