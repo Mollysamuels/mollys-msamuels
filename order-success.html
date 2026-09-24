@@ -83,11 +83,11 @@
     <p>Thank you — your order has been received and is being processed.</p>
     <div class="order-detail-card">
       <div class="order-detail-row"><span>Order Number</span><strong id="orderNumberDisplay">MS-20260921-0142</strong></div>
-      <div class="order-detail-row"><span>Customer</span><span>Jane Doe</span></div>
-      <div class="order-detail-row"><span>Date</span><span>21 September 2026</span></div>
-      <div class="order-detail-row"><span>Items</span><span>3</span></div>
-      <div class="order-detail-row"><span>Amount</span><span>₦74,300</span></div>
-      <div class="order-detail-row"><span>Delivery</span><span>Abuja, Nigeria</span></div>
+      <div class="order-detail-row"><span>Customer</span><span id="orderCustomerDisplay">—</span></div>
+      <div class="order-detail-row"><span>Date</span><span id="orderDateDisplay">—</span></div>
+      <div class="order-detail-row"><span>Items</span><span id="orderItemsDisplay">—</span></div>
+      <div class="order-detail-row"><span>Amount</span><span id="orderAmountDisplay">—</span></div>
+      <div class="order-detail-row"><span>Delivery</span><span id="orderDeliveryDisplay">—</span></div>
     </div>
     <div class="actions">
       <a href="track-order.html" class="btn btn-gold">Track Order</a>
@@ -162,10 +162,40 @@
 </div>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
 
 <script>
-  const realOrder = new URLSearchParams(window.location.search).get("order");
-  if (realOrder) document.getElementById("orderNumberDisplay").textContent = realOrder;
+  const orderNumber = new URLSearchParams(window.location.search).get("order");
+
+  if (orderNumber) {
+    document.getElementById("orderNumberDisplay").textContent = orderNumber;
+    loadRealOrder(orderNumber);
+  }
+
+  async function loadRealOrder(orderNumber) {
+    const { data: order, error } = await supabaseClient
+      .from("orders")
+      .select("*, order_items(*), customers(full_name)")
+      .eq("order_number", orderNumber)
+      .single();
+
+    if (error || !order) {
+      console.error("Couldn't load this order's details:", error);
+      return; // leaves the placeholder dashes showing rather than breaking the page
+    }
+
+    document.getElementById("orderCustomerDisplay").textContent = (order.customers && order.customers.full_name) || "—";
+    document.getElementById("orderDateDisplay").textContent = new Date(order.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+    document.getElementById("orderItemsDisplay").textContent = (order.order_items || []).length;
+    document.getElementById("orderAmountDisplay").textContent = `₦${Number(order.total).toLocaleString()}`;
+    document.getElementById("orderDeliveryDisplay").textContent = order.delivery_address || "—";
+  }
 </script>
 </body>
 </html>
