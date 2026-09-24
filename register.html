@@ -95,7 +95,13 @@
 
     const { data, error } = await supabaseClient.auth.signUp({
       email, password,
-      options: { data: { full_name: name, phone: phone } },
+      options: {
+        data: { full_name: name, phone: phone },
+        // Send them back to wherever they actually came from (e.g. checkout)
+        // once they click the confirmation link in their email — not just
+        // the generic homepage.
+        emailRedirectTo: `https://mollysamuels.com/${redirectParam || "account.html"}`,
+      },
     });
 
     if (error) {
