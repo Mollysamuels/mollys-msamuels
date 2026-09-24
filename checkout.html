@@ -207,7 +207,23 @@
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (session) {
-      const { data: profile } = await supabaseClient.from("customers").select("*").eq("id", session.user.id).single();
+      let { data: profile } = await supabaseClient.from("customers").select("*").eq("id", session.user.id).single();
+
+      // Same fix as account.html's guard: if this is the very first time
+      // this session has a real profile row (e.g. they came straight to
+      // checkout after confirming email, without ever visiting account.html
+      // first), create it now — this is exactly what was missing and
+      // causing the foreign key error on orders.customer_id.
+      if (!profile) {
+        const meta = session.user.user_metadata || {};
+        const { data: created } = await supabaseClient
+          .from("customers")
+          .insert({ id: session.user.id, full_name: meta.full_name || "", phone: meta.phone || "" })
+          .select()
+          .single();
+        profile = created;
+      }
+
       currentCustomer = { id: session.user.id, email: session.user.email, full_name: (profile && profile.full_name) || "", phone: (profile && profile.phone) || "" };
 
       document.getElementById("loginGate").style.display = "none";
