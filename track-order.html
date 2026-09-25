@@ -77,25 +77,21 @@
   </nav>
 </header>
 <div class="wrap">
-  <div class="page-hero" style="text-align:center;"><h1>Track Your Order</h1><p style="margin:8px auto 0;">Enter your order number and email or phone to see its status.</p></div>
+  <div class="page-hero" style="text-align:center;"><h1>Track Your Order</h1><p style="margin:8px auto 0;">Enter your order number and phone number to see its status.</p></div>
   <div class="track-form">
-    <form onsubmit="return false;">
-      <div class="auth-field" style="text-align:left;"><label>Order number</label><input type="text" placeholder="MS-20260921-0142"></div>
-      <div class="auth-field" style="text-align:left;"><label>Email or phone</label><input type="text"></div>
-      <button type="submit" class="btn btn-gold auth-submit">Track Order</button>
+    <form id="trackForm">
+      <div class="auth-field" style="text-align:left;"><label>Order number</label><input type="text" id="trackOrderNumber" placeholder="MS-20260921-0142" required></div>
+      <div class="auth-field" style="text-align:left;"><label>Phone number</label><input type="text" id="trackContact" required></div>
+      <p id="trackError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
+      <button type="submit" class="btn btn-gold auth-submit" id="trackSubmitBtn">Track Order</button>
     </form>
   </div>
 
-  <div class="track-status">
-    <h3 style="text-align:center;font-family:var(--font-display);font-style:italic;font-weight:500;margin-bottom:6px;">Order MS-20260921-0142</h3>
-    <p style="text-align:center;color:var(--ink-soft);font-size:0.88rem;">Currently: Shipped</p>
-    <div class="track-timeline">
-      <div class="track-step done"><span class="dot"></span><span>Received</span></div>
-      <div class="track-step done"><span class="dot"></span><span>Processing</span></div>
-      <div class="track-step done"><span class="dot"></span><span>Ready</span></div>
-      <div class="track-step active"><span class="dot"></span><span>Shipped</span></div>
-      <div class="track-step"><span class="dot"></span><span>Delivered</span></div>
-    </div>
+  <div class="track-status" id="trackStatus" style="display:none;">
+    <h3 style="text-align:center;font-family:var(--font-display);font-style:italic;font-weight:500;margin-bottom:6px;" id="trackOrderTitle"></h3>
+    <p style="text-align:center;color:var(--ink-soft);font-size:0.88rem;" id="trackStatusLine"></p>
+    <div class="track-timeline" id="trackTimeline"></div>
+    <p id="trackTrackingRow" style="text-align:center;font-size:0.85rem;color:var(--ink-soft);margin-top:16px;display:none;"></p>
   </div>
 </div>
 <footer class="site-footer">
@@ -165,6 +161,73 @@
 </div>
 
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  const STATUS_STEPS = ["new", "processing", "preparing", "shipped", "delivered"];
+  const STEP_LABELS = { new: "Received", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered" };
+
+  document.getElementById("trackForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const errorEl = document.getElementById("trackError");
+    const btn = document.getElementById("trackSubmitBtn");
+    errorEl.style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Searching...";
+
+    const orderNumber = document.getElementById("trackOrderNumber").value.trim();
+    const contact = document.getElementById("trackContact").value.trim();
+
+    const { data: order, error } = await supabaseClient
+      .from("orders")
+      .select("*, customers(full_name, phone)")
+      .eq("order_number", orderNumber)
+      .single();
+
+    btn.disabled = false;
+    btn.textContent = "Track Order";
+
+    // Basic verification: the phone entered must match the order's own
+    // customer phone — prevents anyone tracking any order by guessing just
+    // the order number. (Email isn't stored outside Supabase's own auth
+    // system, so phone is the only field we can actually check against here.)
+    const matchesContact = order && order.customers && order.customers.phone === contact;
+
+    if (error || !order || !matchesContact) {
+      errorEl.textContent = "We couldn't find an order matching that order number and phone number.";
+      errorEl.style.display = "block";
+      document.getElementById("trackStatus").style.display = "none";
+      return;
+    }
+
+    document.getElementById("trackStatus").style.display = "block";
+    document.getElementById("trackOrderTitle").textContent = `Order ${order.order_number}`;
+
+    if (order.status === "cancelled") {
+      document.getElementById("trackStatusLine").textContent = "This order was cancelled.";
+      document.getElementById("trackTimeline").innerHTML = "";
+    } else {
+      const currentIndex = STATUS_STEPS.indexOf(order.status);
+      document.getElementById("trackStatusLine").textContent = `Currently: ${STEP_LABELS[order.status] || order.status}`;
+      document.getElementById("trackTimeline").innerHTML = STATUS_STEPS.map((step, i) => {
+        const cls = i < currentIndex ? "done" : i === currentIndex ? "active" : "";
+        return `<div class="track-step ${cls}"><span class="dot"></span><span>${STEP_LABELS[step]}</span></div>`;
+      }).join("");
+    }
+
+    const trackingRow = document.getElementById("trackTrackingRow");
+    if (order.tracking_number) {
+      trackingRow.textContent = `Tracking number: ${order.tracking_number}`;
+      trackingRow.style.display = "block";
+    } else {
+      trackingRow.style.display = "none";
+    }
+  });
+</script>
 
 </body>
 </html>
