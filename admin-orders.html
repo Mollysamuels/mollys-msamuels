@@ -61,8 +61,8 @@
       <select id="aoStatusFilter"><option value="">All Statuses</option><option value="new">New</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="preparing">Preparing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select>
     </div>
     <table class="admin-table">
-      <tr><th>Order</th><th>Items</th><th>Amount</th><th>Status</th><th>Date</th><th></th></tr>
-      <tbody id="aoRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading orders…</td></tr></tbody>
+      <tr><th>Order</th><th>Items</th><th>Amount</th><th>Status</th><th>Tracking #</th><th>Date</th><th></th></tr>
+      <tbody id="aoRows"><tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading orders…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -84,7 +84,7 @@
       .select("*, order_items(id)")
       .order("created_at", { ascending: false });
     if (error) {
-      document.getElementById("aoRows").innerHTML = `<tr><td colspan="6" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load orders.</td></tr>`;
+      document.getElementById("aoRows").innerHTML = `<tr><td colspan="7" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load orders.</td></tr>`;
       console.error(error);
       return;
     }
@@ -103,7 +103,7 @@
 
     const tbody = document.getElementById("aoRows");
     if (!filtered.length) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">No orders found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:30px;">No orders found.</td></tr>`;
       return;
     }
 
@@ -117,6 +117,9 @@
             ${STATUS_OPTIONS.map((s) => `<option value="${s}" ${s === o.status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}
           </select>
         </td>
+        <td>
+          <input type="text" class="ao-tracking-input" data-id="${o.id}" value="${o.tracking_number || ""}" placeholder="Add tracking #" style="padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:0.78rem;width:110px;">
+        </td>
         <td>${new Date(o.created_at).toLocaleDateString()}</td>
         <td class="admin-table-actions"></td>
       </tr>`).join("");
@@ -125,6 +128,13 @@
       sel.addEventListener("change", async () => {
         const { error } = await supabaseClient.from("orders").update({ status: sel.value }).eq("id", sel.dataset.id);
         if (error) { alert("Couldn't update status — please try again."); console.error(error); }
+      });
+    });
+
+    tbody.querySelectorAll(".ao-tracking-input").forEach((input) => {
+      input.addEventListener("blur", async () => {
+        const { error } = await supabaseClient.from("orders").update({ tracking_number: input.value.trim() || null }).eq("id", input.dataset.id);
+        if (error) { alert("Couldn't save tracking number — please try again."); console.error(error); }
       });
     });
   }
