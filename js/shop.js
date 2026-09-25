@@ -78,7 +78,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         if (card) addToCartFromCard(card);
       });
     });
-    grid.querySelectorAll(".wish-btn").forEach((btn) => btn.addEventListener("click", (e) => { e.preventDefault(); btn.classList.toggle("active"); }));
+    grid.querySelectorAll(".wish-btn").forEach((btn) => btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = btn.closest(".product-card");
+      if (card) toggleWishlistFromCard(card, btn);
+    }));
+    wireCardImageToggle(grid);
   }
 
   let currentDivision = "mollys";
