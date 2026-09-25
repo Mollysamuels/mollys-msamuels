@@ -63,8 +63,13 @@ function wireCardInteractions(scope) {
   scope.querySelectorAll(".wish-btn").forEach((btn) => {
     if (btn.dataset.wired) return;
     btn.dataset.wired = "1";
-    btn.addEventListener("click", (e) => { e.preventDefault(); btn.classList.toggle("active"); });
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = btn.closest(".product-card");
+      if (card) toggleWishlistFromCard(card, btn);
+    });
   });
+  wireCardImageToggle(scope);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
