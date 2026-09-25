@@ -88,6 +88,15 @@
       <div class="order-detail-row"><span>Items</span><span id="orderItemsDisplay">—</span></div>
       <div class="order-detail-row"><span>Amount</span><span id="orderAmountDisplay">—</span></div>
       <div class="order-detail-row"><span>Delivery</span><span id="orderDeliveryDisplay">—</span></div>
+      <div class="order-detail-row" id="orderTrackingRow" style="display:none;">
+        <span>Tracking Number</span>
+        <span style="display:flex;align-items:center;gap:8px;">
+          <strong id="orderTrackingDisplay"></strong>
+          <button type="button" id="copyTrackingBtn" aria-label="Copy tracking number" style="background:none;border:none;cursor:pointer;color:var(--umber-deep);padding:2px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M5 15V5a2 2 0 012-2h10" stroke="currentColor" stroke-width="1.6"/></svg>
+          </button>
+        </span>
+      </div>
     </div>
     <div class="actions">
       <a href="track-order.html" class="btn btn-gold">Track Order</a>
@@ -195,7 +204,27 @@
     document.getElementById("orderItemsDisplay").textContent = (order.order_items || []).length;
     document.getElementById("orderAmountDisplay").textContent = `₦${Number(order.total).toLocaleString()}`;
     document.getElementById("orderDeliveryDisplay").textContent = order.delivery_address || "—";
+
+    if (order.tracking_number) {
+      document.getElementById("orderTrackingRow").style.display = "flex";
+      document.getElementById("orderTrackingDisplay").textContent = order.tracking_number;
+    }
   }
+
+  document.getElementById("copyTrackingBtn")?.addEventListener("click", async () => {
+    const text = document.getElementById("orderTrackingDisplay").textContent;
+    try {
+      await navigator.clipboard.writeText(text);
+      const toast = document.querySelector(".toast");
+      if (toast) {
+        toast.querySelector("span").textContent = "Tracking number copied";
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 2000);
+      }
+    } catch (e) {
+      console.error("Clipboard copy failed:", e);
+    }
+  });
 </script>
 </body>
 </html>
