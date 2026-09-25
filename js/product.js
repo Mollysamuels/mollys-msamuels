@@ -468,4 +468,8 @@ document.addEventListener("DOMContentLoaded", async function () {
   showFrame(0);
   startAutoCycle();
 
+  // Everything above is now correctly filled in (real or fallback) —
+  // safe to actually show the page now, no more flash of the wrong product.
+  document.body.style.visibility = "visible";
+
 });
