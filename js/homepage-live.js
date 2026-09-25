@@ -10,15 +10,15 @@ function renderHomeCard(p) {
   const swatches = (p.product_colors || []).slice(0, 3)
     .map((c) => `<span style="background:${c.hex_code || '#ccc'}"></span>`).join("");
   const fallbackImg = p.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
-  const firstColor = (p.product_colors && p.product_colors[0]) || null;
-  const img = (firstColor && firstColor.front_image_url) || fallbackImg;
+  const img = p.main_image_url || fallbackImg;
+  const altImg = p.alt_image_url || img;
 
   return `
     <div class="product-card">
       <div class="product-media">
         <span class="product-tag">New</span>
         <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
-        <a href="${link}"><img class="main" src="${img}" alt="${p.name}"><img class="alt" src="${img}" alt=""></a>
+        <a href="${link}"><img class="main" src="${img}" alt="${p.name}"><img class="alt" src="${altImg}" alt=""></a>
         <button class="quick-add">Quick add</button>
       </div>
       <div class="product-info">
