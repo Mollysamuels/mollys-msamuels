@@ -38,6 +38,63 @@ function updateCartBadges() {
 }
 document.addEventListener("DOMContentLoaded", updateCartBadges);
 
+// ---------- Real, persistent wishlist (shared by every page, same pattern as the cart) ----------
+const WISHLIST_KEY = "molly_samuels_wishlist";
+
+function getWishlist() {
+  try { return JSON.parse(localStorage.getItem(WISHLIST_KEY)) || []; }
+  catch (e) { return []; }
+}
+function saveWishlist(list) { localStorage.setItem(WISHLIST_KEY, JSON.stringify(list)); }
+function isInWishlist(productId) { return getWishlist().some((w) => w.product_id === productId); }
+function toggleWishlist(item) {
+  const list = getWishlist();
+  const existingIndex = list.findIndex((w) => w.product_id === item.product_id);
+  if (existingIndex > -1) { list.splice(existingIndex, 1); }
+  else { list.push(item); }
+  saveWishlist(list);
+  return existingIndex === -1; // true = just added, false = just removed
+}
+function removeFromWishlist(productId) {
+  saveWishlist(getWishlist().filter((w) => w.product_id !== productId));
+}
+
+// Reads a card the same way addToCartFromCard does, and toggles it in the
+// real wishlist — used by every heart/wish-btn site-wide.
+function toggleWishlistFromCard(card, btn) {
+  const link = card.querySelector("a[href*='product.html']");
+  const href = link ? link.getAttribute("href") : "";
+  const cardParams = new URLSearchParams(href.split("?")[1] || "");
+  const productId = cardParams.get("id") || cardParams.get("item") || (card.querySelector("h4")?.textContent || "product");
+  const name = card.querySelector(".product-info h4, h4")?.textContent.trim() || "Product";
+  const priceText = card.querySelector(".product-price .now, .now")?.textContent || "₦0";
+  const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
+  const img = card.querySelector(".product-media img.main, img.main")?.src || "";
+  const link_href = link ? link.getAttribute("href") : "product.html";
+
+  const wasAdded = toggleWishlist({ product_id: productId, name, price, img, link: link_href });
+  btn.classList.toggle("active", wasAdded);
+}
+
+
+// Click a product card's image to preview its alt photo (same effect as
+// hover) — doesn't navigate, since the image is also the product link.
+// Works everywhere: static cards and every dynamically-rendered card too.
+function wireCardImageToggle(scope) {
+  (scope || document).querySelectorAll(".product-media a").forEach((link) => {
+    if (link.dataset.toggleWired) return;
+    link.dataset.toggleWired = "1";
+    link.addEventListener("click", (e) => {
+      const card = link.closest(".product-card");
+      if (card && card.querySelector("img.alt")) {
+        e.preventDefault();
+        card.classList.toggle("show-alt");
+      }
+    });
+  });
+}
+document.addEventListener("DOMContentLoaded", () => wireCardImageToggle());
+
 // Reads whatever a product card actually displays (works for real Supabase
 // products and static placeholder cards alike) and saves a real cart line.
 // Used by every "Quick add" button site-wide.
@@ -179,13 +236,16 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ---------- Wishlist heart toggle ---------- */
+  /* ---------- Wishlist heart toggle: real, persistent ---------- */
   document.querySelectorAll(".wish-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      btn.classList.toggle("active");
-      if (btn.classList.contains("active")) {
-        showToast("Saved to wishlist");
+      const card = btn.closest(".product-card");
+      if (card) {
+        toggleWishlistFromCard(card, btn);
+        showToast(btn.classList.contains("active") ? "Saved to wishlist" : "Removed from wishlist");
+      } else {
+        btn.classList.toggle("active"); // no card context (e.g. product.html) — visual only
       }
     });
   });
