@@ -1,55 +1,19 @@
 // ============================================
 // PRODUCT PAGE JAVASCRIPT
 // ============================================
+// Every product — including the former "blazer demo" — now works the same
+// way: one product-level main photo + one alt photo (never tied to colour),
+// colours are simple name+swatch order-instructions with no images of their
+// own, and sizing works exactly as it already did. This removes the old
+// blazer-only special case entirely, and makes the "editing wipes the photo"
+// bug structurally impossible, since colour edits never touch image fields
+// at all anymore.
 
 document.addEventListener("DOMContentLoaded", async function () {
 
-  /* ---------- Product data ----------
-     Three ways this page gets its product, in priority order:
-     1. ?id=<uuid>  — a REAL product fetched live from Supabase. Colours and
-        sizes are built dynamically from whatever the database returns, so
-        this works for any product with any set of colours/sizes, not just
-        the blazer's specific 6.
-     2. ?item=blazer-classic (or no params at all) — the hand-built demo,
-        kept as a visual reference for the multi-view gallery pattern.
-     3. Any other ?name=&price=&... — the generic URL-driven fallback used
-        by every category page today, for products not yet in Supabase. */
-
-  const BLAZER_DEMO = {
-    name: "School Blazer",
-    division: "msamuels",
-    category: "unisex-blazers",
-    price: 35500,
-    currency: "₦",
-    colors: {
-      navy: {
-        label: "Navy",
-        hex: "#1B2A4A",
-        views: ["front", "back", "model"],
-        images: {
-          front: "assets/images/msamuels/prod-blazer-navy-front.svg",
-          back:  "assets/images/msamuels/prod-blazer-navy-back.svg",
-          model: "assets/images/msamuels/prod-blazer-navy-model.svg",
-        }
-      },
-      charcoal: { label: "Charcoal", hex: "#3A3A3A", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-charcoal-front.svg" } },
-      black:    { label: "Black",    hex: "#181410", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-black-front.svg" } },
-      orange:   { label: "Orange",   hex: "#B85C2E", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-orange-front.svg" } },
-      blue:     { label: "Blue",     hex: "#2A4E8C", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-blue-front.svg" } },
-      oxblood:  { label: "Oxblood",  hex: "#5A1F22", views: ["front"], images: { front: "assets/images/msamuels/prod-blazer-oxblood-front.svg" } },
-    },
-    defaultColor: "navy",
-    sizesAvailable: [24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46],
-  };
-
   const params = new URLSearchParams(window.location.search);
-  const itemParam = params.get("item");
   const supabaseId = params.get("id");
-  const isBlazerDemo = !supabaseId && (!itemParam || itemParam === "blazer-classic");
 
-  // Set by whichever branch loads a real Supabase row — tells the swatch/size
-  // code below to build inputs dynamically instead of using the blazer's
-  // static hardcoded HTML.
   let isLiveProduct = false;
   let liveSizes = null; // [{label, inStock}] when loaded from Supabase
 
@@ -65,54 +29,33 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (error || !data) {
       console.error("Supabase product fetch failed:", error);
       PRODUCT = { name: "Product not found", division: "mollys", category: "", price: 0, currency: "₦",
-        colors: { default: { label: "Default", hex: "#000", views: ["front"], images: { front: "assets/images/category/mollys-product.svg" } } },
-        defaultColor: "default" };
+        mainImage: "assets/images/category/mollys-product.svg", altImage: "", colorList: [] };
     } else if (data.status === "discontinued") {
       PRODUCT = { name: "This product is no longer available", division: data.division, category: "", price: 0, currency: "₦",
-        colors: { default: { label: "Default", hex: "#000", views: ["front"], images: { front: "assets/images/category/mollys-product.svg" } } },
-        defaultColor: "default" };
+        mainImage: "assets/images/category/mollys-product.svg", altImage: "", colorList: [] };
     } else {
-      const colors = {};
-      (data.product_colors || []).forEach((c) => {
-        const key = c.color_name.toLowerCase().replace(/\s+/g, "-");
-        const views = ["front"];
-        if (c.back_image_url) views.push("back");
-        if (c.model_image_url) views.push("model");
-        colors[key] = {
-          label: c.color_name, hex: c.hex_code || "#000000", views,
-          images: { front: c.front_image_url, back: c.back_image_url, model: c.model_image_url },
-        };
-      });
-      const hasRealColors = Object.keys(colors).length > 0;
-      if (!hasRealColors) {
-        colors.default = { label: "Default", hex: "#000000", views: ["front"],
-          images: { front: (data.division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg") } };
-      }
+      const fallbackImg = data.division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg";
       liveSizes = (data.product_sizes || []).map((s) => ({ label: s.size_label, inStock: s.in_stock }));
 
       PRODUCT = {
         name: data.name, division: data.division, category: (data.categories && data.categories.slug) || "",
         price: data.price_ngn, currency: "₦",
         description: data.description, sizeType: data.size_type,
-        colors, defaultColor: Object.keys(colors)[0], hasRealColors,
+        mainImage: data.main_image_url || fallbackImg,
+        altImage: data.alt_image_url || data.main_image_url || fallbackImg,
+        colorList: (data.product_colors || []).map((c) => ({ name: c.color_name, hex: c.hex_code || "#000000" })),
       };
     }
-  } else if (isBlazerDemo) {
-    PRODUCT = BLAZER_DEMO;
   } else {
-    // Generic product, fully built from what the category page passed in the URL.
+    // Generic product, built from what a category/shop card passed in the URL —
+    // used for anything not in Supabase yet.
     const division = params.get("division") || "mollys";
     const category = params.get("category") || "";
-    const name = params.get("name") ? decodeURIComponent(params.get("name")) : "Product";
+    const name = params.get("name") ? decodeURIComponent(params.get("name")) : "Product not found";
     const price = parseInt(params.get("price"), 10) || 0;
     const img1 = params.get("img1") ? decodeURIComponent(params.get("img1")) : (division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg");
 
-    PRODUCT = {
-      name, division, category, price, currency: "₦",
-      colors: { default: { label: "Default", hex: "#000000", views: ["front"], images: { front: img1 } } },
-      defaultColor: "default",
-      sizesAvailable: null, // generic items don't use the blazer's chest-size disabled-list logic
-    };
+    PRODUCT = { name, division, category, price, currency: "₦", mainImage: img1, altImage: img1, colorList: [] };
   }
 
   /* ---------- Header logo: swap to the M. Samuels logo on M. Samuels products ---------- */
@@ -150,30 +93,51 @@ document.addEventListener("DOMContentLoaded", async function () {
   const bcCurrent = document.getElementById("prodBreadcrumbCurrent");
   if (bcCurrent) bcCurrent.textContent = PRODUCT.name;
 
-  /* ---------- Color swatches ---------- */
-  if (isLiveProduct && PRODUCT.hasRealColors) {
-    // Real product with real colours from Supabase — build swatch buttons dynamically.
-    const row = document.getElementById("colorSwatchesRow");
-    if (row) {
-      const buttons = Object.entries(PRODUCT.colors).map(([key, c], i) => `
-        <button class="color-swatch${i === 0 ? " active" : ""}" data-color="${key}" aria-label="${c.label}">
+  /* ---------- Colour swatches — pure order-instructions, never affect the photo ---------- */
+  const colorRow = document.getElementById("colorSwatchesRow");
+  const selectedColorNameEl = document.querySelector(".selected-color-name");
+  let selectedColor = null;
+
+  if (colorRow) {
+    if (PRODUCT.colorList.length > 0) {
+      const buttons = PRODUCT.colorList.map((c, i) => `
+        <button class="color-swatch${i === 0 ? " active" : ""}" data-color="${c.name}" aria-label="${c.name}">
           <span class="swatch-fill" style="background:${c.hex};"></span>
         </button>`).join("");
-      row.innerHTML = buttons + `
+      colorRow.innerHTML = buttons + `
         <button class="color-swatch color-swatch-other" data-color="other" aria-label="Other — specify your own colour">
           <span class="swatch-fill swatch-other-fill">+</span>
         </button>`;
-      const nameEl = document.querySelector(".selected-color-name");
-      if (nameEl) nameEl.textContent = Object.values(PRODUCT.colors)[0].label;
+      selectedColor = PRODUCT.colorList[0].name;
+      if (selectedColorNameEl) selectedColorNameEl.textContent = selectedColor;
+    } else {
+      colorRow.innerHTML = `
+        <button class="color-swatch color-swatch-other active" data-color="other" aria-label="Other — specify your own colour">
+          <span class="swatch-fill swatch-other-fill">+</span>
+        </button>`;
+      if (selectedColorNameEl) selectedColorNameEl.textContent = "Specify below";
+      document.querySelector(".custom-color-field")?.classList.add("show");
     }
-  } else if (!isBlazerDemo) {
-    document.querySelectorAll(".blazer-only").forEach((el) => { el.style.display = "none"; });
-    // Auto-select "Other" so the custom-colour field is the only option shown
-    const otherSwatch = document.querySelector('.color-swatch[data-color="other"]');
-    if (otherSwatch) otherSwatch.classList.add("active");
-    const nameEl = document.querySelector(".selected-color-name");
-    if (nameEl) nameEl.textContent = "Specify below";
-    document.querySelector(".custom-color-field")?.classList.add("show");
+
+    colorRow.querySelectorAll(".color-swatch").forEach((swatch) => {
+      swatch.addEventListener("click", () => {
+        colorRow.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
+        swatch.classList.add("active");
+        const customColorField = document.querySelector(".custom-color-field");
+        if (swatch.dataset.color === "other") {
+          customColorField?.classList.add("show");
+          if (selectedColorNameEl) selectedColorNameEl.textContent = "Custom (specify below)";
+          document.querySelector(".custom-color-input")?.focus();
+          selectedColor = "other";
+          return;
+        }
+        customColorField?.classList.remove("show");
+        selectedColor = swatch.dataset.color;
+        if (selectedColorNameEl) selectedColorNameEl.textContent = selectedColor;
+        // Deliberately does NOT touch the photo — colour here is purely
+        // what gets written on the order, not a different picture.
+      });
+    });
   }
 
   /* ---------- Size dropdown: real products use real sizes + real stock from Supabase ---------- */
@@ -190,7 +154,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       ).join("");
     }
     if (valueEl) valueEl.textContent = firstInStock.label;
-  } else if (!isBlazerDemo) {
+  } else {
     const ONE_SIZE_SLUGS = new Set([
       "school-bags", "ties", "water-bottles", "hair-accessories",
       "name-tab-kit-and-hem-web-kit", "hats-and-scarves", "swimwear-accessories",
@@ -210,7 +174,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     const sizeDropdownEl = document.querySelector(".size-dropdown");
 
     if (ONE_SIZE_SLUGS.has(PRODUCT.category)) {
-      // Accessories like bags, ties, bottles, caps — no garment sizing needed.
       if (sizeLabel) sizeLabel.textContent = "Size";
       if (sizeDropdownEl) sizeDropdownEl.style.display = "none";
       if (sizeBlock) {
@@ -257,7 +220,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (isLiveProduct && PRODUCT.description) {
     const descEl = document.getElementById("prodDescription");
     if (descEl) descEl.textContent = PRODUCT.description;
-  } else if (!isBlazerDemo) {
+  } else {
     const descEl = document.getElementById("prodDescription");
     if (descEl) {
       descEl.textContent = PRODUCT.division === "msamuels"
@@ -272,13 +235,10 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   }
 
-  const ALL_VIEWS = ["front", "back", "model"];
-  let currentViews = ["front", "back", "model"];
-  let currentColor = PRODUCT.defaultColor;
-  let frameIndex = 0;
-  let autoTimer;
-  let userHasInteracted = false;
-
+  /* ---------- Gallery: one product-level photo, no per-colour switching ----------
+     The multi-frame/dots/thumbnails/swipe machinery still exists in the HTML
+     for layout reasons, but always shows a single photo now — nothing to
+     cycle through, since colour never changes the picture anymore. */
   const gallery = document.querySelector(".gallery");
   if (!gallery) return; // not on a product page
 
@@ -287,163 +247,22 @@ document.addEventListener("DOMContentLoaded", async function () {
     back: gallery.querySelector('[data-view="back"] img'),
     model: gallery.querySelector('[data-view="model"] img'),
   };
-  const frameWrappers = {
-    front: gallery.querySelector('[data-view="front"]'),
-    back: gallery.querySelector('[data-view="back"]'),
-    model: gallery.querySelector('[data-view="model"]'),
-  };
   const dots = gallery.querySelectorAll(".gallery-dots span");
   const galleryHint = gallery.querySelector(".gallery-hint");
   const galleryLabel = gallery.querySelector(".gallery-label");
   const thumbRow = document.querySelector(".thumbnail-row");
   const thumbButtons = document.querySelectorAll(".thumbnail");
-  const thumbImgs = {
-    front: document.querySelector('.thumbnail img[data-thumb="front"]'),
-    back: document.querySelector('.thumbnail img[data-thumb="back"]'),
-    model: document.querySelector('.thumbnail img[data-thumb="model"]'),
-  };
 
-  function loadColorImages(colorKey) {
-    const color = PRODUCT.colors[colorKey];
-    currentViews = color.views && color.views.length ? color.views : ["front"];
+  if (frameEls.front) { frameEls.front.src = PRODUCT.mainImage; frameEls.front.alt = PRODUCT.name; }
+  if (frameEls.back) { frameEls.back.src = PRODUCT.altImage; frameEls.back.alt = `${PRODUCT.name}, alternate view`; }
+  if (frameEls.model) { frameEls.model.src = PRODUCT.mainImage; frameEls.model.alt = PRODUCT.name; }
 
-    // Fill every view's image — views not offered for this colour just reuse
-    // the front photo, so nothing breaks if something still references them.
-    ALL_VIEWS.forEach((view) => {
-      const src = color.images[view] || color.images.front;
-      frameEls[view].src = src;
-      frameEls[view].alt = `${PRODUCT.name} — ${color.label} — ${view} view`;
-      if (thumbImgs[view]) {
-        thumbImgs[view].src = src;
-        thumbImgs[view].alt = `${color.label} — ${view} view thumbnail`;
-      }
-    });
-
-    // Show only the thumbnails / dots this colour actually has photography for.
-    const multiView = currentViews.length > 1;
-    thumbButtons.forEach((t) => {
-      t.style.display = currentViews.includes(t.dataset.view) ? "" : "none";
-    });
-    dots.forEach((d, i) => { d.style.display = i < currentViews.length ? "" : "none"; });
-    if (thumbRow) thumbRow.style.display = multiView ? "" : "none";
-    if (galleryHint) galleryHint.style.display = multiView ? "" : "none";
-    if (galleryLabel) galleryLabel.style.display = multiView ? "" : "none";
-  }
-
-  function showFrame(index) {
-    if (currentViews.length <= 1) { frameIndex = 0; }
-    else {
-      frameIndex = ((index % currentViews.length) + currentViews.length) % currentViews.length;
-    }
-    const view = currentViews[frameIndex];
-    Object.values(frameWrappers).forEach((el) => el.classList.remove("active"));
-    frameWrappers[view].classList.add("active");
-    dots.forEach((d, i) => d.classList.toggle("active", i === frameIndex));
-    thumbButtons.forEach((t) => t.classList.toggle("active", t.dataset.view === view));
-    if (galleryLabel) galleryLabel.textContent = view;
-  }
-
-  function startAutoCycle() {
-    clearInterval(autoTimer);
-    autoTimer = setInterval(() => {
-      if (!userHasInteracted && currentViews.length > 1) showFrame(frameIndex + 1);
-    }, 2800);
-  }
-
-  function stopAutoCycle() {
-    userHasInteracted = true;
-    gallery.classList.add("interacted");
-    clearInterval(autoTimer);
-  }
-
-  /* ---------- Swipe / drag / hold handling ---------- */
-  let dragStartX = null;
-
-  gallery.addEventListener("pointerdown", (e) => {
-    dragStartX = e.clientX;
-    stopAutoCycle(); // any touch stops auto-cycle permanently (per spec: stays where user leaves it)
-  });
-
-  gallery.addEventListener("pointerup", (e) => {
-    if (dragStartX === null) return;
-    const delta = e.clientX - dragStartX;
-    const threshold = 40;
-    if (delta > threshold) {
-      showFrame(frameIndex - 1); // swiped right -> previous
-    } else if (delta < -threshold) {
-      showFrame(frameIndex + 1); // swiped left -> next
-    }
-    // else: small movement or none = treated as a "hold" -> stays on current frame
-    dragStartX = null;
-  });
-
-  gallery.addEventListener("pointerleave", () => { dragStartX = null; });
-
-  dots.forEach((dot, i) => {
-    dot.style.cursor = "pointer";
-    dot.addEventListener("click", () => {
-      stopAutoCycle();
-      showFrame(i);
-    });
-  });
-
-  /* ---------- Thumbnail clicks (jump straight to that view) ---------- */
-  thumbButtons.forEach((thumb) => {
-    thumb.addEventListener("click", () => {
-      stopAutoCycle();
-      const view = thumb.dataset.view;
-      showFrame(currentViews.indexOf(view));
-    });
-  });
-
-  /* ---------- Color swatches ---------- */
-  const customColorField = document.querySelector(".custom-color-field");
-  const customColorInput = document.querySelector(".custom-color-input");
-
-  document.querySelectorAll(".color-swatch").forEach((swatch) => {
-    swatch.addEventListener("click", () => {
-      const colorKey = swatch.dataset.color;
-      document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
-      swatch.classList.add("active");
-
-      if (colorKey === "other") {
-        // Custom colour: show the text field, keep showing the current photos
-        // (no photography exists for an arbitrary typed colour).
-        customColorField?.classList.add("show");
-        const nameEl = document.querySelector(".selected-color-name");
-        if (nameEl) nameEl.textContent = "Custom (specify below)";
-        customColorInput?.focus();
-        return;
-      }
-
-      customColorField?.classList.remove("show");
-      currentColor = colorKey;
-      const nameEl = document.querySelector(".selected-color-name");
-      if (nameEl) nameEl.textContent = PRODUCT.colors[colorKey].label;
-      loadColorImages(colorKey);
-      showFrame(frameIndex); // keep same view (e.g. stay on "back") but with new color
-    });
-  });
-
-  /* ---------- Size dropdown ---------- */
-  const sizeDropdown = document.querySelector(".size-dropdown");
-  if (sizeDropdown) {
-    const sizeBtn = sizeDropdown.querySelector(".size-dropdown-btn");
-    const sizeValue = sizeDropdown.querySelector(".size-dropdown-value");
-    sizeBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      sizeDropdown.classList.toggle("open");
-    });
-    document.addEventListener("click", () => sizeDropdown.classList.remove("open"));
-    document.querySelectorAll(".size-dropdown-option:not(.disabled)").forEach((opt) => {
-      opt.addEventListener("click", () => {
-        document.querySelectorAll(".size-dropdown-option").forEach((o) => o.classList.remove("active"));
-        opt.classList.add("active");
-        sizeValue.textContent = opt.textContent.trim();
-        sizeDropdown.classList.remove("open");
-      });
-    });
-  }
+  // Single view always — hide every multi-image control.
+  thumbButtons.forEach((t) => { t.style.display = "none"; });
+  dots.forEach((d) => { d.style.display = "none"; });
+  if (thumbRow) thumbRow.style.display = "none";
+  if (galleryHint) galleryHint.style.display = "none";
+  if (galleryLabel) galleryLabel.style.display = "none";
 
   /* ---------- Quantity stepper ---------- */
   const qtyDisplay = document.querySelector(".qty-stepper span");
@@ -461,15 +280,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 
-  /* ---------- Info accordion tabs: now handled globally by js/main.js ---------- */
+  /* ---------- Info accordion tabs: handled globally by js/main.js ---------- */
 
-  /* ---------- Init ---------- */
-  loadColorImages(currentColor);
-  showFrame(0);
-  startAutoCycle();
-
-  // Everything above is now correctly filled in (real or fallback) —
-  // safe to actually show the page now, no more flash of the wrong product.
+  // Everything above is now correctly filled in — safe to show the page.
   document.body.style.visibility = "visible";
 
 });
