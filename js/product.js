@@ -318,6 +318,35 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   /* ---------- Info accordion tabs: handled globally by js/main.js ---------- */
 
+  /* ---------- Add to Cart / Buy Now ---------- */
+  function collectSelectionForCart() {
+    return {
+      product_id: supabaseId || params.get("item") || "unknown",
+      name: PRODUCT.name,
+      price: PRODUCT.price,
+      img: PRODUCT.mainImage,
+      division: PRODUCT.division,
+      size: document.querySelector(".size-dropdown-value")?.textContent.trim() || "",
+      color: selectedColor || "",
+      qty: qty,
+    };
+  }
+
+  document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+    addToCart(collectSelectionForCart());
+    const toast = document.querySelector(".toast");
+    if (toast) {
+      toast.querySelector("span").textContent = "Added to cart";
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2400);
+    }
+  });
+
+  document.getElementById("buyNowBtn")?.addEventListener("click", () => {
+    addToCart(collectSelectionForCart());
+    window.location.href = "checkout.html";
+  });
+
   // Everything above is now correctly filled in — safe to show the page.
   document.body.style.visibility = "visible";
 
