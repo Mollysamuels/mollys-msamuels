@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
-<div class="announce">Free shipping on orders above ₦50,000 &nbsp;|&nbsp; Easy 7-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
+<div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
 
 <header class="site-header">
   <div class="header-row">
@@ -79,23 +79,8 @@
 <div class="wrap">
   <div class="breadcrumb"><a href="index.html">Home</a><span>/</span> Wishlist</div>
   <div class="page-hero"><h1>Your Wishlist</h1><p>Items you've saved for later.</p></div>
-  <div class="product-grid" style="padding:30px 0 100px;">
-    <div class="product-card">
-      <div class="product-media">
-        <button class="wish-btn active" aria-label="Remove from wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
-        <a href="product.html?item=blazer-classic"><img class="main" src="assets/images/msamuels/prod-blazer-navy-front.svg" alt="School Blazer"></a>
-        <button class="quick-add">Quick add</button>
-      </div>
-      <div class="product-info"><h4>School Blazer</h4><div class="product-price"><span class="now">₦35,500</span></div></div>
-    </div>
-    <div class="product-card">
-      <div class="product-media">
-        <button class="wish-btn active" aria-label="Remove from wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
-        <a href="product.html?item=gown-new-1&name=Emerald%20Wrap%20Gown&price=26500&division=mollys&category=gowns&img1=assets%2Fimages%2Fmollys%2Fprod-gown-1.svg"><img class="main" src="assets/images/mollys/prod-gown-1.svg" alt="Emerald Wrap Gown"></a>
-        <button class="quick-add">Quick add</button>
-      </div>
-      <div class="product-info"><h4>Emerald Wrap Gown</h4><div class="product-price"><span class="now">₦26,500</span></div></div>
-    </div>
+  <div class="product-grid" id="wishlistGrid" style="padding:30px 0 100px;">
+    <p style="grid-column:1/-1;color:var(--ink-soft);font-size:0.9rem;">Loading your wishlist…</p>
   </div>
 </div>
 <footer class="site-footer">
@@ -165,6 +150,45 @@
 </div>
 
 <script src="js/main.js"></script>
+<script>
+  function renderWishlist() {
+    const grid = document.getElementById("wishlistGrid");
+    const list = getWishlist();
+
+    if (!list.length) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 0;"><p style="color:var(--ink-soft);margin-bottom:16px;">Your wishlist is empty.</p><a href="shop.html" class="btn btn-gold">Start Shopping</a></div>`;
+      return;
+    }
+
+    grid.innerHTML = list.map((item) => `
+      <div class="product-card">
+        <div class="product-media">
+          <button class="wish-btn active" data-remove="${item.product_id}" aria-label="Remove from wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
+          <a href="${item.link || 'shop.html'}"><img class="main" src="${item.img || 'assets/images/category/mollys-product.jpg'}" alt="${item.name}"></a>
+          <button class="quick-add" data-addcart="${item.product_id}">Quick add</button>
+        </div>
+        <div class="product-info"><h4>${item.name}</h4><div class="product-price"><span class="now">₦${Number(item.price).toLocaleString()}</span></div></div>
+      </div>`).join("");
+
+    grid.querySelectorAll("[data-remove]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        removeFromWishlist(btn.dataset.remove);
+        renderWishlist();
+      });
+    });
+    grid.querySelectorAll("[data-addcart]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const item = list.find((w) => w.product_id === btn.dataset.addcart);
+        if (item) addToCart({ product_id: item.product_id, name: item.name, price: item.price, img: item.img, division: "mollys", size: "", color: "", qty: 1 });
+        const toast = document.querySelector(".toast");
+        if (toast) { toast.querySelector("span").textContent = "Added to cart"; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2400); }
+      });
+    });
+  }
+  document.addEventListener("DOMContentLoaded", renderWishlist);
+</script>
 
 </body>
 </html>
