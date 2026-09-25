@@ -122,10 +122,12 @@ function renderGrid(products) {
       if (card) addToCartFromCard(card);
     });
   });
+  wireCardImageToggle(grid);
   grid.querySelectorAll(".wish-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.preventDefault();
-      btn.classList.toggle("active");
+      const card = btn.closest(".product-card");
+      if (card) toggleWishlistFromCard(card, btn);
     });
   });
 }
