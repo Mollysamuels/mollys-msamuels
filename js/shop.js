@@ -23,16 +23,15 @@ async function fetchRealProducts() {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("*, categories(slug), product_colors(*)")
+      .select("*, categories(slug)")
       .neq("status", "discontinued");
     if (error || !data) return [];
     return data.map((p) => {
-      const firstColor = (p.product_colors && p.product_colors[0]) || null;
       const fallbackImg = p.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
       return {
         name: p.name, price: p.price_ngn, division: p.division,
         category: (p.categories && p.categories.slug) || "",
-        img: (firstColor && firstColor.front_image_url) || fallbackImg,
+        img: p.main_image_url || fallbackImg,
         linkOverride: `product.html?id=${p.id}`,
       };
     });
