@@ -149,18 +149,17 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("*, categories!inner(slug), product_colors(*)")
+      .select("*, categories!inner(slug)")
       .eq("categories.slug", slug)
       .neq("status", "discontinued");
 
     if (!error && data && data.length > 0) {
       currentProducts = data.map((p) => {
-        const firstColor = (p.product_colors && p.product_colors[0]) || null;
         const fallbackImg = division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
         return {
           name: p.name, price: p.price_ngn, division: p.division, category: slug,
-          img1: (firstColor && firstColor.front_image_url) || fallbackImg,
-          img2: (firstColor && firstColor.back_image_url) || (firstColor && firstColor.front_image_url) || fallbackImg,
+          img1: p.main_image_url || fallbackImg,
+          img2: p.alt_image_url || p.main_image_url || fallbackImg,
           linkOverride: `product.html?id=${p.id}`,
         };
       });
@@ -226,4 +225,3 @@ document.addEventListener("DOMContentLoaded", async function () {
     });
   }
 });
-
