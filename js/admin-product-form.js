@@ -168,20 +168,8 @@ async function saveProduct() {
   }
 
   let productId = editingId;
-  let existingImagesByIndex = [];
 
   if (editingId) {
-    // Remember what images each existing color had, IN ORDER, before
-    // deleting anything. Matching by position (not name) means renaming a
-    // colour — e.g. "Navy" to "Dark Navy" — still correctly keeps its photo,
-    // as long as you don't reorder or remove colours above it.
-    const { data: existingColors } = await supabaseClient
-      .from("product_colors")
-      .select("front_image_url, back_image_url, model_image_url")
-      .eq("product_id", editingId)
-      .order("id");
-    existingImagesByIndex = existingColors || [];
-
     const { error } = await supabaseClient.from("products").update(productData).eq("id", editingId);
     if (error) return handleSaveError(error, btn);
     await supabaseClient.from("product_colors").delete().eq("product_id", editingId);
@@ -192,21 +180,16 @@ async function saveProduct() {
     productId = data.id;
   }
 
-  const colorRows = Array.from(document.querySelectorAll(".apf-color-row")).map((row, index) => {
-    const colorName = row.querySelector(".apf-color-name").value.trim();
-    const preserved = existingImagesByIndex[index] || {};
-    return {
-      product_id: productId,
-      color_name: colorName,
-      hex_code: row.querySelector(".apf-color-hex").value,
-      // Carried over by position — a rename still keeps its photo. Only a
-      // genuinely new row added past the old count starts with none, since
-      // no photo has ever been assigned to that one yet.
-      front_image_url: preserved.front_image_url || null,
-      back_image_url: preserved.back_image_url || null,
-      model_image_url: preserved.model_image_url || null,
-    };
-  }).filter((c) => c.color_name);
+  // Colours are just name + swatch — never images. Since productData never
+  // includes main_image_url/alt_image_url, this save can NEVER touch a
+  // product's photo, no matter what else gets edited here — that's what
+  // actually makes the old "editing wipes the image" bug impossible now,
+  // rather than something to carefully preserve.
+  const colorRows = Array.from(document.querySelectorAll(".apf-color-row")).map((row) => ({
+    product_id: productId,
+    color_name: row.querySelector(".apf-color-name").value.trim(),
+    hex_code: row.querySelector(".apf-color-hex").value,
+  })).filter((c) => c.color_name);
   if (colorRows.length) await supabaseClient.from("product_colors").insert(colorRows);
 
   const sizeRows = Array.from(document.querySelectorAll(".apf-size-chip")).map((chip) => ({
