@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="css/msamuels.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
-<body>
+<body style="visibility:hidden;">
 
 <!-- ============ ANNOUNCEMENT BAR ============ -->
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
@@ -213,7 +213,7 @@
       <!-- Actions -->
       <div class="product-actions">
         <button class="btn btn-outline" style="border-color:var(--line); color:var(--umber-deep);" id="addToCartBtn">Add to Cart</button>
-        <button class="btn btn-gold">Buy Now</button>
+        <button class="btn btn-gold" id="buyNowBtn">Buy Now</button>
         <button class="wish-inline" aria-label="Add to wishlist" type="button">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
@@ -434,9 +434,9 @@
 <script src="js/msamuels.js"></script>
 <script src="js/product.js"></script>
 <script>
-  // Wire the real Add to Cart button — pulls whatever is actually selected
-  // right now (size, colour, quantity) and saves a real cart line item.
-  document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+  // Reads whatever is currently selected (size, colour, quantity) and
+  // saves it as a real cart line item — shared by both Add to Cart and Buy Now.
+  function addCurrentSelectionToCart() {
     const params = new URLSearchParams(window.location.search);
     const productId = params.get("id") || params.get("item") || "unknown";
     const name = document.getElementById("prodTitle")?.textContent || "Product";
@@ -447,8 +447,11 @@
     const color = document.querySelector(".selected-color-name")?.textContent.trim() || "";
     const qty = parseInt(document.querySelector(".qty-stepper span")?.textContent, 10) || 1;
     const activeImg = document.querySelector(".gallery-frame.active img")?.src || "";
-
     addToCart({ product_id: productId, name, price, img: activeImg, division, size, color, qty });
+  }
+
+  document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+    addCurrentSelectionToCart();
 
     const toast = document.querySelector(".toast");
     if (toast) {
@@ -456,6 +459,13 @@
       toast.classList.add("show");
       setTimeout(() => toast.classList.remove("show"), 2400);
     }
+  });
+
+  // Buy Now: same as Add to Cart, but skips straight to checkout instead
+  // of staying on the page.
+  document.getElementById("buyNowBtn")?.addEventListener("click", () => {
+    addCurrentSelectionToCart();
+    window.location.href = "checkout.html";
   });
 </script>
 </body>
