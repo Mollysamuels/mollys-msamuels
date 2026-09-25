@@ -252,17 +252,53 @@ document.addEventListener("DOMContentLoaded", async function () {
   const galleryLabel = gallery.querySelector(".gallery-label");
   const thumbRow = document.querySelector(".thumbnail-row");
   const thumbButtons = document.querySelectorAll(".thumbnail");
+  const frameWrappers = {
+    front: gallery.querySelector('[data-view="front"]'),
+    back: gallery.querySelector('[data-view="back"]'),
+  };
+  const thumbImgs = {
+    front: document.querySelector('.thumbnail img[data-thumb="front"]'),
+    back: document.querySelector('.thumbnail img[data-thumb="back"]'),
+  };
+  const thumbBtns = {
+    front: document.querySelector('.thumbnail[data-view="front"]'),
+    back: document.querySelector('.thumbnail[data-view="back"]'),
+    model: document.querySelector('.thumbnail[data-view="model"]'),
+  };
 
   if (frameEls.front) { frameEls.front.src = PRODUCT.mainImage; frameEls.front.alt = PRODUCT.name; }
   if (frameEls.back) { frameEls.back.src = PRODUCT.altImage; frameEls.back.alt = `${PRODUCT.name}, alternate view`; }
   if (frameEls.model) { frameEls.model.src = PRODUCT.mainImage; frameEls.model.alt = PRODUCT.name; }
+  if (thumbImgs.front) { thumbImgs.front.src = PRODUCT.mainImage; thumbImgs.front.alt = `${PRODUCT.name} thumbnail`; }
+  if (thumbImgs.back) { thumbImgs.back.src = PRODUCT.altImage; thumbImgs.back.alt = `${PRODUCT.name}, alternate view thumbnail`; }
 
-  // Single view always — hide every multi-image control.
-  thumbButtons.forEach((t) => { t.style.display = "none"; });
+  // Only 2 real photos ever exist (main + alt) — no third "model" view,
+  // and no dots/cycling. Two simple clickable thumbnails switch the big
+  // photo above, standard product-page pattern.
+  const hasDistinctAlt = PRODUCT.altImage && PRODUCT.altImage !== PRODUCT.mainImage;
   dots.forEach((d) => { d.style.display = "none"; });
-  if (thumbRow) thumbRow.style.display = "none";
   if (galleryHint) galleryHint.style.display = "none";
   if (galleryLabel) galleryLabel.style.display = "none";
+  if (thumbBtns.model) thumbBtns.model.style.display = "none";
+
+  if (hasDistinctAlt && thumbRow) {
+    thumbRow.style.display = "";
+    if (thumbBtns.front) thumbBtns.front.style.display = "";
+    if (thumbBtns.back) thumbBtns.back.style.display = "";
+
+    const selectView = (view) => {
+      Object.values(frameWrappers).forEach((el) => el && el.classList.remove("active"));
+      if (frameWrappers[view]) frameWrappers[view].classList.add("active");
+      [thumbBtns.front, thumbBtns.back].forEach((b) => b && b.classList.remove("active"));
+      if (thumbBtns[view]) thumbBtns[view].classList.add("active");
+    };
+    thumbBtns.front?.addEventListener("click", () => selectView("front"));
+    thumbBtns.back?.addEventListener("click", () => selectView("back"));
+    selectView("front");
+  } else {
+    // No real alt photo to switch to — hide the thumbnail row entirely.
+    if (thumbRow) thumbRow.style.display = "none";
+  }
 
   /* ---------- Quantity stepper ---------- */
   const qtyDisplay = document.querySelector(".qty-stepper span");
