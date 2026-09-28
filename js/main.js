@@ -71,29 +71,99 @@ function toggleWishlistFromCard(card, btn) {
   const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
   const img = card.querySelector(".product-media img.main, img.main")?.src || "";
   const link_href = link ? link.getAttribute("href") : "product.html";
+  // Real division, not always "mollys" — checks the URL's own division= param
+  // first (older-style links), then falls back to the image path itself,
+  // which always contains "msamuels" or "mollys" as its folder name.
+  const division = cardParams.get("division") || (img.includes("msamuels") ? "msamuels" : "mollys");
 
-  const wasAdded = toggleWishlist({ product_id: productId, name, price, img, link: link_href });
+  const wasAdded = toggleWishlist({ product_id: productId, name, price, img, division, link: link_href });
   btn.classList.toggle("active", wasAdded);
 }
 
 
-// Click a product card's image to preview its alt photo (same effect as
-// hover) — doesn't navigate, since the image is also the product link.
-// Works everywhere: static cards and every dynamically-rendered card too.
-function wireCardImageToggle(scope) {
-  (scope || document).querySelectorAll(".product-media a").forEach((link) => {
-    if (link.dataset.toggleWired) return;
-    link.dataset.toggleWired = "1";
-    link.addEventListener("click", (e) => {
-      const card = link.closest(".product-card");
-      if (card && card.querySelector("img.alt")) {
-        e.preventDefault();
-        card.classList.toggle("show-alt");
+// Card image clicks used to toggle an alt-photo preview. That's retired —
+// clicking a product image now simply opens the product, like any store.
+// Kept as a harmless no-op because a few pages still call it.
+function wireCardImageToggle() {}
+
+// ---------- Login-aware prompts ----------
+// UI hint only (never used for security): shows "My Account" instead of
+// "Login / Register" when a saved session exists in this browser. The real
+// check still happens on account.html and in the database.
+function isLikelyLoggedIn() {
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (/^sb-.*-auth-token$/.test(key)) {
+        const saved = JSON.parse(localStorage.getItem(key));
+        if (saved && saved.refresh_token) return true;
       }
-    });
+    }
+  } catch (e) { /* storage unavailable — treat as logged out */ }
+  return false;
+}
+function applyAuthAwareUI() {
+  if (!isLikelyLoggedIn()) return;
+  document.querySelectorAll(".ms-mega-auth").forEach((box) => {
+    box.innerHTML = '<a href="account.html" class="register">MY ACCOUNT</a>';
+  });
+  document.querySelectorAll('.ms-action-btn[href="login.html"]').forEach((link) => {
+    const icon = link.querySelector("svg");
+    link.setAttribute("href", "account.html");
+    link.innerHTML = (icon ? icon.outerHTML : "") + "MY<br>ACCOUNT";
   });
 }
-document.addEventListener("DOMContentLoaded", () => wireCardImageToggle());
+document.addEventListener("DOMContentLoaded", applyAuthAwareUI);
+
+// ---------- Site search ----------
+// Opens a search box from any Search button; submitting sends the visitor
+// to shop.html?q=... which filters real products by name/category.
+function openSiteSearch(scopeDivision) {
+  let overlay = document.getElementById("siteSearchOverlay");
+  if (!overlay) {
+    const style = document.createElement("style");
+    style.textContent = `
+      #siteSearchOverlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 500; display: none; align-items: flex-start; justify-content: center; padding: 12vh 20px 20px; }
+      #siteSearchOverlay.open { display: flex; }
+      #siteSearchBox { background: #fff; width: 100%; max-width: 560px; border-radius: 12px; padding: 22px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
+      #siteSearchBox form { display: flex; gap: 10px; }
+      #siteSearchBox input { flex: 1; padding: 14px 16px; border: 1px solid #E6DCC6; border-radius: 8px; font-size: 1rem; font-family: inherit; }
+      #siteSearchBox input:focus { outline: none; border-color: #F4D900; }
+      #siteSearchBox .ss-hint { margin: 12px 2px 0; font-size: 0.8rem; color: #58493A; }
+      #siteSearchBox .ss-close { background: none; border: none; font-size: 0.8rem; cursor: pointer; color: #58493A; float: right; margin: -8px -4px 8px 0; }
+    `;
+    document.head.appendChild(style);
+
+    overlay = document.createElement("div");
+    overlay.id = "siteSearchOverlay";
+    overlay.innerHTML = '<div id="siteSearchBox"><button type="button" class="ss-close">Close ✕</button><form><input type="search" placeholder="Search products…" aria-label="Search products" required><button type="submit" class="btn btn-gold">Search</button></form><p class="ss-hint"></p></div>';
+    document.body.appendChild(overlay);
+
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.classList.remove("open"); });
+    overlay.querySelector(".ss-close").addEventListener("click", () => overlay.classList.remove("open"));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") overlay.classList.remove("open"); });
+    overlay.querySelector("form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = overlay.querySelector("input").value.trim();
+      if (!q) return;
+      const scope = overlay.dataset.scope;
+      window.location.href = "shop.html?q=" + encodeURIComponent(q) + (scope ? "&division=" + scope : "");
+    });
+  }
+  overlay.dataset.scope = scopeDivision || "";
+  overlay.querySelector(".ss-hint").textContent =
+    scopeDivision === "msamuels" ? "Searching M. Samuels uniforms" :
+    scopeDivision === "mollys" ? "Searching Mollys" : "Searching all of Molly Samuels";
+  overlay.classList.add("open");
+  const input = overlay.querySelector("input");
+  input.value = "";
+  input.focus();
+}
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[aria-label="Search"]').forEach((btn) => {
+    btn.addEventListener("click", (e) => { e.preventDefault(); openSiteSearch(btn.dataset.searchDivision); });
+  });
+});
 
 // Reads whatever a product card actually displays (works for real Supabase
 // products and static placeholder cards alike) and saves a real cart line.
