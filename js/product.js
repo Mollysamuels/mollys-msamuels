@@ -29,12 +29,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (error || !data) {
       console.error("Supabase product fetch failed:", error);
       PRODUCT = { name: "Product not found", division: "mollys", category: "", price: 0, currency: "₦",
-        mainImage: "assets/images/category/mollys-product.svg", altImage: "", colorList: [] };
+        mainImage: "assets/images/category/mollys-product.jpg", altImage: "", colorList: [] };
     } else if (data.status === "discontinued") {
       PRODUCT = { name: "This product is no longer available", division: data.division, category: "", price: 0, currency: "₦",
-        mainImage: "assets/images/category/mollys-product.svg", altImage: "", colorList: [] };
+        mainImage: "assets/images/category/mollys-product.jpg", altImage: "", colorList: [] };
     } else {
-      const fallbackImg = data.division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg";
+      const fallbackImg = data.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
       liveSizes = (data.product_sizes || []).map((s) => ({ label: s.size_label, inStock: s.in_stock }));
 
       PRODUCT = {
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const category = params.get("category") || "";
     const name = params.get("name") ? decodeURIComponent(params.get("name")) : "Product not found";
     const price = parseInt(params.get("price"), 10) || 0;
-    const img1 = params.get("img1") ? decodeURIComponent(params.get("img1")) : (division === "msamuels" ? "assets/images/category/msamuels-product.svg" : "assets/images/category/mollys-product.svg");
+    const img1 = params.get("img1") ? decodeURIComponent(params.get("img1")) : (division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg");
 
     PRODUCT = { name, division, category, price, currency: "₦", mainImage: img1, altImage: img1, colorList: [] };
   }
