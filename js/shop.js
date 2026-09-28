@@ -69,6 +69,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   const ALL_PRODUCTS = [...realProducts, ...SHOP_PRODUCTS]; // real products shown first
 
   function render(list) {
+    if (!list.length && searchQuery) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;"><p style="color:var(--ink-soft);margin-bottom:16px;" id="noResultsMsg"></p><a href="shop.html" class="btn btn-gold">Browse all products</a></div>';
+      document.getElementById("noResultsMsg").textContent = `No products found for “${rawQuery}”.`;
+      document.getElementById("shopCount").textContent = "0 products";
+      return;
+    }
     grid.innerHTML = list.map(renderShopCard).join("");
     document.getElementById("shopCount").textContent = `${list.length} products`;
     grid.querySelectorAll(".quick-add").forEach((btn) => {
@@ -86,9 +92,31 @@ document.addEventListener("DOMContentLoaded", async function () {
     wireCardImageToggle(grid);
   }
 
+  // Search mode: shop.html?q=term (optionally &division=msamuels|mollys)
+  const urlParams = new URLSearchParams(window.location.search);
+  const rawQuery = (urlParams.get("q") || "").trim();
+  const searchQuery = rawQuery.toLowerCase();
+  const searchDivision = urlParams.get("division");
+
+  if (searchQuery) {
+    const heading = document.querySelector(".shop-header h1");
+    if (heading) heading.textContent = `Results for “${rawQuery}”`;
+    const tabs = document.querySelector(".shop-filter-group");
+    if (tabs) tabs.style.display = "none";
+  }
+
   let currentDivision = "mollys";
   function apply() {
-    let list = ALL_PRODUCTS.filter((p) => p.division === currentDivision);
+    let list;
+    if (searchQuery) {
+      list = ALL_PRODUCTS.filter((p) =>
+        (!searchDivision || p.division === searchDivision) &&
+        (p.name.toLowerCase().includes(searchQuery) ||
+         (p.category || "").replace(/-/g, " ").includes(searchQuery))
+      );
+    } else {
+      list = ALL_PRODUCTS.filter((p) => p.division === currentDivision);
+    }
     const sortVal = document.getElementById("shopSort").value;
     if (sortVal === "price-low") list = [...list].sort((a, b) => a.price - b.price);
     if (sortVal === "price-high") list = [...list].sort((a, b) => b.price - a.price);
