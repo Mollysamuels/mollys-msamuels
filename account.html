@@ -152,6 +152,7 @@
 <script src="js/main.js"></script>
 <script>
   document.addEventListener("customerReady", async (e) => {
+    await loadExchangeRate();
     document.body.style.visibility = "visible";
     const c = e.detail;
 
@@ -193,11 +194,20 @@
     if (!orders || !orders.length) {
       list.innerHTML = `<p style="color:var(--ink-soft);font-size:0.9rem;">You haven't placed any orders yet. <a href="shop.html" style="color:var(--umber-deep);text-decoration:underline;">Start shopping →</a></p>`;
     } else {
+      const STATUS_COLORS = {
+        delivered: "background:#E8F5EA;color:#2D6B3B;",
+        paid: "background:#E8F5EA;color:#2D6B3B;",
+        cancelled: "background:#FDECEC;color:#B23A3A;",
+        shipped: "background:#FFF4D6;color:#8A6D00;",
+        preparing: "background:#FFF4D6;color:#8A6D00;",
+        processing: "background:#E9EEF6;color:#3A5A8C;",
+        new: "background:var(--cream-deep);color:var(--ink-soft);",
+      };
       list.innerHTML = orders.map((o) => `
         <div class="account-order-row">
           <span>${o.order_number}</span>
-          <span>₦${Number(o.total).toLocaleString()}</span>
-          <span class="status">${o.status}</span>
+          <span>${formatPrice(o.total)}</span>
+          <span class="status" style="${STATUS_COLORS[o.status] || STATUS_COLORS.new}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
         </div>`).join("");
     }
   });
