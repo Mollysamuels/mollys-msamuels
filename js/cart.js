@@ -2,9 +2,10 @@
 // CART PAGE — renders the real cart, live, from js/main.js's cart store
 // ============================================
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
   const col = document.getElementById("cartItemsCol");
   if (!col) return; // not on cart.html
+  await loadExchangeRate();
 
   const deliveryFee = 2500;
 
@@ -35,12 +36,12 @@ document.addEventListener("DOMContentLoaded", function () {
             <button class="cart-remove" data-index="${i}" type="button">Remove</button>
           </div>
         </div>
-        <div class="cart-item-price">₦${(item.price * item.qty).toLocaleString()}</div>
+        <div class="cart-item-price">${formatPrice(item.price * item.qty)}</div>
       </div>`).join("");
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    document.getElementById("cartSubtotal").textContent = `₦${subtotal.toLocaleString()}`;
-    document.getElementById("cartTotal").textContent = `₦${(subtotal + deliveryFee).toLocaleString()}`;
+    document.getElementById("cartSubtotal").textContent = formatPrice(subtotal);
+    document.getElementById("cartTotal").textContent = formatPrice(subtotal + deliveryFee);
 
     col.querySelectorAll(".qty-minus").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -67,4 +68,5 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   render();
+  document.addEventListener("currencyChanged", render);
 });
