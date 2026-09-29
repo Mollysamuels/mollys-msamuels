@@ -188,6 +188,7 @@
   }
 
   async function loadRealOrder(orderNumber) {
+    await loadExchangeRate();
     const { data: order, error } = await supabaseClient
       .from("orders")
       .select("*, order_items(*), customers(full_name)")
@@ -202,7 +203,7 @@
     document.getElementById("orderCustomerDisplay").textContent = (order.customers && order.customers.full_name) || "—";
     document.getElementById("orderDateDisplay").textContent = new Date(order.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
     document.getElementById("orderItemsDisplay").textContent = (order.order_items || []).length;
-    document.getElementById("orderAmountDisplay").textContent = `₦${Number(order.total).toLocaleString()}`;
+    document.getElementById("orderAmountDisplay").textContent = formatPrice(order.total);
     document.getElementById("orderDeliveryDisplay").textContent = order.delivery_address || "—";
 
     if (order.tracking_number) {
