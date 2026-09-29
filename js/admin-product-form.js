@@ -20,7 +20,7 @@ document.addEventListener("adminReady", async (e) => {
   const admin = e.detail;
 
   if (!admin.can_edit_pricing) {
-    ["apfPriceNgn", "apfPriceGbp"].forEach((id) => {
+    ["apfPriceNgn"].forEach((id) => {
       const el = document.getElementById(id);
       el.disabled = true;
       el.placeholder = "Only the pricing-authorised admin can edit this";
@@ -129,7 +129,7 @@ async function loadExistingProduct(id) {
   populateCategoryDropdown();
   document.getElementById("apfCategory").value = data.category_id || "";
   document.getElementById("apfPriceNgn").value = data.price_ngn;
-  document.getElementById("apfPriceGbp").value = data.price_gbp;
+  document.getElementById("apfDeliveryFee").value = data.delivery_fee_ngn;
   document.getElementById("apfStockQty").value = data.stock_qty;
   document.getElementById("apfFeatured").checked = data.is_featured;
   document.getElementById("apfNew").checked = data.is_new;
@@ -153,7 +153,7 @@ async function saveProduct() {
     division: document.getElementById("apfDivision").value,
     category_id: document.getElementById("apfCategory").value || null,
     price_ngn: parseFloat(document.getElementById("apfPriceNgn").value) || 0,
-    price_gbp: parseFloat(document.getElementById("apfPriceGbp").value) || 0,
+    delivery_fee_ngn: parseFloat(document.getElementById("apfDeliveryFee").value) || 2500,
     stock_qty: parseInt(document.getElementById("apfStockQty").value, 10) || 0,
     is_featured: document.getElementById("apfFeatured").checked,
     is_new: document.getElementById("apfNew").checked,
