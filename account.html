@@ -206,7 +206,7 @@
       list.innerHTML = orders.map((o) => `
         <div class="account-order-row">
           <span>${o.order_number}</span>
-          <span>${formatPrice(o.total)}</span>
+          <span data-price-ngn="${o.total}">${formatPrice(o.total)}</span>
           <span class="status" style="${STATUS_COLORS[o.status] || STATUS_COLORS.new}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
         </div>`).join("");
     }
