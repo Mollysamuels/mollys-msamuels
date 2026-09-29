@@ -56,7 +56,7 @@ function renderShopCard(p, index) {
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
-        <div class="product-price"><span class="now">${formatPrice(p.price)}</span></div>
+        <div class="product-price"><span class="now" data-price-ngn="${p.price}">${formatPrice(p.price)}</span></div>
       </div>
     </div>`;
 }
