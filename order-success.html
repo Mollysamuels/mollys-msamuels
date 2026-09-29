@@ -203,6 +203,7 @@
     document.getElementById("orderCustomerDisplay").textContent = (order.customers && order.customers.full_name) || "—";
     document.getElementById("orderDateDisplay").textContent = new Date(order.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
     document.getElementById("orderItemsDisplay").textContent = (order.order_items || []).length;
+    document.getElementById("orderAmountDisplay").dataset.priceNgn = order.total;
     document.getElementById("orderAmountDisplay").textContent = formatPrice(order.total);
     document.getElementById("orderDeliveryDisplay").textContent = order.delivery_address || "—";
 
