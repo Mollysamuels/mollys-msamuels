@@ -38,9 +38,20 @@ function updateMarketUI() {
   document.querySelectorAll(".market-btn .label").forEach((el) => { el.textContent = isGBP ? "United Kingdom" : "Nigeria"; });
   document.querySelectorAll(".market-btn span:first-child").forEach((el) => { el.textContent = isGBP ? "🇬🇧" : "🇳🇬"; });
 }
+// Any price element tagged with data-price-ngn="<raw naira amount>" gets
+// reformatted automatically, whether it was rendered by JS or typed directly
+// into the page's HTML — this is what makes switching currency actually
+// update every price already on screen, not just ones rendered afterward.
+function refreshAllPrices() {
+  document.querySelectorAll("[data-price-ngn]").forEach((el) => {
+    el.textContent = formatPrice(el.dataset.priceNgn);
+  });
+}
+document.addEventListener("currencyChanged", refreshAllPrices);
 document.addEventListener("DOMContentLoaded", async () => {
   await loadExchangeRate();
   updateMarketUI();
+  refreshAllPrices();
   document.querySelectorAll('.market-menu button[data-short="Nigeria"]').forEach((b) => b.addEventListener("click", () => setCurrency("NGN")));
   document.querySelectorAll('.market-menu button[data-short="UK"]').forEach((b) => b.addEventListener("click", () => setCurrency("GBP")));
   document.querySelectorAll('.mobile-market[data-market="nigeria"]').forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); setCurrency("NGN"); }));
