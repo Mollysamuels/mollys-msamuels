@@ -2,6 +2,51 @@
 // MOLLYS × M. SAMUELS — MAIN JAVASCRIPT
 // ============================================
 
+// ---------- Currency: one admin-set exchange rate, applied live everywhere ----------
+const CURRENCY_KEY = "molly_samuels_currency"; // "NGN" or "GBP"
+let _exchangeRate = null; // Naira per 1 GBP, loaded once from site_settings
+
+function getCurrency() {
+  return localStorage.getItem(CURRENCY_KEY) || "NGN";
+}
+function setCurrency(code) {
+  localStorage.setItem(CURRENCY_KEY, code);
+  updateMarketUI();
+  document.dispatchEvent(new CustomEvent("currencyChanged"));
+}
+async function loadExchangeRate() {
+  if (_exchangeRate !== null) return _exchangeRate;
+  try {
+    if (typeof supabaseClient === "undefined") { _exchangeRate = 1800; return _exchangeRate; }
+    const { data } = await supabaseClient.from("site_settings").select("exchange_rate").eq("id", 1).single();
+    _exchangeRate = (data && data.exchange_rate) || 1800;
+  } catch (e) {
+    _exchangeRate = 1800; // safe fallback if the fetch fails for any reason
+  }
+  return _exchangeRate;
+}
+// Converts a Naira amount to the currently selected currency and formats it
+// for display — the one function every price on the site should go through.
+function formatPrice(ngnAmount) {
+  if (getCurrency() === "GBP" && _exchangeRate) {
+    return `£${(ngnAmount / _exchangeRate).toFixed(2)}`;
+  }
+  return `₦${Number(ngnAmount).toLocaleString()}`;
+}
+function updateMarketUI() {
+  const isGBP = getCurrency() === "GBP";
+  document.querySelectorAll(".market-btn .label").forEach((el) => { el.textContent = isGBP ? "United Kingdom" : "Nigeria"; });
+  document.querySelectorAll(".market-btn span:first-child").forEach((el) => { el.textContent = isGBP ? "🇬🇧" : "🇳🇬"; });
+}
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadExchangeRate();
+  updateMarketUI();
+  document.querySelectorAll('.market-menu button[data-short="Nigeria"]').forEach((b) => b.addEventListener("click", () => setCurrency("NGN")));
+  document.querySelectorAll('.market-menu button[data-short="UK"]').forEach((b) => b.addEventListener("click", () => setCurrency("GBP")));
+  document.querySelectorAll('.mobile-market[data-market="nigeria"]').forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); setCurrency("NGN"); }));
+  document.querySelectorAll('.mobile-market[data-market="uk"]').forEach((b) => b.addEventListener("click", (e) => { e.preventDefault(); setCurrency("GBP"); }));
+});
+
 // ---------- Real, persistent shopping cart (shared by every page) ----------
 const CART_KEY = "molly_samuels_cart";
 
@@ -220,25 +265,41 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  const ANNOUNCE_MESSAGES = [
+  // Real, admin-set promo messages — falls back to sensible defaults if the
+  // fetch fails for any reason, so the bar is never empty.
+  const DEFAULT_ANNOUNCE = [
     "Trusted by 500+ schools&nbsp;&nbsp;|&nbsp;&nbsp;Easy 14-day returns&nbsp;&nbsp;|&nbsp;&nbsp;Bulk uniform orders available",
     "Best selling items&nbsp;&nbsp;|&nbsp;&nbsp;5 star rated&nbsp;&nbsp;|&nbsp;&nbsp;Premium quality products",
     "Free delivery on bulk orders&nbsp;&nbsp;|&nbsp;&nbsp;Discounted prices&nbsp;&nbsp;|&nbsp;&nbsp;Fast processing",
-    "Trusted by 500+ schools&nbsp;&nbsp;|&nbsp;&nbsp;Nigeria &amp; UK delivery&nbsp;&nbsp;|&nbsp;&nbsp;Secure checkout",
   ];
   const announceBar = document.querySelector(".announce");
   if (announceBar) {
-    let announceIndex = 0;
-    announceBar.innerHTML = `<span class="announce-text">${ANNOUNCE_MESSAGES[0]}</span>`;
-    const announceSpan = announceBar.querySelector(".announce-text");
-    setInterval(() => {
-      announceSpan.style.opacity = "0";
-      setTimeout(() => {
-        announceIndex = (announceIndex + 1) % ANNOUNCE_MESSAGES.length;
-        announceSpan.innerHTML = ANNOUNCE_MESSAGES[announceIndex];
-        announceSpan.style.opacity = "1";
-      }, 400);
-    }, 4500);
+    (async () => {
+      let ANNOUNCE_MESSAGES = DEFAULT_ANNOUNCE;
+      try {
+        if (typeof supabaseClient !== "undefined") {
+          const { data } = await supabaseClient.from("site_settings").select("promo_bar_text").eq("id", 1).single();
+          if (data && data.promo_bar_text) {
+            const msgs = data.promo_bar_text.split(" | ").map((m) => m.trim()).filter(Boolean);
+            if (msgs.length) ANNOUNCE_MESSAGES = msgs.map((m) => m.replace(/\s*\|\s*/g, "&nbsp;&nbsp;|&nbsp;&nbsp;"));
+          }
+        }
+      } catch (e) { /* fall back to defaults */ }
+
+      let announceIndex = 0;
+      announceBar.innerHTML = `<span class="announce-text">${ANNOUNCE_MESSAGES[0]}</span>`;
+      const announceSpan = announceBar.querySelector(".announce-text");
+      if (ANNOUNCE_MESSAGES.length > 1) {
+        setInterval(() => {
+          announceSpan.style.opacity = "0";
+          setTimeout(() => {
+            announceIndex = (announceIndex + 1) % ANNOUNCE_MESSAGES.length;
+            announceSpan.innerHTML = ANNOUNCE_MESSAGES[announceIndex];
+            announceSpan.style.opacity = "1";
+          }, 400);
+        }, 4500);
+      }
+    })();
   }
 
 
