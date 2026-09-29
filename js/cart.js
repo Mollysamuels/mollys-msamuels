@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             <button class="cart-remove" data-index="${i}" type="button">Remove</button>
           </div>
         </div>
-        <div class="cart-item-price">${formatPrice(item.price * item.qty)}</div>
+        <div class="cart-item-price" data-price-ngn="${item.price * item.qty}">${formatPrice(item.price * item.qty)}</div>
       </div>`).join("");
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
