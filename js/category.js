@@ -94,7 +94,7 @@ function renderProductCard(product) {
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${product.name}</h4></a>
-        <div class="product-price"><span class="now">₦${product.price.toLocaleString()}</span></div>
+        <div class="product-price"><span class="now">${formatPrice(product.price)}</span></div>
       </div>
     </div>
   `;
@@ -133,6 +133,7 @@ function renderGrid(products) {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+  await loadExchangeRate();
   const grid = document.getElementById("catProductGrid");
   if (!grid) return; // not on category.html
 
