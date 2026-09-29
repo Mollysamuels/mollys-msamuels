@@ -167,7 +167,7 @@
           <a href="${item.link || 'shop.html'}"><img class="main" src="${item.img || 'assets/images/category/mollys-product.jpg'}" alt="${item.name}"></a>
           <button class="quick-add" data-addcart="${item.product_id}">Quick add</button>
         </div>
-        <div class="product-info"><h4>${item.name}</h4><div class="product-price"><span class="now">₦${Number(item.price).toLocaleString()}</span></div></div>
+        <div class="product-info"><h4>${item.name}</h4><div class="product-price"><span class="now">${formatPrice(item.price)}</span></div></div>
       </div>`).join("");
 
     grid.querySelectorAll("[data-remove]").forEach((btn) => {
@@ -181,13 +181,14 @@
       btn.addEventListener("click", (e) => {
         e.preventDefault();
         const item = list.find((w) => w.product_id === btn.dataset.addcart);
-        if (item) addToCart({ product_id: item.product_id, name: item.name, price: item.price, img: item.img, division: "mollys", size: "", color: "", qty: 1 });
+        if (item) addToCart({ product_id: item.product_id, name: item.name, price: item.price, img: item.img, division: item.division || "mollys", size: "", color: "", qty: 1 });
         const toast = document.querySelector(".toast");
         if (toast) { toast.querySelector("span").textContent = "Added to cart"; toast.classList.add("show"); setTimeout(() => toast.classList.remove("show"), 2400); }
       });
     });
   }
-  document.addEventListener("DOMContentLoaded", renderWishlist);
+  document.addEventListener("DOMContentLoaded", async () => { await loadExchangeRate(); renderWishlist(); });
+  document.addEventListener("currencyChanged", renderWishlist);
 </script>
 
 </body>
