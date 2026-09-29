@@ -23,13 +23,14 @@ function renderHomeCard(p) {
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
-        <div class="product-price"><span class="now">₦${Number(p.price_ngn).toLocaleString()}</span></div>
+        <div class="product-price"><span class="now">${formatPrice(p.price_ngn)}</span></div>
         ${swatches ? `<div class="swatches">${swatches}</div>` : ""}
       </div>
     </div>`;
 }
 
 async function fetchAndPrepend(gridId, filterFn) {
+  await loadExchangeRate();
   const grid = document.getElementById(gridId);
   if (!grid) return;
 
