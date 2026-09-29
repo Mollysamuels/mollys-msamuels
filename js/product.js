@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const titleEl = document.getElementById("prodTitle");
   if (titleEl) titleEl.textContent = PRODUCT.name;
   const priceEl = document.getElementById("prodPrice");
-  if (priceEl) { await loadExchangeRate(); priceEl.textContent = formatPrice(PRODUCT.price); }
+  if (priceEl) { await loadExchangeRate(); priceEl.dataset.priceNgn = PRODUCT.price; priceEl.textContent = formatPrice(PRODUCT.price); }
   document.addEventListener("currencyChanged", () => { if (priceEl) priceEl.textContent = formatPrice(PRODUCT.price); });
   const divisionTagEl = document.getElementById("prodDivisionTag");
   if (divisionTagEl) {
