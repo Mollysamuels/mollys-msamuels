@@ -58,41 +58,35 @@
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>Business Information</h2></div>
     <div class="checkout-grid-2">
-      <div class="auth-field"><label>Company name</label><input type="text" value="Molly Samuels"></div>
-      <div class="auth-field"><label>Contact email</label><input type="email" value="hello@mollysamuels.com"></div>
+      <div class="auth-field"><label>Company name</label><input type="text" id="asBizName"></div>
+      <div class="auth-field"><label>Contact email</label><input type="email" id="asBizEmail"></div>
     </div>
     <div class="checkout-grid-2">
-      <div class="auth-field"><label>Phone</label><input type="tel" value="+234 807 352 6290"></div>
-      <div class="auth-field"><label>Address</label><input type="text" value="No 5, Zone B, Apo Resettlement, Abuja"></div>
+      <div class="auth-field"><label>Phone</label><input type="tel" id="asBizPhone"></div>
+      <div class="auth-field"><label>Exchange rate — ₦ per £1</label><input type="number" id="asExchangeRate" placeholder="1800"></div>
     </div>
+    <p id="asBizMsg" style="display:none;color:#2D6B3B;font-size:0.85rem;margin-bottom:10px;">Saved.</p>
+    <button type="button" class="btn btn-gold" id="asBizSaveBtn" style="padding:9px 18px;font-size:0.85rem;">Save Business Info</button>
   </div>
 
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>Promotional Bar</h2></div>
     <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:12px;">Edit the rotating messages shown at the top of every page.</p>
-    <div class="auth-field"><input type="text" value="Trusted by 500+ schools | Easy 14-day returns | Bulk uniform orders available"></div>
-    <div class="auth-field"><input type="text" value="Best selling items | 5 star rated | Premium quality products"></div>
-    <div class="auth-field"><input type="text" value="Free delivery on bulk orders | Discounted prices | Fast processing"></div>
+    <div class="auth-field"><input type="text" id="asPromo1"></div>
+    <div class="auth-field"><input type="text" id="asPromo2"></div>
+    <div class="auth-field"><input type="text" id="asPromo3"></div>
+    <p id="asPromoMsg" style="display:none;color:#2D6B3B;font-size:0.85rem;margin-bottom:10px;">Saved — this applies to every page immediately.</p>
+    <button type="button" class="btn btn-gold" id="asPromoSaveBtn" style="padding:9px 18px;font-size:0.85rem;">Save Promo Bar</button>
   </div>
 
   <div class="admin-panel">
     <div class="admin-panel-head">
       <h2>Admin Users &amp; Permissions</h2>
-      <button type="button" class="btn btn-outline" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">+ Add Admin</button>
     </div>
-    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">All admins can see each other's activity. Each admin has their own login email and password. Only one admin may edit pricing at a time.</p>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">All admins can see each other's activity. Each admin has their own login email and password, created directly in Supabase Authentication. Only one admin may edit pricing at a time.</p>
     <table class="admin-table">
-      <tr><th>Name</th><th>Email</th><th>Role</th><th>Edit Pricing</th><th></th></tr>
-      <tr>
-        <td>You (Owner)</td><td>owner@mollysamuels.com</td><td><span class="admin-status-pill active">Owner</span></td>
-        <td><input type="radio" name="pricingEditor" checked></td>
-        <td class="admin-table-actions"><button aria-label="Edit">Edit</button></td>
-      </tr>
-      <tr>
-        <td>Staff Admin 1</td><td>staff1@mollysamuels.com</td><td><span class="admin-status-pill pending">Staff</span></td>
-        <td><input type="radio" name="pricingEditor"></td>
-        <td class="admin-table-actions"><button aria-label="Edit">Edit</button><button aria-label="Remove">Remove</button></td>
-      </tr>
+      <tr><th>Name</th><th>Role</th><th>Edit Pricing</th></tr>
+      <tbody id="asAdminRows"><tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading admins…</td></tr></tbody>
     </table>
   </div>
 
@@ -106,5 +100,62 @@
 </main>
 </div>
 <script src="js/admin-product-form.js"></script>
+<script>
+  document.addEventListener("adminReady", async () => {
+    const { data } = await supabaseClient.from("site_settings").select("*").eq("id", 1).single();
+    if (data) {
+      document.getElementById("asBizName").value = data.business_name || "";
+      document.getElementById("asBizEmail").value = data.business_email || "";
+      document.getElementById("asBizPhone").value = data.business_phone || "";
+      document.getElementById("asExchangeRate").value = data.exchange_rate || "";
+      const messages = (data.promo_bar_text || "").split(" | ");
+      document.getElementById("asPromo1").value = messages[0] || "";
+      document.getElementById("asPromo2").value = messages[1] || "";
+      document.getElementById("asPromo3").value = messages[2] || "";
+    }
+    loadAdminUsers();
+  });
+
+  document.getElementById("asBizSaveBtn").addEventListener("click", async () => {
+    const { error } = await supabaseClient.from("site_settings").update({
+      business_name: document.getElementById("asBizName").value.trim(),
+      business_email: document.getElementById("asBizEmail").value.trim(),
+      business_phone: document.getElementById("asBizPhone").value.trim(),
+      exchange_rate: parseFloat(document.getElementById("asExchangeRate").value) || 1800,
+    }).eq("id", 1);
+    const msg = document.getElementById("asBizMsg");
+    if (error) { alert("Couldn't save — please try again."); console.error(error); return; }
+    msg.style.display = "block";
+    setTimeout(() => { msg.style.display = "none"; }, 3000);
+  });
+
+  document.getElementById("asPromoSaveBtn").addEventListener("click", async () => {
+    const combined = [
+      document.getElementById("asPromo1").value.trim(),
+      document.getElementById("asPromo2").value.trim(),
+      document.getElementById("asPromo3").value.trim(),
+    ].filter(Boolean).join(" | ");
+    const { error } = await supabaseClient.from("site_settings").update({ promo_bar_text: combined }).eq("id", 1);
+    const msg = document.getElementById("asPromoMsg");
+    if (error) { alert("Couldn't save — please try again."); console.error(error); return; }
+    msg.style.display = "block";
+    setTimeout(() => { msg.style.display = "none"; }, 3000);
+  });
+
+  async function loadAdminUsers() {
+    const { data, error } = await supabaseClient.from("admin_users").select("*").order("full_name");
+    const tbody = document.getElementById("asAdminRows");
+    if (error || !data || !data.length) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">No admin users found.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = data.map((a) => `
+      <tr>
+        <td>${a.full_name || "—"}</td>
+        <td><span class="admin-status-pill ${a.role === "owner" ? "active" : "pending"}">${(a.role || "staff").charAt(0).toUpperCase() + (a.role || "staff").slice(1)}</span></td>
+        <td>${a.can_edit_pricing ? "✅ Yes" : "—"}</td>
+      </tr>`).join("");
+  }
+</script>
 </body>
 </html>
