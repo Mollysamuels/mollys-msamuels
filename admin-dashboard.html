@@ -56,30 +56,64 @@
 <div class="admin-content">
 
   <div class="admin-stats-grid">
-    <div class="admin-stat-card"><div class="label">Orders (30d)</div><div class="value">128</div><div class="delta">+12% vs last month</div></div>
-    <div class="admin-stat-card"><div class="label">Revenue (30d)</div><div class="value">₦4.2M</div><div class="delta">+8% vs last month</div></div>
-    <div class="admin-stat-card"><div class="label">Products</div><div class="value">312</div></div>
-    <div class="admin-stat-card"><div class="label">Customers</div><div class="value">870</div></div>
+    <div class="admin-stat-card"><div class="label">Orders (30d)</div><div class="value" id="statOrders30d">—</div></div>
+    <div class="admin-stat-card"><div class="label">Revenue (30d)</div><div class="value" id="statRevenue30d">—</div></div>
+    <div class="admin-stat-card"><div class="label">Products</div><div class="value" id="statProducts">—</div></div>
+    <div class="admin-stat-card"><div class="label">Customers</div><div class="value" id="statCustomers">—</div></div>
   </div>
 
   <div class="admin-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
-    <div class="admin-stat-card"><div class="label">Low Stock Items</div><div class="value">6</div></div>
-    <div class="admin-stat-card"><div class="label">Custom Order Requests</div><div class="value">4</div></div>
-    <div class="admin-stat-card"><div class="label">Bulk Enquiries</div><div class="value">2</div></div>
+    <div class="admin-stat-card"><div class="label">Low Stock Sizes</div><div class="value" id="statLowStock">—</div></div>
+    <div class="admin-stat-card"><div class="label">Custom Order Requests</div><div class="value" id="statCustomReq">—</div></div>
+    <div class="admin-stat-card"><div class="label">Bulk Enquiries</div><div class="value" id="statBulkReq">—</div></div>
   </div>
 
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>Recent Orders</h2><a href="admin-orders.html" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:underline;">View all →</a></div>
     <table class="admin-table">
-      <tr><th>Order</th><th>Customer</th><th>Division</th><th>Amount</th><th>Status</th></tr>
-      <tr><td>MS-20260921-0142</td><td>Jane Doe</td><td>Mixed</td><td>₦74,300</td><td><span class="admin-status-pill pending">Shipped</span></td></tr>
-      <tr><td>MS-20260920-0141</td><td>Chidi Okafor</td><td>M. Samuels</td><td>₦35,500</td><td><span class="admin-status-pill active">Delivered</span></td></tr>
-      <tr><td>MS-20260919-0140</td><td>Amara Bello</td><td>Mollys</td><td>₦26,500</td><td><span class="admin-status-pill pending">Processing</span></td></tr>
+      <tr><th>Order</th><th>Amount</th><th>Status</th></tr>
+      <tbody id="dashRecentOrders"><tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
     </table>
   </div>
 
 </div>
 </main>
 </div>
+<script>
+  document.addEventListener("adminReady", async () => {
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [ordersRes, productsRes, customersRes, sizesRes, customReqRes, bulkReqRes] = await Promise.all([
+      supabaseClient.from("orders").select("total, order_number, status, created_at").gte("created_at", thirtyDaysAgo).order("created_at", { ascending: false }),
+      supabaseClient.from("products").select("id", { count: "exact", head: true }).neq("status", "discontinued"),
+      supabaseClient.from("customers").select("id", { count: "exact", head: true }),
+      supabaseClient.from("product_sizes").select("id", { count: "exact", head: true }).eq("in_stock", false),
+      supabaseClient.from("custom_order_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
+      supabaseClient.from("bulk_order_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
+    ]);
+
+    const orders = ordersRes.data || [];
+    document.getElementById("statOrders30d").textContent = orders.length;
+    document.getElementById("statRevenue30d").textContent = `₦${orders.reduce((sum, o) => sum + Number(o.total), 0).toLocaleString()}`;
+    document.getElementById("statProducts").textContent = productsRes.count ?? "—";
+    document.getElementById("statCustomers").textContent = customersRes.count ?? "—";
+    document.getElementById("statLowStock").textContent = sizesRes.count ?? "—";
+    document.getElementById("statCustomReq").textContent = customReqRes.count ?? "—";
+    document.getElementById("statBulkReq").textContent = bulkReqRes.count ?? "—";
+
+    const tbody = document.getElementById("dashRecentOrders");
+    const recent = orders.slice(0, 5);
+    if (!recent.length) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">No orders in the last 30 days.</td></tr>`;
+    } else {
+      tbody.innerHTML = recent.map((o) => `
+        <tr>
+          <td>${o.order_number}</td>
+          <td>₦${Number(o.total).toLocaleString()}</td>
+          <td><span class="admin-status-pill ${o.status === "delivered" || o.status === "paid" ? "active" : o.status === "cancelled" ? "low" : "pending"}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
+        </tr>`).join("");
+    }
+  });
+</script>
 </body>
 </html>
