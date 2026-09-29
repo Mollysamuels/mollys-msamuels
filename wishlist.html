@@ -167,7 +167,7 @@
           <a href="${item.link || 'shop.html'}"><img class="main" src="${item.img || 'assets/images/category/mollys-product.jpg'}" alt="${item.name}"></a>
           <button class="quick-add" data-addcart="${item.product_id}">Quick add</button>
         </div>
-        <div class="product-info"><h4>${item.name}</h4><div class="product-price"><span class="now">${formatPrice(item.price)}</span></div></div>
+        <div class="product-info"><h4>${item.name}</h4><div class="product-price"><span class="now" data-price-ngn="${item.price}">${formatPrice(item.price)}</span></div></div>
       </div>`).join("");
 
     grid.querySelectorAll("[data-remove]").forEach((btn) => {
