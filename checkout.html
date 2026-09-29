@@ -171,12 +171,26 @@
 <script>
   // Reads the real, actual cart — same cart shown on cart.html, built by
   // js/main.js's getCart(). Whatever's really in the cart is what checks out.
-  let DELIVERY_FEE = 2500; // real value loaded from admin settings on page load
   const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const DEFAULT_DELIVERY_FEE = 2500; // used only for old-style items with no real product id
 
   let currentCustomer = null;
+  let currentDeliveryFee = 0;
 
-  function renderSummary() {
+  // Delivery = sum of each DISTINCT real product's own fee — buying more of
+  // the same item never multiplies it, since it ships in the same parcel.
+  async function calculateDeliveryFee(cart) {
+    const realIds = [...new Set(cart.filter((i) => UUID_PATTERN.test(i.product_id)).map((i) => i.product_id))];
+    const hasNonRealItem = cart.some((i) => !UUID_PATTERN.test(i.product_id));
+    let total = hasNonRealItem ? DEFAULT_DELIVERY_FEE : 0;
+    if (realIds.length) {
+      const { data } = await supabaseClient.from("products").select("delivery_fee_ngn").in("id", realIds);
+      (data || []).forEach((p) => { total += Number(p.delivery_fee_ngn) || 0; });
+    }
+    return total;
+  }
+
+  async function renderSummary() {
     const cart = getCart();
     const itemsEl = document.getElementById("coSummaryItems");
     const totalEl = document.getElementById("coTotal");
@@ -184,25 +198,25 @@
 
     if (!cart.length) {
       itemsEl.innerHTML = `<p style="font-size:0.85rem;color:var(--ink-soft);">Your cart is empty. <a href="shop.html" style="color:var(--umber-deep);text-decoration:underline;">Go shopping →</a></p>`;
-      totalEl.textContent = "₦0";
+      totalEl.textContent = formatPrice(0);
       if (placeBtn) placeBtn.disabled = true;
       return;
     }
 
     itemsEl.innerHTML = cart.map((item) =>
-      `<div class="summary-row"><span>${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}</span><span>₦${(item.price * item.qty).toLocaleString()}</span></div>`
+      `<div class="summary-row"><span>${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}</span><span>${formatPrice(item.price * item.qty)}</span></div>`
     ).join("");
 
-    document.getElementById("coDeliveryFee").textContent = `₦${DELIVERY_FEE.toLocaleString()}`;
+    currentDeliveryFee = await calculateDeliveryFee(cart);
+    document.getElementById("coDeliveryFee").textContent = formatPrice(currentDeliveryFee);
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    totalEl.textContent = `₦${(subtotal + DELIVERY_FEE).toLocaleString()}`;
+    totalEl.textContent = formatPrice(subtotal + currentDeliveryFee);
   }
 
   document.addEventListener("DOMContentLoaded", async () => {
-    const { data: settings } = await supabaseClient.from("site_settings").select("delivery_fee_ngn").eq("id", 1).single();
-    if (settings) DELIVERY_FEE = settings.delivery_fee_ngn;
-
-    renderSummary();
+    await loadExchangeRate();
+    await renderSummary();
+    document.addEventListener("currencyChanged", renderSummary);
 
     const { data: { session } } = await supabaseClient.auth.getSession();
 
@@ -264,14 +278,14 @@
     }
 
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const total = subtotal + DELIVERY_FEE;
+    const total = subtotal + currentDeliveryFee;
     const orderNumber = `MS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
 
     const { data: order, error: orderError } = await supabaseClient.from("orders").insert({
       order_number: orderNumber,
       customer_id: currentCustomer.id,
       status: "new",
-      subtotal, delivery_fee: DELIVERY_FEE, total,
+      subtotal, delivery_fee: currentDeliveryFee, total,
       currency: "NGN",
       delivery_address: `${address}, ${city}, ${document.getElementById("coState").value.trim()}`,
     }).select("id").single();
