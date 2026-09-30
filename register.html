@@ -123,11 +123,12 @@
     // If email confirmation is required, there's no real session yet —
     // sending them to a protected page now would just look broken.
     if (!data.session) {
+      document.getElementById("registerForm").style.display = "none";
+      document.querySelector(".auth-switch").style.display = "none";
       errorEl.style.color = "#2D6B3B";
+      errorEl.style.fontSize = "1rem";
       errorEl.textContent = "Account created! Please check your email and click the confirmation link before logging in.";
       errorEl.style.display = "block";
-      btn.textContent = "Create Account";
-      btn.disabled = false;
       return;
     }
 
