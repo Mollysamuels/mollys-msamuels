@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirming Payment — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+</head>
+<body>
+<div class="wrap" style="max-width:520px;padding-top:100px;padding-bottom:100px;text-align:center;">
+  <a href="index.html" class="logo-mark" style="display:inline-flex;margin-bottom:40px;">Molly <span>Samuels</span></a>
+
+  <div id="pcChecking">
+    <div style="width:44px;height:44px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 24px;animation:pcspin 0.8s linear infinite;"></div>
+    <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.6rem;margin-bottom:10px;">Confirming your payment…</h1>
+    <p style="color:var(--ink-soft);font-size:0.95rem;">This usually only takes a few seconds. Please don't close this page.</p>
+  </div>
+
+  <div id="pcSuccess" style="display:none;">
+    <div style="width:64px;height:64px;background:#E8F5EA;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#2D6B3B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.8rem;margin-bottom:10px;">Payment confirmed!</h1>
+    <p style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:28px;">Thank you — your order is being processed.</p>
+    <a href="#" id="pcContinueBtn" class="btn btn-gold">View Your Order</a>
+  </div>
+
+  <div id="pcFailed" style="display:none;">
+    <div style="width:64px;height:64px;background:#FDECEC;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#B23A3A" stroke-width="2.5" stroke-linecap="round"/></svg>
+    </div>
+    <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.8rem;margin-bottom:10px;">Payment not completed</h1>
+    <p style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:28px;">Your cart is still saved — nothing was charged. You can try again whenever you're ready.</p>
+    <a href="checkout.html" class="btn btn-gold">Back to Checkout</a>
+  </div>
+</div>
+
+<style>
+  @keyframes pcspin { to { transform: rotate(360deg); } }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  const reference = new URLSearchParams(window.location.search).get("reference");
+  let attempts = 0;
+  const maxAttempts = 10; // ~20 seconds of polling — the webhook is usually near-instant
+
+  async function checkOrderStatus() {
+    if (!reference) { showFailed(); return; }
+
+    const { data: order } = await supabaseClient
+      .from("orders")
+      .select("order_number, status")
+      .eq("payment_reference", reference)
+      .single();
+
+    if (order && order.status === "paid") {
+      showSuccess(order.order_number);
+      return;
+    }
+
+    attempts++;
+    if (attempts >= maxAttempts) {
+      showFailed();
+      return;
+    }
+    setTimeout(checkOrderStatus, 2000);
+  }
+
+  function showSuccess(orderNumber) {
+    clearCart(); // only now — payment is genuinely confirmed by the database, not just by this page loading
+    document.getElementById("pcChecking").style.display = "none";
+    document.getElementById("pcSuccess").style.display = "block";
+    document.getElementById("pcContinueBtn").href = `order-success.html?order=${orderNumber}`;
+  }
+
+  function showFailed() {
+    document.getElementById("pcChecking").style.display = "none";
+    document.getElementById("pcFailed").style.display = "block";
+  }
+
+  // clearCart() lives in js/main.js, but this page intentionally doesn't
+  // load the whole shared header/nav — load just what's needed for it.
+  function clearCart() {
+    localStorage.setItem("molly_samuels_cart", "[]");
+  }
+
+  checkOrderStatus();
+</script>
+</body>
+</html>
