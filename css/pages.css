@@ -1,6 +1,6 @@
 /* ---------- About page ---------- */
 .about-hero { position: relative; min-height: 46vh; display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; color: #fff; }
-.about-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+.about-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; opacity: 0.6; }
 .about-hero::after { content: ""; position: absolute; inset: 0; background: rgba(0,0,0,0.4); }
 .about-hero-content { position: relative; z-index: 2; padding: 0 24px; }
 .about-hero-content span { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--gold); font-weight: 700; display: block; margin-bottom: 12px; }
@@ -11,7 +11,7 @@
 .about-section p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.75; max-width: 68ch; margin-bottom: 16px; }
 
 .about-divisions { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 30px 0 80px; }
-.about-division-card img { width: 100%; aspect-ratio: 7/8; object-fit: cover; border-radius: var(--radius-m); margin-bottom: 20px; }
+.about-division-card img { width: 100%; aspect-ratio: 7/8; object-fit: cover; object-position: top; border-radius: var(--radius-m); margin-bottom: 20px; }
 .about-division-card h3 { font-family: var(--font-display); font-style: italic; font-weight: 500; font-size: 1.4rem; margin-bottom: 10px; }
 .about-division-card p { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 16px; }
 
@@ -40,4 +40,66 @@
 
 @media (max-width: 860px) {
   .contact-layout { grid-template-columns: 1fr; }
+}
+
+/* ---------- Founder's Story (About page) ---------- */
+.founder-story { padding: 20px 0 80px; }
+.founder-photo-block {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto 48px;
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  aspect-ratio: 4/5;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+}
+.founder-photo-block img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+.founder-story-body {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.founder-eyebrow {
+  display: block;
+  text-align: center;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--gold);
+  margin-bottom: 10px;
+}
+.founder-story-body h2 {
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 40px;
+  line-height: 1.25;
+}
+.founder-story-body h3 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 500;
+  font-size: 1.3rem;
+  margin: 40px 0 16px;
+  color: var(--umber-deep);
+}
+.founder-story-body p {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+.founder-uniform-list {
+  margin: 8px 0 24px 20px;
+  padding: 0;
+}
+.founder-uniform-list li {
+  font-size: 1rem;
+  line-height: 1.9;
+  color: var(--ink);
+}
+
+@media (max-width: 700px) {
+  .founder-photo-block { max-width: 100%; aspect-ratio: 4/4.5; }
 }
