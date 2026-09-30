@@ -26,32 +26,25 @@ const TAB_ICONS = {
   boys:        '<circle cx="20" cy="10" r="4"/><path d="M12 34 L14 18 H26 L28 34"/><line x1="20" y1="18" x2="20" y2="30"/>',
   girls:       '<circle cx="20" cy="9" r="4"/><path d="M13 34 L16 15 H24 L27 34 L20 28 Z"/>',
   accessories: ICONS.bag,
-  bespoke:     '<circle cx="10" cy="28" r="3"/><circle cx="10" cy="12" r="3"/><line x1="13" y1="14" x2="30" y2="30"/><line x1="13" y1="26" x2="30" y2="10"/>',
 };
 
+// Trimmed to exactly what's in the real brochure — no more Zeco-style
+// placeholder categories. School Blazers, Sportswear, Ties and Customised
+// Socks are genuinely shared items, so they appear under more than one
+// tab on purpose (same category page either way, not duplicated products).
 const CATEGORY_DATA = {
   boys: [
-    ["Unisex Blazers", "jacket"], ["Boys Shirts", "shirt"], ["Boys Trousers & Shorts", "trouser"],
-    ["T-Shirts & Polo Shirts", "shirt"], ["Sweatshirts & Bottoms", "jacket"], ["Knitwear & Fleeces", "jacket"],
-    ["PE Shorts", "shorts"], ["Boys Swimwear", "dress"], ["Socks & Sport Socks", "sock"],
-    ["Jackets & Coats", "jacket"], ["Rugby Jerseys", "shirt"],
+    ["School Blazers", "jacket"], ["Boys Shirts", "shirt"], ["Boys Trousers & Shorts", "trouser"],
+    ["Joggers", "trouser"], ["Jackets & Coats", "jacket"], ["PE Shorts", "shorts"],
+    ["Sportswear", "shirt"], ["Ties", "tie"], ["Customised Socks", "sock"],
   ],
   girls: [
-    ["Girls Blazers", "jacket"], ["Blouses", "shirt"], ["T-Shirts & Polo Shirts", "shirt"],
-    ["Knitwear & Fleeces", "jacket"], ["Sweatshirts & Bottoms", "jacket"], ["Skirts & Pinafores", "skirt"],
-    ["Tartans", "skirt"], ["Girls Trousers", "trouser"], ["Socks & Tights", "sock"],
-    ["Girls Swimwear", "dress"], ["Summer Dresses", "dress"], ["PE Shorts & Skorts", "shorts"],
-    ["Leggings & Leotards", "trouser"], ["Jackets & Coats", "jacket"], ["Multicultural Clothing", "dress"],
+    ["School Blazers", "jacket"], ["Girls Shirts", "shirt"], ["Girls Blouses", "shirt"],
+    ["Skirts & Pinafores", "skirt"], ["T-Shirts & Polo Shirts", "shirt"], ["Knitwear & Cardigans", "jacket"],
+    ["Sportswear", "shirt"], ["Ties", "tie"], ["Customised Socks", "sock"],
   ],
   accessories: [
-    ["School Bags", "bag"], ["Socks & Sport Socks", "sock"], ["Plimsolls", "shoe"],
-    ["Shin Guards & Gum Shields", "generic"], ["Swimwear Accessories", "generic"], ["Hair Accessories", "generic"],
-    ["Aprons & Lab Coats", "jacket"], ["Caps", "cap"], ["Hats & Scarves", "cap"],
-    ["Name Tab Kit & Hem Web Kit", "generic"], ["Ties", "tie"], ["Water Bottles", "bottle"],
-  ],
-  bespoke: [
-    ["Bespoke Blazers & Jackets", "jacket"], ["Bespoke Shirts & Blouses", "shirt"],
-    ["Bespoke Knitwear", "jacket"], ["Bespoke Tartan Skirts & Pinafores", "skirt"],
+    ["Ties", "tie"], ["Customised Socks", "sock"],
   ],
 };
 
@@ -82,7 +75,6 @@ const SECTION_LABELS = {
   boys: "Boys School Uniform",
   girls: "Girls School Uniform",
   accessories: "School Uniform Accessories",
-  bespoke: "Bespoke School Uniform",
 };
 
 function renderSingleSection(sectionKey, gridEl) {
