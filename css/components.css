@@ -143,6 +143,10 @@
   transition: opacity 0.4s ease;
 }
 .product-media img.alt { opacity: 0; }
+/* Continuous auto-crossfade — used on new-arrivals.html so cards show
+   their alt photo on their own, not only on hover. */
+.product-card.auto-alt .product-media img.main { opacity: 0; }
+.product-card.auto-alt .product-media img.alt { opacity: 1; }
 .product-card:hover .product-media img.main { opacity: 0; }
 .product-card:hover .product-media img.alt { opacity: 1; }
 
