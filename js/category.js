@@ -5,32 +5,24 @@
 
 // M. Samuels categories, grouped by section — used both to detect division
 // and to pick the correct section banner (Boys/Girls/Accessories/Bespoke).
+// Trimmed to exactly the real brochure catalog — matches CATEGORY_DATA in
+// js/msamuels.js. School Blazers, Sportswear, Ties and Customised Socks are
+// genuinely shared, so they appear in more than one set on purpose.
 const BOYS_SLUGS = new Set([
-  "unisex-blazers", "boys-shirts", "boys-trousers-and-shorts", "t-shirts-and-polo-shirts",
-  "sweatshirts-and-bottoms", "knitwear-and-fleeces", "pe-shorts", "boys-swimwear",
-  "socks-and-sport-socks", "jackets-and-coats", "rugby-jerseys", "joggers", "sportswear",
+  "school-blazers", "boys-shirts", "boys-trousers-and-shorts", "joggers",
+  "jackets-and-coats", "pe-shorts", "sportswear", "ties", "customised-socks",
 ]);
 const GIRLS_SLUGS = new Set([
-  "girls-blazers", "blouses", "girls-blouses", "skirts-and-pinafores", "tartans", "girls-trousers",
-  "socks-and-tights", "girls-swimwear", "summer-dresses", "pe-shorts-and-skorts",
-  "leggings-and-leotards", "multicultural-clothing",
+  "school-blazers", "girls-shirts", "girls-blouses", "skirts-and-pinafores",
+  "t-shirts-and-polo-shirts", "knitwear-and-cardigans", "sportswear", "ties", "customised-socks",
 ]);
-const ACCESSORIES_SLUGS = new Set([
-  "school-bags", "plimsolls", "shin-guards-and-gum-shields", "swimwear-accessories",
-  "hair-accessories", "aprons-and-lab-coats", "caps", "hats-and-scarves",
-  "name-tab-kit-and-hem-web-kit", "ties", "water-bottles", "knitwear-and-cardigans",
-]);
-const BESPOKE_SLUGS = new Set([
-  "bespoke-blazers-and-jackets", "bespoke-shirts-and-blouses", "bespoke-knitwear",
-  "bespoke-tartan-skirts-and-pinafores",
-]);
-const MSAMUELS_SLUGS = new Set([...BOYS_SLUGS, ...GIRLS_SLUGS, ...ACCESSORIES_SLUGS, ...BESPOKE_SLUGS]);
+const ACCESSORIES_SLUGS = new Set(["ties", "customised-socks"]);
+const MSAMUELS_SLUGS = new Set([...BOYS_SLUGS, ...GIRLS_SLUGS, ...ACCESSORIES_SLUGS]);
 
 function getMsamuelsSection(slug) {
   if (BOYS_SLUGS.has(slug)) return "boys";
   if (GIRLS_SLUGS.has(slug)) return "girls";
   if (ACCESSORIES_SLUGS.has(slug)) return "accessories";
-  if (BESPOKE_SLUGS.has(slug)) return "bespoke";
   return "boys"; // sensible fallback for any future slug not yet categorised
 }
 
@@ -46,20 +38,14 @@ function generatePlaceholderProducts(slug, name, division, count) {
 
   const products = [];
   for (let i = 0; i < count; i++) {
-    // The very first Unisex Blazers card links to the fully-built rich
-    // demo page instead of the generic template, so there's at least one
-    // complete example of the full pattern (multi-view gallery, real
-    // colour photos) reachable from an actual category page.
-    const isRichDemo = slug === "unisex-blazers" && i === 0;
-
     products.push({
-      name: isRichDemo ? "School Blazer" : `${name} — ${styleLabels[i % styleLabels.length]}`,
-      price: isRichDemo ? 35500 : basePrice + i * 1500,
+      name: `${name} — ${styleLabels[i % styleLabels.length]}`,
+      price: basePrice + i * 1500,
       img1, img2,
       slug: `${slug}-${i + 1}`,
       division,
       category: slug,
-      linkOverride: isRichDemo ? "product.html?item=blazer-classic" : null,
+      linkOverride: null,
     });
   }
   return products;
