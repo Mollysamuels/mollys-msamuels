@@ -13,10 +13,9 @@ const SHOP_PRODUCTS = [
   { name: "Woven Slide Sandals", price: 13200, division: "mollys", category: "sandals", img: "assets/images/mollys/prod-sandals-1.jpg" },
   { name: "Linen Wrap Top", price: 12800, division: "mollys", category: "tops", img: "assets/images/mollys/prod-top-1.jpg" },
   { name: "Gold Hoop Earrings", price: 6200, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-earrings-1.jpg" },
-  { name: "Boys Short Sleeve Shirt", price: 9800, division: "msamuels", category: "boys-shirts", img: "assets/images/msamuels/prod-labcoat-1.jpg" },
-  { name: "Classic Lab Coat", price: 19500, division: "msamuels", category: "aprons-and-lab-coats", img: "assets/images/msamuels/prod-labcoat-1.jpg" },
-  { name: "Zip Front Pinafore", price: 16500, division: "msamuels", category: "skirts-and-pinafores", img: "assets/images/msamuels/prod-uniform-1.jpg" },
-  { name: "Varsity Jacket", price: 21500, division: "msamuels", category: "jackets-and-coats", img: "assets/images/msamuels/prod-sportswear-1.jpg" },
+  { name: "Short Sleeve Shirt", price: 9800, division: "msamuels", category: "boys-shirts", img: "assets/images/msamuels/short-sleeve-shirt-main.jpg" },
+  { name: "Zip Front Pinafore", price: 16500, division: "msamuels", category: "skirts-and-pinafores", img: "assets/images/msamuels/zip-front-pinafore-main.jpg" },
+  { name: "Varsity Jacket", price: 21500, division: "msamuels", category: "jackets-and-coats", img: "assets/images/msamuels/varsity-jacket-main.jpg" },
 ];
 
 async function fetchRealProducts() {
