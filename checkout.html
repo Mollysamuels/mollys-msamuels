@@ -155,9 +155,9 @@
   </div>
 </footer>
 
-<button class="chat-fab" aria-label="Chat with support">
-  <svg viewBox="0 0 24 24" fill="none"><path d="M21 12a8 8 0 11-3.6-6.7L21 4l-1 4.2A8 8 0 0121 12z" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="12" r="1" fill="currentColor"/><circle cx="12" cy="12" r="1" fill="currentColor"/><circle cx="15" cy="12" r="1" fill="currentColor"/></svg>
-</button>
+<a href="https://wa.me/2348037865059" class="chat-fab" aria-label="Chat with us on WhatsApp" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.4 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2z" stroke="currentColor" stroke-width="1.4"/><path d="M8.5 8.7c.2-.5.5-.5.7-.5h.5c.2 0 .4 0 .5.4.2.5.6 1.6.7 1.7.1.1.1.3 0 .4-.1.2-.2.3-.3.5-.2.1-.3.3-.1.5.7 1.2 1.5 1.8 2.7 2.4.2.1.3.1.4-.1.2-.2.5-.6.7-.8.1-.2.3-.2.5-.1.7.3 1.4.7 2 1 .1 0 .2.1.2.3 0 .5-.1 1.1-.4 1.4-.3.4-1 .7-1.7.7-1.6 0-3.4-.9-4.7-2.2-1.3-1.3-2.1-2.9-2.3-3.4-.1-.4-.3-1.1-.1-1.6z" fill="currentColor"/></svg>
+</a>
 
 <!-- Supabase client — replace the two placeholder values below with your own
      Project URL and anon public key from Settings > Data API before uploading. -->
@@ -265,77 +265,51 @@
       return;
     }
 
-    btn.disabled = true;
-    btn.textContent = "Placing order...";
-
     const address = document.getElementById("coAddress").value.trim();
     const city = document.getElementById("coCity").value.trim();
     if (!address || !city) {
       errorEl.textContent = "Please fill in your delivery address and city.";
       errorEl.style.display = "block";
-      btn.disabled = false; btn.textContent = "Place Order";
       return;
     }
 
-    const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-    const total = subtotal + currentDeliveryFee;
-    const orderNumber = `MS-${new Date().toISOString().slice(0,10).replace(/-/g,"")}-${Math.floor(1000 + Math.random() * 9000)}`;
+    btn.disabled = true;
+    btn.textContent = "Redirecting to payment...";
 
-    const { data: order, error: orderError } = await supabaseClient.from("orders").insert({
-      order_number: orderNumber,
-      customer_id: currentCustomer.id,
-      status: "new",
-      subtotal, delivery_fee: currentDeliveryFee, total,
-      currency: "NGN",
-      delivery_address: `${address}, ${city}, ${document.getElementById("coState").value.trim()}`,
-    }).select("id").single();
+    // Note: the price/total shown here is only a preview for you to review —
+    // it is never what actually gets charged. The real amount is computed
+    // fresh, server-side, from the database itself, in create-payment.
+    const { data: { session } } = await supabaseClient.auth.getSession();
 
-    if (orderError) {
-      console.error("Order creation failed:", orderError);
-      errorEl.textContent = `Something went wrong: ${orderError.message}`;
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/create-payment`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({
+        cart,
+        address, city,
+        state: document.getElementById("coState").value.trim(),
+        fullName: currentCustomer.full_name,
+        phone: currentCustomer.phone,
+      }),
+    });
+
+    const result = await res.json();
+
+    if (!res.ok || result.error) {
+      errorEl.textContent = result.error || "Something went wrong starting payment. Please try again.";
       errorEl.style.display = "block";
-      btn.disabled = false; btn.textContent = "Place Order";
+      btn.disabled = false;
+      btn.textContent = "Place Order";
       return;
     }
 
-    // A cart item's product_id might not be a real UUID (e.g. it came from
-    // an older placeholder-style card) — save it as null in that case rather
-    // than letting one bad value silently break every item in the order.
-    const itemRows = cart.map((item) => ({
-      order_id: order.id,
-      product_id: UUID_PATTERN.test(item.product_id) ? item.product_id : null,
-      size_label: item.size || null,
-      color_name: item.color || null,
-      quantity: item.qty,
-      unit_price: item.price,
-    }));
-    const { error: itemsError } = await supabaseClient.from("order_items").insert(itemRows);
-    if (itemsError) console.error("Order items failed to save (order itself was still placed):", itemsError);
-
-    clearCart(); // the order is placed — empty the cart, same as any real store
-
-    // Fire the order confirmation + admin notification emails. Using a
-    // direct fetch here (instead of supabase.functions.invoke) so we can
-    // see and control exactly what's sent — this doesn't block checkout if
-    // it fails, the order itself is already saved either way.
-    try {
-      const emailPayload = { orderNumber, customerEmail: currentCustomer.email, customerName: currentCustomer.full_name, total };
-      console.log("Sending order email with payload:", emailPayload);
-
-      const emailRes = await fetch(`${SUPABASE_URL}/functions/v1/send-order-email`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
-        },
-        body: JSON.stringify(emailPayload),
-      });
-      console.log("Order email function responded with status:", emailRes.status);
-    } catch (emailError) {
-      console.error("Order email failed to send (order itself was still placed fine):", emailError);
-    }
-
-    window.location.href = `order-success.html?order=${orderNumber}`;
+    // The cart stays as-is until payment-callback.html confirms the order
+    // is genuinely paid — if the customer abandons Paystack's page, their
+    // cart is still there when they come back.
+    window.location.href = result.authorization_url;
   }
 </script>
 </body>
