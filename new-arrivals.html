@@ -220,6 +220,17 @@
 </div>
 
 <script src="js/main.js"></script>
+<script>
+  // Each card crossfades between its main and alt photo on its own —
+  // not only on hover — with a slightly staggered timing per card so they
+  // don't all flip in perfect unison.
+  document.querySelectorAll("#newArrivalsGrid .product-card").forEach((card, i) => {
+    if (!card.querySelector(".product-media img.alt")) return; // nothing to crossfade to
+    setInterval(() => {
+      card.classList.toggle("auto-alt");
+    }, 2600 + i * 350);
+  });
+</script>
 
 </body>
 </html>
