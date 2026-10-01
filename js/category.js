@@ -4,7 +4,7 @@
 // ============================================
 
 // M. Samuels categories, grouped by section — used both to detect division
-// and to pick the correct section banner (Boys/Girls/Accessories/Bespoke).
+// and to pick the correct section banner (Boys/Girls/Accessories).
 // Trimmed to exactly the real brochure catalog — matches CATEGORY_DATA in
 // js/msamuels.js. School Blazers, Sportswear, Ties and Customised Socks are
 // genuinely shared, so they appear in more than one set on purpose.
