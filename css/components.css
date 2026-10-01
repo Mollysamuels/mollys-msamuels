@@ -159,11 +159,9 @@
   border: none;
   display: flex; align-items: center; justify-content: center;
   color: var(--umber-deep);
-  opacity: 0;
-  transform: translateY(-4px);
-  transition: opacity 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  opacity: 1;
+  transition: transform 0.2s ease, color 0.2s ease;
 }
-.product-card:hover .wish-btn { opacity: 1; transform: translateY(0); }
 .wish-btn svg { width: 16px; height: 16px; }
 .wish-btn.active, .wish-btn:hover { color: #B23A3A; }
 
