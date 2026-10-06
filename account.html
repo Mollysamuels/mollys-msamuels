@@ -87,6 +87,7 @@
       <a href="#profile" class="active" data-tab="profile">Profile</a>
       <a href="#orders" data-tab="orders">Orders</a>
       <a href="wishlist.html">Wishlist</a>
+      <a href="admin-dashboard.html" id="acctAdminLink" style="display:none;">Admin Dashboard</a>
       <a href="#" class="customer-logout">Log Out</a>
     </nav>
 
@@ -155,6 +156,15 @@
     await loadExchangeRate();
     document.body.style.visibility = "visible";
     const c = e.detail;
+
+    // Show the "Admin Dashboard" link only to admins. This just decides whether
+    // the link appears — the admin pages and database still enforce access themselves.
+    const { data: adminRow } = await supabaseClient
+      .from("admin_users")
+      .select("id")
+      .eq("id", c.id)
+      .maybeSingle();
+    if (adminRow) document.getElementById("acctAdminLink").style.display = "";
 
     document.getElementById("acctGreeting").textContent = c.full_name ? `Welcome, ${c.full_name}` : "My Account";
     document.getElementById("acctName").value = c.full_name;
