@@ -74,7 +74,7 @@
     const email = document.getElementById("loginEmail").value;
     const password = document.getElementById("loginPassword").value;
 
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
     if (error) {
       errorEl.textContent = error.message.includes("Email not confirmed")
@@ -85,8 +85,22 @@
       btn.disabled = false;
       return;
     }
-    const redirect = new URLSearchParams(window.location.search).get("redirect");
-    window.location.href = redirect || "account.html";
+    // A redirect is only honoured if it's a plain page name like "checkout.html" —
+    // never a full web address or script, so a crafted link can't send people elsewhere.
+    const rawRedirect = new URLSearchParams(window.location.search).get("redirect");
+    const safeRedirect = rawRedirect && /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&%.-]*)?$/.test(rawRedirect) ? rawRedirect : null;
+    if (safeRedirect) {
+      window.location.href = safeRedirect;
+      return;
+    }
+
+    // No specific destination: admins go straight to the dashboard, everyone else to their account.
+    const { data: adminRow } = await supabaseClient
+      .from("admin_users")
+      .select("id")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    window.location.href = adminRow ? "admin-dashboard.html" : "account.html";
   });
 </script>
 </body>
