@@ -41,6 +41,9 @@
 @media (max-width: 480px) {
   .wrap { padding: 0 18px; }
   .header-row { padding: 14px 18px; }
+  .header-actions { gap: 4px; }
+  .header-row .logo-mark { font-size: 1.05rem; }
+  .market-btn { padding: 6px 8px; gap: 4px; }
   .product-grid { grid-template-columns: 1fr 1fr; gap: 14px 10px; }
   .newsletter-form { flex-direction: column; }
   .footer-bottom { flex-direction: column; text-align: center; }
@@ -48,12 +51,12 @@
 }
 
 /* ---------- Mobile header simplification ----------
-   Wishlist and Market selector move inside the slide-out menu;
-   Account stays visible in the header bar (kept accessible directly, not
-   just via the hamburger menu). */
+   Wishlist moves inside the slide-out menu. Account and the currency
+   switch stay visible in the header bar (just the flag + arrow on mobile,
+   since the text label is hidden above) so UK visitors can find it. */
 @media (max-width: 860px) {
   .header-actions { gap: 10px; }
-  .market-selector { display: none; }
+  .market-menu { right: 0; left: auto; }
   a.icon-btn[aria-label="Wishlist"] { display: none; }
   .mobile-menu-extra {
     display: flex;
