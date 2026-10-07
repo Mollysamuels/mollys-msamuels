@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Unsubscribe — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+</head>
+<body>
+<div class="wrap" style="max-width:520px;padding-top:100px;padding-bottom:100px;text-align:center;">
+  <a href="index.html" class="logo-mark" style="display:inline-flex;margin-bottom:40px;">Molly <span>Samuels</span></a>
+
+  <div id="unAsk" style="display:none;">
+    <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.8rem;margin-bottom:10px;">Unsubscribe from our emails?</h1>
+    <p style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:28px;line-height:1.6;">If you unsubscribe, you won't get our newsletters or offers any more. It only takes one tap.</p>
+    <button type="button" id="unYes" class="btn btn-gold" style="margin-bottom:14px;">Yes, unsubscribe me</button>
+    <p style="font-size:0.88rem;"><a href="index.html" style="text-decoration:underline;color:var(--ink-soft);">No, keep me subscribed</a></p>
+  </div>
+
+  <div id="unResult" style="display:none;">
+    <div id="unIcon" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:1.8rem;font-weight:700;"></div>
+    <h1 id="unTitle" style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.8rem;margin-bottom:10px;"></h1>
+    <p id="unText" style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:28px;line-height:1.6;"></p>
+    <a id="unBtn" href="index.html" class="btn btn-gold">Go to the homepage</a>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  const OUTCOMES = {
+    unsubscribed: { good: true,  title: "You've been unsubscribed", text: "You won't get our newsletters or offers any more. We're sorry to see you go. If this was a mistake, please get in touch and we'll help.", btn: ["Contact us", "contact.html"] },
+    already:      { good: true,  title: "You're already unsubscribed", text: "This email address is already off our list, so there's nothing more to do.", btn: ["Go to the homepage", "index.html"] },
+    invalid:      { good: false, title: "This link isn't valid", text: "The link may have been copied incorrectly. If you want our emails to stop, please contact us and we'll take you off the list.", btn: ["Contact us", "contact.html"] },
+    preview:      { good: true,  title: "This is a preview link", text: "There's nothing to unsubscribe from here. Every real newsletter contains a personal unsubscribe link.", btn: ["Go to the homepage", "index.html"] },
+    error:        { good: false, title: "Something went wrong", text: "We couldn't unsubscribe you just now. Please try again in a few minutes, or contact us.", btn: ["Contact us", "contact.html"] },
+  };
+  function show(kind) {
+    const o = OUTCOMES[kind] || OUTCOMES.error;
+    document.getElementById("unAsk").style.display = "none";
+    document.getElementById("unResult").style.display = "block";
+    const icon = document.getElementById("unIcon");
+    icon.textContent = o.good ? "✓" : "!";
+    icon.style.background = o.good ? "#E8F5EA" : "#FDECEC";
+    icon.style.color = o.good ? "#2D6B3B" : "#B23A3A";
+    document.getElementById("unTitle").textContent = o.title;
+    document.getElementById("unText").textContent = o.text;
+    const btn = document.getElementById("unBtn");
+    btn.textContent = o.btn[0]; btn.href = o.btn[1];
+  }
+
+  const token = new URLSearchParams(window.location.search).get("t") || "";
+  const looksRight = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token);
+
+  // Opening the page never unsubscribes anyone: it only asks. (Some email software opens every link
+  // in an email to scan it — that must not unsubscribe people by accident.)
+  if (!token) show("preview");
+  else if (!looksRight) show("invalid");
+  else document.getElementById("unAsk").style.display = "block";
+
+  document.getElementById("unYes").addEventListener("click", async () => {
+    const btn = document.getElementById("unYes");
+    btn.disabled = true; btn.textContent = "Unsubscribing…";
+    try {
+      const { data, error } = await supabaseClient.rpc("unsubscribe_newsletter", { p_token: token });
+      if (error) { console.error(error); return show("error"); }
+      show(OUTCOMES[data] ? data : "error");
+    } catch (e) { console.error(e); show("error"); }
+  });
+</script>
+</body>
+</html>
