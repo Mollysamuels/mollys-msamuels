@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Messages — Admin — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav active"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main">
+<div class="admin-topbar">
+  <h1>Customer Messages</h1>
+  <div class="admin-topbar-user"><div class="admin-avatar">A</div> Admin</div>
+</div>
+<div class="admin-content">
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Reply to a customer</h2><button type="button" class="btn btn-outline" id="cmNew" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">New message</button></div>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:14px;">For answering something a person asked or ordered. For offers and promotions, use the Newsletter page instead.</p>
+    <div class="auth-field"><label>Start from an enquiry (optional) &mdash; fills in their name, email and what they asked</label>
+      <select id="cmEnquiry"><option value="">&mdash; none: I'll type the details &mdash;</option></select></div>
+    <p id="cmNote" style="display:none;font-size:0.85rem;color:#B25E00;margin:-6px 0 12px;"></p>
+    <pre id="cmRef" style="display:none;white-space:pre-wrap;font-family:inherit;font-size:0.82rem;background:var(--cream-deep);border-radius:8px;padding:12px 14px;margin:0 0 16px;color:var(--ink-soft);"></pre>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Their email address</label><input type="email" id="cmTo" maxlength="254" placeholder="name@example.com"></div>
+      <div class="auth-field"><label>Their name (optional, for your records)</label><input type="text" id="cmName" maxlength="100"></div>
+    </div>
+    <div class="auth-field"><label>Subject</label><input type="text" id="cmSubject" maxlength="200"></div>
+    <div class="auth-field"><label>Greeting</label><input type="text" id="cmGreeting" maxlength="200"></div>
+    <div class="auth-field"><label>Your message &mdash; a blank line starts a new paragraph. **Two stars** make bold, *one star* makes italic. Web addresses become links.</label>
+      <textarea id="cmBody" rows="14" maxlength="20000" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.92rem;line-height:1.6;"></textarea></div>
+    <div class="auth-field"><label>Closing</label>
+      <textarea id="cmClosing" rows="3" maxlength="1000" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.92rem;line-height:1.6;"></textarea></div>
+    <div class="auth-field"><label>Their message (optional) &mdash; shown at the bottom of your email, so they can see what you're answering</label>
+      <textarea id="cmQuote" rows="4" maxlength="6000" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.88rem;line-height:1.5;"></textarea></div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Look</label><select id="cmStyle"><option value="simple">Simple &mdash; like a normal personal email (best for replies)</option><option value="branded">Branded &mdash; with your Molly Samuels header</option></select></div>
+      <div class="auth-field"><label>Optional button / link words (e.g. Track your order)</label><input type="text" id="cmBtnLabel" maxlength="60"></div>
+    </div>
+    <div class="auth-field"><label>Where that button goes (must start with https://)</label><input type="text" id="cmBtnUrl" maxlength="500"></div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Preview</h2></div>
+    <iframe id="cmPreview" title="Email preview" sandbox="" style="width:100%;height:640px;border:1px solid var(--line);border-radius:10px;background:#ffffff;"></iframe>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Send</h2></div>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:0.9rem;margin:0 0 14px;font-weight:400;">
+      <input type="checkbox" id="cmConfirm" style="width:auto;margin-top:3px;">
+      <span>This is a reply to something this person asked or ordered.</span>
+    </label>
+    <p id="cmMsg" style="display:none;font-size:0.9rem;margin-bottom:14px;line-height:1.5;"></p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="button" class="btn btn-outline" id="cmTestBtn" style="border-color:var(--line);color:var(--umber-deep);padding:11px 20px;">Send me a test</button>
+      <button type="button" class="btn btn-gold" id="cmSendBtn" style="padding:11px 22px;">Send to customer</button>
+    </div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Messages sent</h2></div>
+    <p style="font-size:0.78rem;color:var(--ink-soft);margin-bottom:14px;">Click a subject to read what was sent. Replies from customers arrive in your Gmail.</p>
+    <table class="admin-table">
+      <tr><th>When</th><th>To</th><th>Subject</th><th>Status</th></tr>
+      <tbody id="cmHist"><tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading&hellip;</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</main>
+</div>
+<script>
+  // Anything that came from the database is turned into plain text before it is
+  // placed on the page, so a customer-typed name can never run as code.
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  // ---------- the email design (an exact copy of the one the sender uses) ----------
+  const SITE_URL = "https://mollysamuels.com";
+const ADDRESS = "Molly Samuels \xB7 No 5, Zone B, Apo Resettlement, Apo, Abuja, Nigeria";
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+function safeUrl(u) {
+  return /^https?:\/\//i.test(u) ? escapeHtml(u) : "#";
+}
+function fmt(s) {
+  let t = escapeHtml(s);
+  t = t.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>").replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+  t = t.replace(/(https?:\/\/(?:[^\s<&]|&amp;)+)/g, (m) => {
+    const trail = (m.match(/[.,;:!?)]+$/) || [""])[0];
+    const url = trail ? m.slice(0, -trail.length) : m;
+    return `<a href="${url}" style="color:#000000;text-decoration:underline;">${url}</a>${trail}`;
+  });
+  return t;
+}
+function lines(s) {
+  return s.split("\n").map(fmt).join("<br>");
+}
+function plain(s) {
+  return s.replace(/\*\*([^*\n]+)\*\*/g, "$1").replace(/\*([^*\n]+)\*/g, "$1");
+}
+function renderMessage(m) {
+  const paragraphs = m.body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const bodyHtml = paragraphs.map((p) => `<p style="margin:0 0 16px;">${lines(p)}</p>`).join("\n");
+  const greetingHtml = m.greeting.trim() ? `<p style="margin:0 0 16px;">${lines(m.greeting.trim())}</p>` : "";
+  const closingHtml = m.closing.trim() ? `<p style="margin:24px 0 0;">${lines(m.closing.trim())}</p>` : "";
+  const quoteHtml = m.quote.trim() ? `<div style="margin:30px 0 0;padding:4px 0 4px 14px;border-left:3px solid #E6DCC6;color:#58493A;font-size:14px;line-height:1.6;"><div style="font-size:12px;margin-bottom:6px;">Your message to us:</div>${lines(m.quote.trim())}</div>` : "";
+  const hasButton = m.buttonLabel.trim() && /^https?:\/\//i.test(m.buttonUrl.trim());
+  const preheader = escapeHtml(plain(paragraphs.join(" ")).replace(/\s+/g, " ").slice(0, 110));
+  const footerText = `You're getting this because you contacted Molly Samuels. Just reply to this email to reach us.<br>${escapeHtml(ADDRESS)}`;
+  let html;
+  if (m.style === "branded") {
+    const button = hasButton ? `<p style="margin:26px 0 0;text-align:center;"><a href="${safeUrl(m.buttonUrl.trim())}" style="background:#F4D900;color:#000000;text-decoration:none;font-weight:bold;padding:14px 28px;border-radius:8px;display:inline-block;">${escapeHtml(m.buttonLabel.trim())}</a></p>` : "";
+    html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:0;background:#FAF6EE;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#FAF6EE;">${preheader}</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF6EE;"><tr><td align="center" style="padding:24px 12px;">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:10px;overflow:hidden;">
+<tr><td style="background:#000000;padding:26px;text-align:center;font-size:24px;color:#ffffff;letter-spacing:0.5px;">Molly <span style="color:#F4D900;">Samuels</span></td></tr>
+<tr><td style="padding:34px 32px 30px;color:#211A12;font-size:16px;line-height:1.7;">
+${greetingHtml}
+${bodyHtml}
+${button}
+${closingHtml}
+${quoteHtml}
+</td></tr>
+<tr><td style="background:#FAF6EE;padding:20px 24px;text-align:center;font-size:12px;line-height:1.7;color:#58493A;">${footerText}</td></tr>
+</table></td></tr></table></body></html>`;
+  } else {
+    const link = hasButton ? `<p style="margin:16px 0 0;"><a href="${safeUrl(m.buttonUrl.trim())}" style="color:#000000;font-weight:bold;text-decoration:underline;">${escapeHtml(m.buttonLabel.trim())}</a></p>` : "";
+    html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"></head>
+<body style="margin:0;padding:24px 12px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;color:#211A12;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#ffffff;">${preheader}</div>
+<div style="max-width:600px;margin:0 auto;font-size:16px;line-height:1.7;">
+${greetingHtml}
+${bodyHtml}
+${link}
+${closingHtml}
+${quoteHtml}
+<p style="margin:34px 0 0;padding-top:14px;border-top:1px solid #E6DCC6;font-size:12px;line-height:1.7;color:#58493A;">${footerText}</p>
+</div>
+</body></html>`;
+  }
+  const text = [
+    m.greeting.trim(),
+    m.greeting.trim() ? "" : null,
+    ...paragraphs.map((p) => plain(p) + "\n"),
+    hasButton ? `${m.buttonLabel.trim()}: ${m.buttonUrl.trim()}
+` : null,
+    m.closing.trim() ? plain(m.closing.trim()) : null,
+    m.quote.trim() ? "\nYour message to us:\n" + m.quote.trim().split("\n").map((l) => "> " + l).join("\n") : null,
+    "",
+    "You're getting this because you contacted Molly Samuels. Just reply to this email to reach us.",
+    ADDRESS
+  ].filter((x) => x !== null).join("\n");
+  return { html, text };
+}
+{
+  escapeHtml,
+  renderMessage
+};
+
+  // ---------- the page ----------
+  const DRAFT_KEY = "ms_message_draft";
+  const $ = (id) => document.getElementById(id);
+  const FIELDS = { to: "cmTo", name: "cmName", subject: "cmSubject", greeting: "cmGreeting", body: "cmBody", closing: "cmClosing", quote: "cmQuote", style: "cmStyle", buttonLabel: "cmBtnLabel", buttonUrl: "cmBtnUrl" };
+  const DEFAULTS = { to: "", name: "", subject: "", greeting: "Hello,", body: "", closing: "Warm regards,\nMolly Samuels", quote: "", style: "simple", buttonLabel: "", buttonUrl: "" };
+  const EMAIL_RE = /[^\s@<>"',;()]+@[^\s@<>"',;()]+\.[^\s@<>"',;()]{2,}/;
+  let busy = false, previewTimer = null, related = "", enquiries = [];
+
+  function setForm(v) { Object.entries(FIELDS).forEach(([k, id]) => { $(id).value = v[k] ?? DEFAULTS[k]; }); }
+  function getForm() { const v = {}; Object.entries(FIELDS).forEach(([k, id]) => { v[k] = $(id).value; }); return v; }
+  function messageOf(v) { return { greeting: v.greeting, body: v.body, closing: v.closing, style: v.style, buttonLabel: v.buttonLabel, buttonUrl: v.buttonUrl, quote: v.quote }; }
+  function say(text, good) { const el = $("cmMsg"); el.textContent = text; el.style.color = good ? "#2D6B3B" : "#B23A3A"; el.style.display = "block"; }
+  function refreshPreview() { $("cmPreview").srcdoc = renderMessage(messageOf(getForm())).html; }
+  function onEdit() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(getForm())); } catch (e) { /* storage unavailable */ }
+    clearTimeout(previewTimer); previewTimer = setTimeout(refreshPreview, 250);
+  }
+  function setBusy(on) { busy = on; $("cmTestBtn").disabled = on; $("cmSendBtn").disabled = on; }
+  function validate(v, forSend) {
+    if (forSend && !EMAIL_RE.test(v.to.trim())) return "Please enter a valid email address for the customer.";
+    if (!v.subject.trim()) return "Please add a subject.";
+    if (!v.body.trim()) return "Please write the message.";
+    if (v.buttonLabel.trim() && !/^https:\/\//i.test(v.buttonUrl.trim())) return "The button link must start with https://";
+    if (forSend && !$("cmConfirm").checked) return "Please tick the box to confirm this is a reply to something this person asked or ordered.";
+    return "";
+  }
+
+  async function callSender(payload) {
+    const { data } = await supabaseClient.auth.getSession();
+    if (!data || !data.session) return { ok: false, j: { error: "You're not signed in — please log in again." } };
+    try {
+      const res = await fetch(supabaseClient.supabaseUrl + "/functions/v1/customer-message", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: supabaseClient.supabaseKey, Authorization: "Bearer " + data.session.access_token },
+        body: JSON.stringify(payload),
+      });
+      const j = (await res.json().catch(() => null)) || {};
+      return { ok: res.ok && j.ok === true, j };
+    } catch (e) { return { ok: false, j: { error: "Couldn't reach the sender. Check your connection and try again." } }; }
+  }
+
+  async function sendTest() {
+    if (busy) return;
+    const v = getForm(); const problem = validate(v, false);
+    if (problem) return say(problem, false);
+    setBusy(true); $("cmTestBtn").textContent = "Sending…";
+    const r = await callSender({ action: "test", subject: v.subject, message: messageOf(v) });
+    $("cmTestBtn").textContent = "Send me a test"; setBusy(false);
+    if (r.ok) say(`Test sent to ${r.j.sent_to}. Check that inbox (and the spam folder).`, true);
+    else say(r.j.error || "The test couldn't be sent.", false);
+  }
+
+  async function sendNow() {
+    if (busy) return;
+    const v = getForm(); const problem = validate(v, true);
+    if (problem) return say(problem, false);
+    const to = (v.to.match(EMAIL_RE) || [""])[0].toLowerCase();
+    if (!confirm(`Send this email to ${to}?\n\nSubject: ${v.subject}\n\nThis can't be undone.`)) return;
+    setBusy(true); $("cmSendBtn").textContent = "Sending…";
+    const r = await callSender({ action: "send", to, to_name: v.name, subject: v.subject, message: messageOf(v), related, confirm_reply: true });
+    $("cmSendBtn").textContent = "Send to customer"; setBusy(false);
+    if (r.ok) {
+      say(`Sent to ${r.j.sent_to}. A copy is saved in the list below.`, true);
+      setForm({ ...DEFAULTS, greeting: v.greeting === DEFAULTS.greeting ? v.greeting : DEFAULTS.greeting, closing: v.closing, style: v.style });
+      $("cmEnquiry").value = ""; $("cmRef").style.display = "none"; $("cmNote").style.display = "none"; $("cmConfirm").checked = false; related = "";
+      onEdit(); refreshPreview();
+    } else say(r.j.error || "Something went wrong.", false);
+    await loadHistory();
+  }
+
+  // ---------- enquiries ----------
+  const pickEmail = (s) => { const m = String(s || "").match(EMAIL_RE); return m ? m[0].toLowerCase() : ""; };
+  const firstName = (n) => String(n || "").trim().split(/\s+/)[0] || "";
+  function summarise(pairs) { return pairs.filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== "").map(([k, v]) => `${k}: ${v}`).join("\n"); }
+  function enquiryInfo(kind, r) {
+    if (kind === "custom") {
+      const email = pickEmail(r.email), org = r.organisation_name || "";
+      return { name: r.contact_person || "", email, related: "custom_order_requests:" + r.id,
+        subject: `Re: your custom uniform enquiry${org ? " — " + org : ""}`,
+        summary: summarise([["Organisation", org], ["Type", r.organisation_type], ["Uniform", r.uniform_type], ["Quantity", r.quantity], ["Sizes", r.sizes_needed], ["Colours", r.preferred_colours], ["Needed by", r.required_date ? new Date(r.required_date).toLocaleDateString() : ""], ["Notes", r.notes]]),
+        note: email ? "" : (r.phone ? `There's no email on this enquiry. Their phone number is ${r.phone}.` : "There's no email on this enquiry.") };
+    }
+    const email = pickEmail(r.contact_info), prod = r.product_name || "";
+    return { name: r.contact_name || "", email, related: "bulk_order_requests:" + r.id,
+      subject: `Re: your bulk pricing enquiry${prod ? " — " + prod : ""}`,
+      summary: summarise([["Product", prod], ["Quantity", r.quantity], ["Sizes", r.size_breakdown], ["Colour", r.colour], ["Organisation", r.organisation], ["Delivery to", r.delivery_location]]),
+      note: email ? "" : (r.contact_info ? `There's no email on this enquiry. Their contact detail is: ${r.contact_info}` : "There's no email on this enquiry.") };
+  }
+  function chooseEnquiry() {
+    const key = $("cmEnquiry").value; const item = enquiries.find((e) => e.key === key);
+    if (!item) { related = ""; $("cmRef").style.display = "none"; $("cmNote").style.display = "none"; return; }
+    const info = enquiryInfo(item.kind, item.row);
+    related = info.related;
+    const first = firstName(info.name);
+    setForm({ ...getForm(), to: info.email, name: info.name, subject: info.subject, greeting: first ? `Hello ${first},` : "Hello,", quote: info.summary });
+    $("cmRef").textContent = info.summary || "(no details were filled in)"; $("cmRef").style.display = "block";
+    $("cmNote").textContent = info.note; $("cmNote").style.display = info.note ? "block" : "none";
+    onEdit(); refreshPreview();
+  }
+  async function loadEnquiries() {
+    const [c, b] = await Promise.all([
+      supabaseClient.from("custom_order_requests").select("*").order("created_at", { ascending: false }).limit(30),
+      supabaseClient.from("bulk_order_requests").select("*").order("created_at", { ascending: false }).limit(30),
+    ]);
+    enquiries = [
+      ...((c.data || []).map((r) => ({ key: "custom:" + r.id, kind: "custom", row: r, label: `Custom order — ${r.organisation_name || "?"}${r.contact_person ? " (" + r.contact_person + ")" : ""}` }))),
+      ...((b.data || []).map((r) => ({ key: "bulk:" + r.id, kind: "bulk", row: r, label: `Bulk enquiry — ${r.product_name || "?"}${r.organisation ? " (" + r.organisation + ")" : ""}` }))),
+    ];
+    const sel = $("cmEnquiry");
+    sel.innerHTML = `<option value="">— none: I'll type the details —</option>` + enquiries.map((e) => `<option value="${esc(e.key)}">${esc(e.label)}</option>`).join("");
+  }
+
+  // ---------- history ----------
+  async function loadHistory() {
+    const { data, error } = await supabaseClient.from("customer_messages").select("id, to_email, to_name, subject, status, error, created_at, message").order("created_at", { ascending: false }).limit(25);
+    const tbody = $("cmHist");
+    if (error) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load the list. Has 13-customer-messages.sql been run?</td></tr>`; return; }
+    if (!data || !data.length) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--ink-soft);padding:30px;">Nothing sent yet.</td></tr>`; return; }
+    tbody.innerHTML = data.map((m, i) => {
+      const pill = m.status === "sent" ? `<span class="admin-status-pill active">Sent</span>` : m.status === "failed" ? `<span class="admin-status-pill low" title="${esc(m.error || "")}">Failed</span>` : `<span class="admin-status-pill pending">Sending</span>`;
+      const text = (m.message && m.message.body) || "";
+      return `<tr>
+        <td>${new Date(m.created_at).toLocaleDateString()}</td>
+        <td>${esc(m.to_email)}${m.to_name ? `<div style="font-size:0.76rem;color:var(--ink-soft);">${esc(m.to_name)}</div>` : ""}</td>
+        <td><a href="#" class="cm-open" data-i="${i}" style="text-decoration:underline;">${esc(m.subject)}</a></td>
+        <td>${pill}${m.status === "failed" && m.error ? `<div style="font-size:0.74rem;color:#B23A3A;">${esc(m.error)}</div>` : ""}</td>
+      </tr>
+      <tr class="cm-detail" id="cmDetail${i}" style="display:none;"><td colspan="4" style="background:var(--cream-deep);white-space:pre-wrap;font-size:0.86rem;line-height:1.6;padding:14px 18px;">${esc(text)}</td></tr>`;
+    }).join("");
+    tbody.querySelectorAll(".cm-open").forEach((a) => a.addEventListener("click", (e) => { e.preventDefault(); const d = $("cmDetail" + a.dataset.i); d.style.display = d.style.display === "none" ? "" : "none"; }));
+  }
+
+  document.addEventListener("adminReady", async () => {
+    let draft = null;
+    try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (e) { /* none */ }
+    setForm(draft && typeof draft === "object" ? draft : DEFAULTS);
+    Object.values(FIELDS).forEach((id) => { $(id).addEventListener("input", onEdit); $(id).addEventListener("change", onEdit); });
+    $("cmEnquiry").addEventListener("change", chooseEnquiry);
+    $("cmTestBtn").addEventListener("click", sendTest);
+    $("cmSendBtn").addEventListener("click", sendNow);
+    $("cmNew").addEventListener("click", () => {
+      if (!confirm("Clear everything and start a new message?")) return;
+      setForm(DEFAULTS); $("cmEnquiry").value = ""; $("cmRef").style.display = "none"; $("cmNote").style.display = "none"; $("cmConfirm").checked = false; related = ""; onEdit(); refreshPreview();
+    });
+    refreshPreview();
+    await loadEnquiries();
+    await loadHistory();
+  });
+</script>
+</body>
+</html>
