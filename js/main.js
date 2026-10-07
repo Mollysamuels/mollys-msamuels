@@ -441,3 +441,4 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
 });
+(function(){var s=document.createElement("script");s.src="js/card-sync.js";document.head.appendChild(s);})();
