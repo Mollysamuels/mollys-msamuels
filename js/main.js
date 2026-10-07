@@ -14,12 +14,25 @@ function setCurrency(code) {
   updateMarketUI();
   document.dispatchEvent(new CustomEvent("currencyChanged"));
 }
+// Public project address + public key (safe to be in the page; same ones every page already uses).
+const MS_SUPABASE_URL = "https://vdlwnflklclenavtpamp.supabase.co";
+const MS_SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
+
 async function loadExchangeRate() {
   if (_exchangeRate !== null) return _exchangeRate;
   try {
-    if (typeof supabaseClient === "undefined") { _exchangeRate = 1800; return _exchangeRate; }
-    const { data } = await supabaseClient.from("site_settings").select("exchange_rate").eq("id", 1).single();
-    _exchangeRate = (data && data.exchange_rate) || 1800;
+    let rate = null;
+    if (typeof supabaseClient !== "undefined") {
+      const { data } = await supabaseClient.from("site_settings").select("exchange_rate").eq("id", 1).single();
+      rate = data && data.exchange_rate;
+    } else {
+      // Pages that don't load the Supabase library (some static pages) still need the
+      // admin-set rate — otherwise their £ prices would use a different number.
+      const res = await fetch(`${MS_SUPABASE_URL}/rest/v1/site_settings?select=exchange_rate&id=eq.1`, { headers: { apikey: MS_SUPABASE_ANON } });
+      const rows = await res.json();
+      rate = rows && rows[0] && rows[0].exchange_rate;
+    }
+    _exchangeRate = Number(rate) || 1800;
   } catch (e) {
     _exchangeRate = 1800; // safe fallback if the fetch fails for any reason
   }
@@ -123,8 +136,10 @@ function toggleWishlistFromCard(card, btn) {
   const cardParams = new URLSearchParams(href.split("?")[1] || "");
   const productId = cardParams.get("id") || cardParams.get("item") || (card.querySelector("h4")?.textContent || "product");
   const name = card.querySelector(".product-info h4, h4")?.textContent.trim() || "Product";
-  const priceText = card.querySelector(".product-price .now, .now")?.textContent || "₦0";
-  const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
+  // Use the raw Naira amount kept on the price tag. Reading digits out of the displayed
+  // text breaks for customers viewing pounds ("£26.50" would become 2650).
+  const priceEl = card.querySelector(".product-price .now, .now");
+  const price = Number(priceEl?.dataset.priceNgn) || parseInt((priceEl?.textContent || "").replace(/[^\d]/g, ""), 10) || 0;
   const img = card.querySelector(".product-media img.main, img.main")?.src || "";
   const link_href = link ? link.getAttribute("href") : "product.html";
   // Real division, not always "mollys" — checks the URL's own division= param
@@ -230,10 +245,12 @@ function addToCartFromCard(card) {
   const params = new URLSearchParams(href.split("?")[1] || "");
   const productId = params.get("id") || params.get("item") || (card.querySelector("h4")?.textContent || "product");
   const name = card.querySelector(".product-info h4, h4")?.textContent.trim() || "Product";
-  const priceText = card.querySelector(".product-price .now, .now")?.textContent || "₦0";
-  const price = parseInt(priceText.replace(/[^\d]/g, ""), 10) || 0;
+  // Use the raw Naira amount kept on the price tag. Reading digits out of the displayed
+  // text breaks for customers viewing pounds ("£26.50" would become 2650).
+  const priceEl = card.querySelector(".product-price .now, .now");
+  const price = Number(priceEl?.dataset.priceNgn) || parseInt((priceEl?.textContent || "").replace(/[^\d]/g, ""), 10) || 0;
   const img = card.querySelector(".product-media img.main, img.main")?.src || "";
-  const division = params.get("division") || (href.includes("msamuels") ? "msamuels" : "mollys");
+  const division = params.get("division") || ((href.includes("msamuels") || img.includes("msamuels")) ? "msamuels" : "mollys");
 
   addToCart({ product_id: productId, name, price, img, division, size: "", color: "", qty: 1 });
 
@@ -430,15 +447,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  /* ---------- Chat FAB ---------- */
-  const chatFab = document.querySelector(".chat-fab");
-  if (chatFab) {
-    chatFab.addEventListener("click", () => {
-      // Backend/connector note: wire this up to WhatsApp click-to-chat
-      // (https://wa.me/YOURNUMBER) or a live-chat widget once ready.
-      showToast("Chat support — coming online soon");
-    });
-  }
+  // (The chat button is a real WhatsApp link now — it needs no script.)
 
 });
-(function(){var s=document.createElement("script");s.src="js/card-sync.js";document.head.appendChild(s);})();
+
+// Connects the old hand-typed product cards to real products (so they can be ordered
+// and follow admin prices). Does nothing on pages without such cards.
+(function () {
+  var s = document.createElement("script");
+  s.src = "js/card-sync.js";
+  document.head.appendChild(s);
+})();
