@@ -10,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/extra-pages.css">\n<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+<link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -50,7 +51,7 @@
       </a>
       <a class="icon-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 11.5a2 2 0 01-2 1.5H7.5a2 2 0 01-2-1.5L4 7z" stroke="currentColor" stroke-width="1.5"/><path d="M8 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="badge cart-badge">3</span>
+        <span class="badge cart-badge">0</span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -168,8 +169,9 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 
-  const STATUS_STEPS = ["new", "processing", "preparing", "shipped", "delivered"];
-  const STEP_LABELS = { new: "Received", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered" };
+  // "paid" is set automatically once Paystack confirms the payment.
+  const STATUS_STEPS = ["new", "paid", "processing", "preparing", "shipped", "delivered"];
+  const STEP_LABELS = { new: "Order placed", paid: "Payment confirmed", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered" };
 
   document.getElementById("trackForm").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -179,25 +181,19 @@
     btn.disabled = true;
     btn.textContent = "Searching...";
 
-    const orderNumber = document.getElementById("trackOrderNumber").value.trim();
+    const orderNumber = document.getElementById("trackOrderNumber").value.trim().toUpperCase();
     const contact = document.getElementById("trackContact").value.trim();
 
-    const { data: order, error } = await supabaseClient
-      .from("orders")
-      .select("*, customers(full_name, phone)")
-      .eq("order_number", orderNumber)
-      .single();
+    // The lookup runs inside the database: it only answers when the order
+    // number AND the phone number both match, and it only ever returns the
+    // status and tracking number — never an address or any other detail.
+    const { data, error } = await supabaseClient.rpc("track_order", { p_order_number: orderNumber, p_phone: contact });
+    const order = !error && Array.isArray(data) ? data[0] : null;
 
     btn.disabled = false;
     btn.textContent = "Track Order";
 
-    // Basic verification: the phone entered must match the order's own
-    // customer phone — prevents anyone tracking any order by guessing just
-    // the order number. (Email isn't stored outside Supabase's own auth
-    // system, so phone is the only field we can actually check against here.)
-    const matchesContact = order && order.customers && order.customers.phone === contact;
-
-    if (error || !order || !matchesContact) {
+    if (!order) {
       errorEl.textContent = "We couldn't find an order matching that order number and phone number.";
       errorEl.style.display = "block";
       document.getElementById("trackStatus").style.display = "none";
