@@ -4,6 +4,12 @@
 
 let allProducts = [];
 
+// Anything that came from the database is turned into plain text before it is
+// placed on the page, so a typed name can never run as code.
+function esc(v) {
+  return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
 document.addEventListener("adminReady", async () => {
   await loadProducts();
   document.getElementById("apSearch").addEventListener("input", render);
@@ -33,7 +39,7 @@ function render() {
 
   const filtered = allProducts.filter((p) => {
     if (division && p.division !== division) return false;
-    if (search && !p.name.toLowerCase().includes(search)) return false;
+    if (search && !String(p.name).toLowerCase().includes(search)) return false;
     return true;
   });
 
@@ -49,14 +55,14 @@ function render() {
     const divisionLabel = p.division === "msamuels" ? "M. Samuels" : "Mollys";
     return `
       <tr>
-        <td>${p.name}${p.categories ? `<div style="font-size:0.76rem;color:var(--ink-soft);">${p.categories.name}</div>` : ""}</td>
+        <td>${esc(p.name)}${p.categories ? `<div style="font-size:0.76rem;color:var(--ink-soft);">${esc(p.categories.name)}</div>` : ""}</td>
         <td>${divisionLabel}</td>
         <td>₦${Number(p.price_ngn).toLocaleString()}</td>
-        <td>${p.size_type === "onesize" ? p.stock_qty : "per size"}</td>
+        <td>${p.size_type === "onesize" ? esc(p.stock_qty) : "per size"}</td>
         <td>${statusPill}</td>
         <td class="admin-table-actions">
-          <a href="admin-product-form.html?id=${p.id}" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></a>
-          <button class="ap-toggle-status" data-id="${p.id}" data-status="${p.status || 'active'}" aria-label="${p.status === 'discontinued' ? 'Reactivate' : 'Discontinue'}">
+          <a href="admin-product-form.html?id=${encodeURIComponent(p.id)}" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <button class="ap-toggle-status" data-id="${esc(p.id)}" data-status="${esc(p.status || 'active')}" aria-label="${p.status === 'discontinued' ? 'Reactivate' : 'Discontinue'}">
             ${p.status === "discontinued"
               ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="1.5"/></svg>`
               : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z" stroke="currentColor" stroke-width="1.5"/></svg>`}
