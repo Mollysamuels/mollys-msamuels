@@ -66,15 +66,15 @@
   }
 
   function findProduct(products, info) {
-    var i, p;
-    if (info.item) {
-      for (i = 0; i < products.length; i++) {
-        p = products[i];
-        if (Array.isArray(p.legacy_keys) && p.legacy_keys.indexOf(info.item) !== -1) return p;
-      }
-    }
+    var i, p, keys;
     var n = norm(info.name);
-    if (n) for (i = 0; i < products.length; i++) { if (norm(products[i].name) === n) return products[i]; }
+    function has(p, k) { return Array.isArray(p.legacy_keys) && p.legacy_keys.indexOf(k) !== -1; }
+    // 1. the card's old label (e.g. heels-1)
+    if (info.item) for (i = 0; i < products.length; i++) if (has(products[i], info.item)) return products[i];
+    // 2. another name the same item is shown under on other pages (e.g. "Ankle-Strap Heels")
+    if (n) for (i = 0; i < products.length; i++) if (has(products[i], n)) return products[i];
+    // 3. the product's own current name
+    if (n) for (i = 0; i < products.length; i++) if (norm(products[i].name) === n) return products[i];
     return null;
   }
 
