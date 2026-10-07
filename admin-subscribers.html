@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscribers — Admin — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav active"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main">
+<div class="admin-topbar">
+  <h1>Subscribers</h1>
+  <div class="admin-topbar-user"><div class="admin-avatar">A</div> Admin</div>
+</div>
+<div class="admin-content">
+  <div class="admin-stats-grid" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="admin-stat-card"><div class="label">Total on list</div><div class="value" id="statTotal">—</div></div>
+    <div class="admin-stat-card"><div class="label">Can be emailed</div><div class="value" id="statCan">—</div></div>
+    <div class="admin-stat-card"><div class="label">Not agreed yet</div><div class="value" id="statPending">—</div></div>
+    <div class="admin-stat-card"><div class="label">Unsubscribed</div><div class="value" id="statUnsub">—</div></div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Add one person</h2></div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Email address</label><input type="email" id="subEmail" placeholder="name@example.com"></div>
+      <div class="auth-field"><label>Name (optional)</label><input type="text" id="subName" maxlength="100"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Where did this address come from?</label><select id="subSource"></select></div>
+      <div class="auth-field"><label>Note (optional)</label><input type="text" id="subNote" maxlength="200" placeholder="e.g. asked at the school fair, 12 Oct"></div>
+    </div>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:0.88rem;margin:6px 0 14px;font-weight:400;">
+      <input type="checkbox" id="subAgreed" style="width:auto;margin-top:3px;">
+      <span>This person told me they want news and offers by email. <em style="color:var(--ink-soft);">Only tick this if it's true — people who haven't agreed are saved but can't be emailed.</em></span>
+    </label>
+    <p id="subMsg" style="display:none;font-size:0.85rem;margin-bottom:10px;"></p>
+    <button type="button" class="btn btn-gold" id="subAddBtn" style="padding:9px 18px;font-size:0.85rem;">Add to list</button>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Paste a list</h2></div>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:12px;">Paste email addresses separated by new lines, commas or spaces. Names around an address are ignored. Duplicates and addresses already on the list are skipped.</p>
+    <div class="auth-field"><textarea id="subBulkText" rows="6" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.9rem;" placeholder="ada@example.com&#10;bola@example.com, chidi@example.com"></textarea></div>
+    <div class="auth-field"><label>Where did these addresses come from?</label><select id="subBulkSource"></select></div>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-size:0.88rem;margin:6px 0 14px;font-weight:400;">
+      <input type="checkbox" id="subBulkAgreed" style="width:auto;margin-top:3px;">
+      <span>Every one of these people told me they want news and offers by email. <em style="color:var(--ink-soft);">Leave unticked if you're not sure — they'll be saved as "not agreed yet".</em></span>
+    </label>
+    <p id="subBulkMsg" style="display:none;font-size:0.85rem;margin-bottom:10px;"></p>
+    <button type="button" class="btn btn-gold" id="subBulkBtn" style="padding:9px 18px;font-size:0.85rem;">Add all to list</button>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head">
+      <h2>Your list</h2>
+      <button type="button" class="btn btn-outline" id="subExportBtn" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">Download people who can be emailed (CSV)</button>
+    </div>
+    <div class="admin-search-row">
+      <input type="text" id="subSearch" placeholder="Search by email or name...">
+      <select id="subFilter">
+        <option value="">Everyone</option>
+        <option value="ok">Can be emailed</option>
+        <option value="pending">Not agreed yet</option>
+        <option value="unsub">Unsubscribed</option>
+      </select>
+    </div>
+    <p style="font-size:0.78rem;color:var(--ink-soft);margin-bottom:14px;">People who unsubscribe stay on this list marked "Unsubscribed" so they are never emailed again. They can't be re-added or deleted from here.</p>
+    <table class="admin-table">
+      <tr><th>Email</th><th>Name</th><th>Source</th><th>Status</th><th>Added</th><th></th></tr>
+      <tbody id="subRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</main>
+</div>
+<script>
+  // Anything that came from the database is turned into plain text before it is
+  // placed on the page, so a customer-typed name can never run as code.
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  const SOURCES = [
+    ["website_signup", "Signup form on our website"],
+    ["purchase", "Bought from us"],
+    ["account", "Registered an account"],
+    ["direct", "Told me directly (WhatsApp / in person)"],
+    ["import", "Imported list"],
+    ["other", "Other"],
+  ];
+  const SOURCE_LABEL = Object.fromEntries(SOURCES);
+  let allSubs = [];
+
+  // ---------- helpers ----------
+  function isValidEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(e); }
+  function canEmail(s) { return s.agreed && !s.unsubscribed_at; }
+  function statusOf(s) { return s.unsubscribed_at ? "unsub" : s.agreed ? "ok" : "pending"; }
+
+  // Finds every email-looking piece of text in a pasted block (ignores names, commas, brackets).
+  function parseEmails(text) {
+    const found = (String(text || "").match(/[^\s,;<>"'()\[\]]*@[^\s,;<>"'()\[\]]*/g) || []).filter((r) => r.length > 1);
+    const valid = [], invalid = [], seen = new Set();
+    found.forEach((raw) => {
+      const e = raw.toLowerCase().replace(/[.]+$/, "");
+      if (!isValidEmail(e)) { invalid.push(raw); return; }
+      if (seen.has(e)) return;
+      seen.add(e); valid.push(e);
+    });
+    return { valid, invalid };
+  }
+
+  // Spreadsheet-safe: text starting with = + - @ would be treated as a formula by Excel.
+  function csvCell(v) {
+    let s = String(v ?? "");
+    if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  function buildCsv(rows) {
+    const lines = [["email", "name", "source", "agreed_on"].map(csvCell).join(",")];
+    rows.forEach((r) => lines.push([r.email, r.full_name || "", SOURCE_LABEL[r.source] || r.source, r.agreed_at ? String(r.agreed_at).slice(0, 10) : ""].map(csvCell).join(",")));
+    return lines.join("\r\n");
+  }
+  function showMsg(id, text, good) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.style.color = good ? "#2D6B3B" : "#B23A3A";
+    el.style.display = "block";
+  }
+
+  // ---------- load + draw ----------
+  document.addEventListener("adminReady", async () => {
+    const options = SOURCES.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("");
+    document.getElementById("subSource").innerHTML = options;
+    document.getElementById("subBulkSource").innerHTML = options;
+    document.getElementById("subSearch").addEventListener("input", render);
+    document.getElementById("subFilter").addEventListener("change", render);
+    document.getElementById("subAddBtn").addEventListener("click", addOne);
+    document.getElementById("subBulkBtn").addEventListener("click", addMany);
+    document.getElementById("subExportBtn").addEventListener("click", exportCsv);
+    await loadSubs();
+  });
+
+  async function loadSubs() {
+    const { data, error } = await supabaseClient.from("newsletter_subscribers").select("*").order("created_at", { ascending: false });
+    if (error) {
+      document.getElementById("subRows").innerHTML = `<tr><td colspan="6" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load the list. Has the setup SQL (09-newsletter-subscribers.sql) been run?</td></tr>`;
+      console.error(error);
+      return;
+    }
+    allSubs = data || [];
+    render();
+  }
+
+  function render() {
+    document.getElementById("statTotal").textContent = allSubs.length;
+    document.getElementById("statCan").textContent = allSubs.filter(canEmail).length;
+    document.getElementById("statPending").textContent = allSubs.filter((s) => statusOf(s) === "pending").length;
+    document.getElementById("statUnsub").textContent = allSubs.filter((s) => statusOf(s) === "unsub").length;
+
+    const q = document.getElementById("subSearch").value.toLowerCase().trim();
+    const f = document.getElementById("subFilter").value;
+    const rows = allSubs.filter((s) => {
+      if (f && statusOf(s) !== f) return false;
+      if (q && !(String(s.email).includes(q) || String(s.full_name || "").toLowerCase().includes(q))) return false;
+      return true;
+    });
+    const tbody = document.getElementById("subRows");
+    if (!rows.length) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">${allSubs.length ? "No one matches that." : "No one on the list yet."}</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = rows.map((s) => {
+      const st = statusOf(s);
+      const pill = st === "ok" ? `<span class="admin-status-pill active">Can be emailed</span>`
+        : st === "unsub" ? `<span class="admin-status-pill low">Unsubscribed</span>`
+        : `<span class="admin-status-pill pending">Not agreed yet</span>`;
+      const note = s.note ? `<div style="font-size:0.74rem;color:var(--ink-soft);">${esc(s.note)}</div>` : "";
+      const actions = st === "ok" ? `<button class="sub-unsub" data-id="${esc(s.id)}">Unsubscribe</button><button class="sub-del" data-id="${esc(s.id)}">Delete</button>`
+        : st === "pending" ? `<button class="sub-agree" data-id="${esc(s.id)}">Mark agreed</button><button class="sub-del" data-id="${esc(s.id)}">Delete</button>`
+        : "";
+      return `<tr>
+        <td>${esc(s.email)}${note}</td>
+        <td>${esc(s.full_name || "—")}</td>
+        <td>${esc(SOURCE_LABEL[s.source] || s.source)}</td>
+        <td>${pill}</td>
+        <td>${new Date(s.created_at).toLocaleDateString()}</td>
+        <td class="admin-table-actions">${actions}</td>
+      </tr>`;
+    }).join("");
+
+    tbody.querySelectorAll(".sub-unsub").forEach((b) => b.addEventListener("click", () => unsubscribe(b.dataset.id)));
+    tbody.querySelectorAll(".sub-agree").forEach((b) => b.addEventListener("click", () => markAgreed(b.dataset.id)));
+    tbody.querySelectorAll(".sub-del").forEach((b) => b.addEventListener("click", () => remove(b.dataset.id)));
+  }
+
+  // ---------- adding ----------
+  function newRow(email, { name = null, source, agreed, note = null }) {
+    return { email, full_name: name || null, source, agreed, agreed_at: agreed ? new Date().toISOString() : null, note: note || null };
+  }
+
+  async function addOne() {
+    const email = document.getElementById("subEmail").value.trim().toLowerCase();
+    if (!isValidEmail(email)) return showMsg("subMsg", "That doesn't look like a valid email address.", false);
+    if (allSubs.some((s) => s.email === email)) return showMsg("subMsg", "That address is already on the list.", false);
+    const row = newRow(email, {
+      name: document.getElementById("subName").value.trim(),
+      source: document.getElementById("subSource").value,
+      agreed: document.getElementById("subAgreed").checked,
+      note: document.getElementById("subNote").value.trim(),
+    });
+    const { error } = await supabaseClient.from("newsletter_subscribers").insert(row);
+    if (error) { console.error(error); return showMsg("subMsg", error.code === "23505" ? "That address is already on the list." : "Couldn't add it — please try again.", false); }
+    ["subEmail", "subName", "subNote"].forEach((id) => { document.getElementById(id).value = ""; });
+    document.getElementById("subAgreed").checked = false;
+    showMsg("subMsg", row.agreed ? "Added — they can be emailed." : "Added as \"not agreed yet\" — they won't be emailed until they agree.", true);
+    await loadSubs();
+  }
+
+  async function addMany() {
+    const { valid, invalid } = parseEmails(document.getElementById("subBulkText").value);
+    if (!valid.length && !invalid.length) return showMsg("subBulkMsg", "Paste some email addresses first.", false);
+    const existing = new Set(allSubs.map((s) => s.email));
+    const fresh = valid.filter((e) => !existing.has(e));
+    const skipped = valid.length - fresh.length;
+    const agreed = document.getElementById("subBulkAgreed").checked;
+    if (fresh.length && agreed && !confirm(`You're confirming that all ${fresh.length} of these people told you they want news and offers by email. Continue?`)) return;
+    const source = document.getElementById("subBulkSource").value;
+    const rows = fresh.map((e) => newRow(e, { source, agreed }));
+    for (let i = 0; i < rows.length; i += 500) {
+      const { error } = await supabaseClient.from("newsletter_subscribers").insert(rows.slice(i, i + 500));
+      if (error) { console.error(error); return showMsg("subBulkMsg", "Something went wrong part-way — some addresses may not have been added. Please check the list and try again.", false); }
+    }
+    let msg = `Added ${fresh.length}${agreed ? " (can be emailed)" : " as \"not agreed yet\""}.`;
+    if (skipped) msg += ` Skipped ${skipped} already on the list or repeated.`;
+    if (invalid.length) msg += ` ${invalid.length} didn't look like valid emails: ${invalid.slice(0, 5).join(", ")}${invalid.length > 5 ? "…" : ""}`;
+    showMsg("subBulkMsg", msg, true);
+    document.getElementById("subBulkText").value = "";
+    await loadSubs();
+  }
+
+  // ---------- row actions ----------
+  async function update(id, fields, failMsg) {
+    const { error } = await supabaseClient.from("newsletter_subscribers").update(fields).eq("id", id);
+    if (error) { alert(failMsg); console.error(error); return; }
+    await loadSubs();
+  }
+  async function markAgreed(id) {
+    if (!confirm("Only continue if this person has told you they want news and offers by email. Mark as agreed?")) return;
+    const now = new Date().toISOString();
+    await update(id, { agreed: true, agreed_at: now }, "Couldn't update — please try again.");
+  }
+  async function unsubscribe(id) {
+    if (!confirm("Unsubscribe this person? They will never be emailed again and can't be re-added from here.")) return;
+    await update(id, { unsubscribed_at: new Date().toISOString() }, "Couldn't update — please try again.");
+  }
+  async function remove(id) {
+    if (!confirm("Delete this person from the list? This can't be undone.")) return;
+    const { error } = await supabaseClient.from("newsletter_subscribers").delete().eq("id", id);
+    if (error) { alert("Couldn't delete — please try again."); console.error(error); return; }
+    await loadSubs();
+  }
+
+  // ---------- export ----------
+  function exportCsv() {
+    const rows = allSubs.filter(canEmail);
+    if (!rows.length) { alert("No one can be emailed yet — nobody on the list has agreed."); return; }
+    const blob = new Blob(["\uFEFF" + buildCsv(rows)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "subscribers-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+  }
+</script>
+</body>
+</html>
