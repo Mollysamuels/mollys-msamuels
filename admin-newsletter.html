@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Newsletter — Admin — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<!-- Supabase client — replace the two placeholder values below with your own
+     Project URL and anon public key from Settings > Data API before uploading. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav active"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main">
+<div class="admin-topbar">
+  <h1>Newsletter</h1>
+  <div class="admin-topbar-user"><div class="admin-avatar">A</div> Admin</div>
+</div>
+<div class="admin-content">
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Write your newsletter</h2><button type="button" class="btn btn-outline" id="nlNew" style="border-color:var(--line);color:var(--umber-deep);padding:8px 16px;font-size:0.82rem;">Start a new issue</button></div>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:14px;">Everything you type here is saved in this browser as you go. Start a new issue to clear the story for the next one.</p>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Subject line</label><input type="text" id="nlSubject" maxlength="200"></div>
+      <div class="auth-field"><label>Preview line (the grey text next to the subject)</label><input type="text" id="nlPreheader" maxlength="200"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Small label above the title</label><input type="text" id="nlLabel" maxlength="40"></div>
+      <div class="auth-field"><label>Story title</label><input type="text" id="nlTitle" maxlength="200"></div>
+    </div>
+    <div class="auth-field"><label>The story &mdash; a blank line starts a new paragraph, and *stars around words* make them italic</label>
+      <textarea id="nlStory" rows="14" maxlength="20000" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;font-size:0.92rem;line-height:1.6;"></textarea></div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Delivery box heading</label><input type="text" id="nlDeliveryHeading" maxlength="60"></div>
+      <div class="auth-field"><label>Delivery box text</label><input type="text" id="nlDeliveryText" maxlength="600"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Button 1 words</label><input type="text" id="nlB1Label" maxlength="40"></div>
+      <div class="auth-field"><label>Button 1 goes to (must start with https://)</label><input type="text" id="nlB1Url" maxlength="500"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Button 2 words (leave empty for none)</label><input type="text" id="nlB2Label" maxlength="40"></div>
+      <div class="auth-field"><label>Button 2 goes to</label><input type="text" id="nlB2Url" maxlength="500"></div>
+    </div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label>Line under the buttons</label><input type="text" id="nlExploreText" maxlength="300"></div>
+      <div class="auth-field"><label>Its link words</label><input type="text" id="nlExploreLabel" maxlength="60"></div>
+    </div>
+    <div class="auth-field"><label>Its link goes to</label><input type="text" id="nlExploreUrl" maxlength="500"></div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Preview</h2></div>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:12px;">This is exactly how the email will look. The Unsubscribe link here is a placeholder; in real emails every person gets their own working link.</p>
+    <iframe id="nlPreview" title="Newsletter preview" sandbox="" style="width:100%;height:820px;border:1px solid var(--line);border-radius:10px;background:#FAF6EE;"></iframe>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Send</h2></div>
+    <p style="font-size:0.95rem;margin-bottom:6px;"><strong id="nlAudience">Checking your list…</strong></p>
+    <p style="font-size:0.82rem;color:var(--ink-soft);margin-bottom:16px;">Only people who agreed to get your emails, and haven't unsubscribed, will receive it. Large lists go out in batches because of your Resend plan's daily limit &mdash; if some people are still waiting afterwards, press <em>Send next batch</em> below later.</p>
+    <p id="nlMsg" style="display:none;font-size:0.9rem;margin-bottom:14px;line-height:1.5;"></p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <button type="button" class="btn btn-outline" id="nlTestBtn" style="border-color:var(--line);color:var(--umber-deep);padding:11px 20px;">Send me a test</button>
+      <button type="button" class="btn btn-gold" id="nlSendBtn" style="padding:11px 22px;">Send to everyone</button>
+    </div>
+  </div>
+
+  <div class="admin-panel">
+    <div class="admin-panel-head"><h2>Past newsletters</h2></div>
+    <table class="admin-table">
+      <tr><th>Subject</th><th>Date</th><th>Sent</th><th>Failed</th><th>Waiting</th><th></th></tr>
+      <tbody id="nlPast"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</main>
+</div>
+<script>
+  // Anything that came from the database is turned into plain text before it is
+  // placed on the page, so a customer-typed name can never run as code.
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  // ---------- the email design (an exact copy of the one the sender uses) ----------
+  const SITE_URL = "https://mollysamuels.com";
+const ADDRESS = "Molly Samuels \xB7 No 5, Zone B, Apo Resettlement, Apo, Abuja, Nigeria";
+const ISSUE_1 = {
+  subject: "Simi had one problem: nothing to wear at 2:30",
+  preheader: "A short story from Molly Samuels.",
+  label: "A SHORT STORY",
+  title: "Simi and the 2:30 interview",
+  story: `Simi had it all planned. Interview on Thursday at 2:30, printed copies of her CV, and her favourite navy outfit pressed and ready.
+
+Then, on Monday evening, she opened her wardrobe and remembered. Everything good she owned was at the laundry, and the laundry wasn't giving it back until Friday. One day too late.
+
+She stood there in her slippers, going through what was left. Nothing she'd wear to face a panel. Nothing that said *hire me.*
+
+Then she remembered the gown she'd bought from Molly Samuels a few months back, the one piece in her wardrobe that made her stand a little taller. She grabbed her phone, opened the site, and went straight to Gowns.
+
+Twenty minutes later she'd chosen a gown, a pair of heels, and a bag that actually matched. It was an Abuja order, which meant it would be at her door within 24 hours. She pressed *place order* and finally breathed out.
+
+On Thursday, whatever the panel asked, outfit worries wouldn't be one of the things on her mind.`,
+  deliveryHeading: "Delivery:",
+  deliveryText: "within 24 hours in Abuja. Across the rest of Nigeria and the UK, as fast as we possibly can. We deliver across Nigeria and the UK.",
+  buttons: [
+    { label: "Shop Mollys", url: `${SITE_URL}/mollys.html` },
+    { label: "See new arrivals", url: `${SITE_URL}/new-arrivals.html` }
+  ],
+  exploreText: "Dressing a school or a team? M. Samuels makes uniforms and professional wear.",
+  exploreLinkLabel: "Explore M. Samuels \u2192",
+  exploreUrl: `${SITE_URL}/msamuels.html`,
+  unsubscribeUrl: "#"
+  // placeholder for now — the working unsubscribe link is the next step
+};
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+}
+function inline(s) {
+  return escapeHtml(s).replace(/\*([^*\n]+)\*/g, "<em>$1</em>");
+}
+function safeUrl(u) {
+  return /^(https?:\/\/|#)/i.test(u) ? escapeHtml(u) : "#";
+}
+function renderNewsletter(issue) {
+  const paragraphs = issue.story.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  const storyHtml = paragraphs.map((p) => `<p style="margin:0 0 18px;">${inline(p)}</p>`).join("\n");
+  const buttonsHtml = issue.buttons.map((b) => `<a href="${safeUrl(b.url)}" style="background:#F4D900;color:#000000;text-decoration:none;font-weight:bold;padding:14px 26px;border-radius:8px;display:inline-block;margin:6px;">${escapeHtml(b.label)}</a>`).join("\n");
+  const pad = "&zwnj;&nbsp;".repeat(60);
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${escapeHtml(issue.subject)}</title></head>
+<body style="margin:0;padding:0;background:#FAF6EE;font-family:Arial,Helvetica,sans-serif;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#FAF6EE;">${escapeHtml(issue.preheader)}${pad}</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF6EE;"><tr><td align="center" style="padding:24px 12px;">
+<table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:10px;overflow:hidden;">
+<tr><td style="background:#000000;padding:26px;text-align:center;font-size:24px;color:#ffffff;letter-spacing:0.5px;">Molly <span style="color:#F4D900;">Samuels</span></td></tr>
+<tr><td style="padding:36px 32px 8px;color:#211A12;font-size:16px;line-height:1.7;">
+<p style="margin:0 0 14px;"><span style="display:inline-block;background:#F4D900;color:#000000;font-size:11px;font-weight:bold;letter-spacing:1.5px;padding:5px 11px;border-radius:20px;">${escapeHtml(issue.label)}</span></p>
+<h1 style="margin:0 0 22px;font-family:Georgia,'Times New Roman',serif;font-size:28px;line-height:1.25;color:#000000;font-weight:normal;">${escapeHtml(issue.title)}</h1>
+${storyHtml}
+</td></tr>
+<tr><td style="padding:6px 32px 8px;">
+<table width="100%" cellpadding="0" cellspacing="0"><tr><td style="background:#F1E9D8;border-radius:8px;padding:16px 18px;color:#211A12;font-size:14px;line-height:1.6;"><strong>${escapeHtml(issue.deliveryHeading)}</strong> ${escapeHtml(issue.deliveryText)}</td></tr></table>
+</td></tr>
+<tr><td style="padding:22px 26px 6px;text-align:center;">
+${buttonsHtml}
+</td></tr>
+<tr><td style="padding:14px 32px 30px;text-align:center;font-size:14px;line-height:1.6;color:#58493A;">
+${escapeHtml(issue.exploreText)} <a href="${safeUrl(issue.exploreUrl)}" style="color:#000000;font-weight:bold;">${escapeHtml(issue.exploreLinkLabel)}</a>
+</td></tr>
+<tr><td style="background:#FAF6EE;padding:20px 24px;text-align:center;font-size:12px;line-height:1.7;color:#58493A;">
+You're getting this because you asked to hear from Molly Samuels at mollysamuels.com.<br>
+<a href="${safeUrl(issue.unsubscribeUrl)}" style="color:#58493A;text-decoration:underline;">Unsubscribe</a> &middot; <a href="https://wa.me/2348037865059" style="color:#58493A;text-decoration:underline;">WhatsApp us</a><br>
+${escapeHtml(ADDRESS)}
+</td></tr>
+</table></td></tr></table></body></html>`;
+  const plain = (s) => s.replace(/\*([^*\n]+)\*/g, "$1");
+  const text = [
+    issue.label,
+    "",
+    issue.title,
+    "",
+    ...paragraphs.map((p) => plain(p) + "\n"),
+    `${issue.deliveryHeading} ${issue.deliveryText}`,
+    "",
+    ...issue.buttons.map((b) => `${b.label}: ${b.url}`),
+    "",
+    `${issue.exploreText} ${issue.exploreLinkLabel} ${issue.exploreUrl}`,
+    "",
+    "You're getting this because you asked to hear from Molly Samuels at mollysamuels.com.",
+    `Unsubscribe: ${issue.unsubscribeUrl}`,
+    "WhatsApp us: https://wa.me/2348037865059",
+    ADDRESS
+  ].join("\n");
+  return { subject: issue.subject, html, text };
+}
+{
+  ISSUE_1,
+  escapeHtml,
+  renderNewsletter
+};
+
+  // ---------- the page ----------
+  const DRAFT_KEY = "ms_newsletter_draft";
+  const $ = (id) => document.getElementById(id);
+  let busy = false, canEmail = 0, previewTimer = null;
+  const TEXT_FIELDS = { subject: "nlSubject", preheader: "nlPreheader", label: "nlLabel", title: "nlTitle", story: "nlStory", deliveryHeading: "nlDeliveryHeading", deliveryText: "nlDeliveryText", exploreText: "nlExploreText", exploreLinkLabel: "nlExploreLabel", exploreUrl: "nlExploreUrl" };
+
+  function setForm(issue) {
+    Object.entries(TEXT_FIELDS).forEach(([k, id]) => { $(id).value = issue[k] || ""; });
+    const b = issue.buttons || [];
+    $("nlB1Label").value = (b[0] && b[0].label) || ""; $("nlB1Url").value = (b[0] && b[0].url) || "";
+    $("nlB2Label").value = (b[1] && b[1].label) || ""; $("nlB2Url").value = (b[1] && b[1].url) || "";
+  }
+  function collectIssue() {
+    const issue = {};
+    Object.entries(TEXT_FIELDS).forEach(([k, id]) => { issue[k] = $(id).value; });
+    issue.buttons = [];
+    [["nlB1Label", "nlB1Url"], ["nlB2Label", "nlB2Url"]].forEach(([l, u]) => { if ($(l).value.trim()) issue.buttons.push({ label: $(l).value.trim(), url: $(u).value.trim() }); });
+    issue.unsubscribeUrl = "#";
+    return issue;
+  }
+  function validate(issue) {
+    if (!issue.subject.trim()) return "Please add a subject line.";
+    if (!issue.title.trim()) return "Please add a story title.";
+    if (!issue.story.trim()) return "Please write the story.";
+    for (const b of issue.buttons) if (!/^https:\/\//i.test(b.url)) return `The link for the button "${b.label}" must start with https://`;
+    if (issue.exploreUrl.trim() && !/^https:\/\//i.test(issue.exploreUrl.trim())) return "The link under the buttons must start with https://";
+    return "";
+  }
+  function say(text, good) {
+    const el = $("nlMsg"); el.textContent = text; el.style.color = good ? "#2D6B3B" : "#B23A3A"; el.style.display = "block";
+  }
+  function refreshPreview() { $("nlPreview").srcdoc = renderNewsletter(collectIssue()).html; }
+  function onEdit() {
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collectIssue())); } catch (e) { /* storage unavailable */ }
+    clearTimeout(previewTimer); previewTimer = setTimeout(refreshPreview, 250);
+  }
+  function setBusy(on) { busy = on; ["nlTestBtn", "nlSendBtn"].forEach((id) => { $(id).disabled = on; }); document.querySelectorAll(".nl-next").forEach((b) => { b.disabled = on; }); }
+
+  async function callSender(payload) {
+    const { data } = await supabaseClient.auth.getSession();
+    if (!data || !data.session) return { ok: false, j: { error: "You're not signed in — please log in again." } };
+    try {
+      const res = await fetch(supabaseClient.supabaseUrl + "/functions/v1/newsletter-send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: supabaseClient.supabaseKey, Authorization: "Bearer " + data.session.access_token },
+        body: JSON.stringify(payload),
+      });
+      const j = (await res.json().catch(() => null)) || {};
+      return { ok: res.ok && j.ok === true, j };
+    } catch (e) { return { ok: false, j: { error: "Couldn't reach the sender. Check your connection and try again." } }; }
+  }
+
+  async function loadAudience() {
+    const { data, error } = await supabaseClient.rpc("newsletter_progress", { p_campaign: null });
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) { $("nlAudience").textContent = "Couldn't check your list. Has 11-newsletter-sending.sql been run?"; canEmail = 0; $("nlSendBtn").disabled = true; return; }
+    canEmail = row.can_email;
+    $("nlAudience").textContent = canEmail === 1 ? "1 person can be emailed right now." : `${canEmail} people can be emailed right now.`;
+    $("nlSendBtn").disabled = busy || canEmail === 0;
+  }
+
+  function resultText(j) {
+    let t = `Sent to ${j.sent} ${j.sent === 1 ? "person" : "people"}.`;
+    if (j.failed) t += ` ${j.failed} could not be sent.`;
+    if (j.waiting) t += ` ${j.waiting} still waiting — press "Send next batch" in the list below later.`;
+    else if (!j.failed) t += " Everyone has it.";
+    if (j.stopped) t += " " + j.stopped;
+    return t;
+  }
+
+  async function sendTest() {
+    if (busy) return;
+    const issue = collectIssue(); const problem = validate(issue);
+    if (problem) return say(problem, false);
+    setBusy(true); $("nlTestBtn").textContent = "Sending…";
+    const r = await callSender({ action: "test", issue });
+    $("nlTestBtn").textContent = "Send me a test"; setBusy(false); await loadAudience();
+    if (r.ok) say(`Test sent to ${r.j.sent_to}. Check that inbox (and the spam folder).`, true);
+    else say(r.j.error || "The test couldn't be sent.", false);
+  }
+
+  async function sendNow() {
+    if (busy) return;
+    const issue = collectIssue(); const problem = validate(issue);
+    if (problem) return say(problem, false);
+    if (canEmail === 0) return say("Nobody can be emailed yet — nobody on your list has agreed.", false);
+    if (!confirm(`Send "${issue.subject}" to ${canEmail} ${canEmail === 1 ? "person" : "people"} now?\n\nThis can't be undone. If your list is large it goes out in batches.`)) return;
+    setBusy(true); $("nlSendBtn").textContent = "Sending…";
+    const { data: camp, error } = await supabaseClient.from("newsletter_campaigns").insert({ subject: issue.subject.trim(), issue }).select("id").single();
+    if (error || !camp) {
+      console.error(error); $("nlSendBtn").textContent = "Send to everyone"; setBusy(false);
+      return say("Couldn't save the newsletter, so nothing was sent. Please try again.", false);
+    }
+    const r = await callSender({ action: "send", campaign_id: camp.id });
+    $("nlSendBtn").textContent = "Send to everyone"; setBusy(false);
+    if (r.ok) say(resultText(r.j), true);
+    else say((r.j.error || "Something went wrong.") + " The newsletter was saved — you can press \"Send next batch\" in the list below to try again.", false);
+    await loadPast(); await loadAudience();
+  }
+
+  async function nextBatch(id) {
+    if (busy) return;
+    if (!confirm("Send the next batch of this newsletter to the people still waiting?")) return;
+    setBusy(true);
+    const r = await callSender({ action: "send", campaign_id: id });
+    setBusy(false);
+    if (r.ok) say(resultText(r.j), true); else say(r.j.error || "Something went wrong.", false);
+    await loadPast(); await loadAudience();
+  }
+
+  async function loadPast() {
+    const { data: list, error } = await supabaseClient.from("newsletter_campaigns").select("id, subject, created_at").order("created_at", { ascending: false }).limit(15);
+    const tbody = $("nlPast");
+    if (error) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load past newsletters.</td></tr>`; return; }
+    if (!list || !list.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Nothing sent yet.</td></tr>`; return; }
+    const rows = [];
+    for (const c of list) {
+      const { data } = await supabaseClient.rpc("newsletter_progress", { p_campaign: c.id });
+      const p = (Array.isArray(data) ? data[0] : data) || { sent: "—", failed: "—", waiting: 0 };
+      rows.push(`<tr>
+        <td>${esc(c.subject)}</td>
+        <td>${new Date(c.created_at).toLocaleDateString()}</td>
+        <td>${esc(p.sent)}</td><td>${esc(p.failed)}</td><td>${esc(p.waiting)}</td>
+        <td class="admin-table-actions">${p.waiting > 0 ? `<button class="nl-next" data-id="${esc(c.id)}">Send next batch</button>` : ""}</td>
+      </tr>`);
+    }
+    tbody.innerHTML = rows.join("");
+    tbody.querySelectorAll(".nl-next").forEach((b) => b.addEventListener("click", () => nextBatch(b.dataset.id)));
+  }
+
+  document.addEventListener("adminReady", async () => {
+    let draft = null;
+    try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY)); } catch (e) { /* none */ }
+    setForm(draft && typeof draft === "object" ? draft : ISSUE_1);
+    document.querySelectorAll("#nlSubject, #nlPreheader, #nlLabel, #nlTitle, #nlStory, #nlDeliveryHeading, #nlDeliveryText, #nlB1Label, #nlB1Url, #nlB2Label, #nlB2Url, #nlExploreText, #nlExploreLabel, #nlExploreUrl").forEach((el) => el.addEventListener("input", onEdit));
+    $("nlTestBtn").addEventListener("click", sendTest);
+    $("nlSendBtn").addEventListener("click", sendNow);
+    $("nlNew").addEventListener("click", () => {
+      if (!confirm("Clear the subject, title and story to start a new issue? (The buttons and delivery text stay.)")) return;
+      ["nlSubject", "nlPreheader", "nlTitle", "nlStory"].forEach((id) => { $(id).value = ""; });
+      $("nlLabel").value = "A SHORT STORY"; onEdit(); refreshPreview();
+    });
+    refreshPreview();
+    await loadAudience();
+    await loadPast();
+  });
+</script>
+</body>
+</html>
