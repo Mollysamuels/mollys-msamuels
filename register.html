@@ -68,6 +68,9 @@
   );
 
   const redirectParam = new URLSearchParams(window.location.search).get("redirect");
+  // Only a plain page name like "checkout.html" is accepted as a redirect target —
+  // never a full web address or script, so a crafted link can't send people elsewhere.
+  const safeRedirect = redirectParam && /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&%.-]*)?$/.test(redirectParam) ? redirectParam : null;
   if (redirectParam) {
     document.getElementById("loginLink").href = `login.html?redirect=${encodeURIComponent(redirectParam)}`;
   }
@@ -100,7 +103,7 @@
         // Send them back to wherever they actually came from (e.g. checkout)
         // once they click the confirmation link in their email — not just
         // the generic homepage.
-        emailRedirectTo: `https://mollysamuels.com/${redirectParam || "account.html"}`,
+        emailRedirectTo: `https://mollysamuels.com/${safeRedirect || "account.html"}`,
       },
     });
 
@@ -132,7 +135,7 @@
       return;
     }
 
-    window.location.href = new URLSearchParams(window.location.search).get("redirect") || "index.html";
+    window.location.href = safeRedirect || "index.html";
   });
 </script>
 </body>
