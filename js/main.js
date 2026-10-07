@@ -451,10 +451,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-// Connects the old hand-typed product cards to real products (so they can be ordered
-// and follow admin prices). Does nothing on pages without such cards.
+// Two small helpers that do nothing on pages that don't need them:
+//  - card-sync.js: connects the old hand-typed product cards to real products (so they can be
+//    ordered and follow admin prices);
+//  - newsletter.js: makes the "Stay updated" Subscribe box work.
 (function () {
-  var s = document.createElement("script");
-  s.src = "js/card-sync.js";
-  document.head.appendChild(s);
+  ["js/card-sync.js", "js/newsletter.js"].forEach(function (src) {
+    var s = document.createElement("script");
+    s.src = src;
+    document.head.appendChild(s);
+  });
 })();
