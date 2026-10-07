@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Confirm your subscription — Molly Samuels</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+</head>
+<body>
+<div class="wrap" style="max-width:520px;padding-top:100px;padding-bottom:100px;text-align:center;">
+  <a href="index.html" class="logo-mark" style="display:inline-flex;margin-bottom:40px;">Molly <span>Samuels</span></a>
+
+  <div id="ncChecking">
+    <div style="width:44px;height:44px;border:3px solid var(--line);border-top-color:var(--gold);border-radius:50%;margin:0 auto 24px;animation:ncspin 0.8s linear infinite;"></div>
+    <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.6rem;">Confirming…</h1>
+  </div>
+
+  <div id="ncResult" style="display:none;">
+    <div id="ncIcon" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:1.8rem;font-weight:700;"></div>
+    <h1 id="ncTitle" style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:1.8rem;margin-bottom:10px;"></h1>
+    <p id="ncText" style="color:var(--ink-soft);font-size:0.95rem;margin-bottom:28px;line-height:1.6;"></p>
+    <a id="ncBtn" href="shop.html" class="btn btn-gold">Continue shopping</a>
+  </div>
+</div>
+
+<style>@keyframes ncspin { to { transform: rotate(360deg); } }</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+
+  const OUTCOMES = {
+    confirmed:    { good: true,  title: "You're subscribed!", text: "Thank you — you'll now hear from us about new arrivals, offers and stories from Mollys and M. Samuels. You can unsubscribe at any time using the link in every email.", btn: ["Continue shopping", "shop.html"] },
+    already:      { good: true,  title: "You're already subscribed", text: "This email address is already confirmed, so there's nothing more to do. Thank you!", btn: ["Continue shopping", "shop.html"] },
+    expired:      { good: false, title: "This link has expired", text: "For your security, confirmation links only work for 7 days. Please sign up again from our homepage and we'll send you a fresh one.", btn: ["Go to the homepage", "index.html"] },
+    invalid:      { good: false, title: "This link isn't valid", text: "The link may have been copied incorrectly. Please sign up again from our homepage and we'll send you a new one.", btn: ["Go to the homepage", "index.html"] },
+    unsubscribed: { good: false, title: "This address has unsubscribed", text: "We won't email this address. If you'd like to start hearing from us again, please get in touch and we'll help.", btn: ["Contact us", "contact.html"] },
+    error:        { good: false, title: "Something went wrong", text: "We couldn't confirm your subscription just now. Please try the link again in a few minutes.", btn: ["Go to the homepage", "index.html"] },
+  };
+
+  function show(kind) {
+    const o = OUTCOMES[kind] || OUTCOMES.error;
+    document.getElementById("ncChecking").style.display = "none";
+    document.getElementById("ncResult").style.display = "block";
+    const icon = document.getElementById("ncIcon");
+    icon.textContent = o.good ? "✓" : "!";
+    icon.style.background = o.good ? "#E8F5EA" : "#FDECEC";
+    icon.style.color = o.good ? "#2D6B3B" : "#B23A3A";
+    document.getElementById("ncTitle").textContent = o.title;
+    document.getElementById("ncText").textContent = o.text;
+    const btn = document.getElementById("ncBtn");
+    btn.textContent = o.btn[0]; btn.href = o.btn[1];
+  }
+
+  (async function () {
+    const token = new URLSearchParams(window.location.search).get("t") || "";
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(token)) return show("invalid");
+    try {
+      const { data, error } = await supabaseClient.rpc("confirm_newsletter", { p_token: token });
+      if (error) { console.error(error); return show("error"); }
+      show(OUTCOMES[data] ? data : "error");
+    } catch (e) { console.error(e); show("error"); }
+  })();
+</script>
+</body>
+</html>
