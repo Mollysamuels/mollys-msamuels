@@ -14,6 +14,7 @@
   var SUPABASE_URL = "https://vdlwnflklclenavtpamp.supabase.co";
   var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
 
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   var OLD_LINK = 'a[href*="product.html?"]';
   var clientPromise = null;
   var productsPromise = null;
@@ -123,9 +124,44 @@
     });
   }
 
+  // Repairs the shopping cart saved in the browser:
+  //  - items added earlier with an old label (e.g. "heels-1") are re-pointed at the real product,
+  //    so checkout accepts them;
+  //  - on the cart and checkout pages, prices and names are refreshed from the database, so the
+  //    preview shows what will actually be charged.
+  function healCart() {
+    if (typeof getCart !== "function" || typeof saveCart !== "function") return;
+    var onCartPage = /(^|\/)(cart|checkout)\.html$/.test(location.pathname);
+    var hasStale = getCart().some(function (i) { return !UUID.test(String(i.product_id)); });
+    if (!hasStale && !onCartPage) return;
+    if (!getCart().length) return;
+    loadProducts().then(function (products) {
+      if (!products.length) return;
+      var cart = getCart(), changed = false;
+      cart.forEach(function (i) {
+        var p = null, id = String(i.product_id);
+        if (UUID.test(id)) { for (var k = 0; k < products.length; k++) if (products[k].id === id) { p = products[k]; break; } }
+        else p = findProduct(products, { item: id, name: i.name });
+        if (!p) return;
+        var price = Number(p.price_ngn);
+        if (i.product_id !== p.id || i.name !== p.name || Number(i.price) !== price) { i.product_id = p.id; i.name = p.name; i.price = price; changed = true; }
+      });
+      if (!changed) return;
+      var merged = [];
+      cart.forEach(function (i) {
+        var m = null;
+        for (var k = 0; k < merged.length; k++) if (merged[k].product_id === i.product_id && merged[k].size === i.size && merged[k].color === i.color) { m = merged[k]; break; }
+        if (m) m.qty += i.qty; else merged.push(i);
+      });
+      saveCart(merged);
+      document.dispatchEvent(new CustomEvent("currencyChanged")); // makes the cart / checkout redraw
+    });
+  }
+
   function schedule() { clearTimeout(timer); timer = setTimeout(sync, 150); }
 
   function start() {
+    healCart();
     sync();
     // Pages like the shop add their cards a moment after loading.
     new MutationObserver(schedule).observe(document.body, { childList: true, subtree: true });
