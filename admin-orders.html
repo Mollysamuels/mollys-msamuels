@@ -39,6 +39,9 @@
     <a href="admin-orders.html" class="admin-nav active"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
     <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
     <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
     <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
     <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
 
@@ -96,6 +99,30 @@
     renderOrders();
   }
 
+
+  // Asks whether to email the customer, then asks the secure sender to do it. The status has
+  // already been saved by this point, so declining just means no email.
+  async function offerCustomerEmail(order, event) {
+    const typed = document.querySelector(`.ao-tracking-input[data-id="${order.id}"]`);
+    const hasTracking = ((typed && typed.value) || order.tracking_number || "").trim();
+    let question = `Email the customer that order ${order.order_number} has ${event === "shipped" ? "shipped" : "been delivered"}?`;
+    if (event === "shipped" && !hasTracking) question += "\n\nThere's no tracking number on this order yet, so the email won't include one.";
+    if (!confirm(question)) return;
+    const { data } = await supabaseClient.auth.getSession();
+    if (!data || !data.session) { alert("You're not signed in any more — please log in again."); return; }
+    try {
+      const res = await fetch(supabaseClient.supabaseUrl + "/functions/v1/order-status-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: supabaseClient.supabaseKey, Authorization: "Bearer " + data.session.access_token },
+        body: JSON.stringify({ orderNumber: order.order_number, event }),
+      });
+      const j = (await res.json().catch(() => null)) || {};
+      if (res.ok && j.ok && j.sent) alert(`Email sent to ${j.sent_to}.`);
+      else if (res.ok && j.ok) alert(j.reason || "Nothing was sent.");
+      else alert((j.error || "The email couldn't be sent.") + " The order status was still saved.");
+    } catch (e) { alert("Couldn't reach the email sender. The order status was still saved."); }
+  }
+
   function renderOrders() {
     const search = document.getElementById("aoSearch").value.toLowerCase();
     const status = document.getElementById("aoStatusFilter").value;
@@ -131,7 +158,11 @@
     tbody.querySelectorAll(".ao-status-select").forEach((sel) => {
       sel.addEventListener("change", async () => {
         const { error } = await supabaseClient.from("orders").update({ status: sel.value }).eq("id", sel.dataset.id);
-        if (error) { alert("Couldn't update status — please try again."); console.error(error); }
+        if (error) { alert("Couldn't update status — please try again."); console.error(error); return; }
+        const order = allOrders.find((o) => o.id === sel.dataset.id);
+        if (order) order.status = sel.value;
+        // Shipped and delivered are the two moments a customer wants to hear from you.
+        if (order && (sel.value === "shipped" || sel.value === "delivered")) await offerCustomerEmail(order, sel.value);
       });
     });
 
