@@ -10,7 +10,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/auth.css">\n<link rel="stylesheet" href="css/pages.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/pages.css">
 <link rel="stylesheet" href="css/responsive.css">
 </head>
 <body>
@@ -50,7 +51,7 @@
       </a>
       <a class="icon-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 11.5a2 2 0 01-2 1.5H7.5a2 2 0 01-2-1.5L4 7z" stroke="currentColor" stroke-width="1.5"/><path d="M8 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="badge cart-badge">3</span>
+        <span class="badge cart-badge">0</span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -99,17 +100,26 @@
         <div><strong>Business Hours</strong><span>Mon – Sat, 9:00am – 6:00pm (WAT)</span></div>
       </div>
 
-      <div class="contact-map">Map — location preview coming soon</div>
+      <div class="contact-map"><a href="https://www.google.com/maps/search/?api=1&amp;query=No+5+Zone+B+Apo+Resettlement+Apo+Abuja+Nigeria" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600;">View us on Google Maps &rarr;</a></div>
     </div>
 
     <div class="contact-form">
-      <form onsubmit="return false;">
-        <div class="auth-field"><label for="cName">Full name</label><input type="text" id="cName" required></div>
-        <div class="auth-field"><label for="cEmail">Email address</label><input type="email" id="cEmail" required></div>
-        <div class="auth-field"><label for="cSubject">Subject</label><input type="text" id="cSubject"></div>
-        <div class="auth-field"><label for="cMessage">Message</label><textarea id="cMessage" required></textarea></div>
-        <button type="submit" class="btn btn-gold auth-submit">Send Message</button>
+      <form id="contactForm" novalidate>
+        <div class="auth-field"><label for="cName">Full name</label><input type="text" id="cName" maxlength="100" autocomplete="name" required></div>
+        <div class="auth-field"><label for="cEmail">Email address</label><input type="email" id="cEmail" maxlength="254" autocomplete="email" required></div>
+        <div class="auth-field"><label for="cSubject">Subject</label><input type="text" id="cSubject" maxlength="150"></div>
+        <div class="auth-field"><label for="cMessage">Message</label><textarea id="cMessage" maxlength="4000" required></textarea></div>
+        <p id="cError" role="alert" style="display:none;color:#B23A3A;font-size:0.88rem;margin:0 0 12px;line-height:1.5;"></p>
+        <button type="submit" class="btn btn-gold auth-submit" id="cSend">Send Message</button>
       </form>
+
+      <div id="cDone" style="display:none;text-align:center;padding:30px 10px;">
+        <div style="width:64px;height:64px;border-radius:50%;background:#E8F5EA;color:#2D6B3B;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem;font-weight:700;">&#10003;</div>
+        <h2 id="cDoneTitle" style="font-family:var(--font-display);font-style:italic;font-weight:500;margin-bottom:10px;"></h2>
+        <p id="cDoneText" style="color:var(--ink-soft);font-size:0.95rem;line-height:1.6;margin-bottom:22px;"></p>
+        <p style="font-size:0.88rem;color:var(--ink-soft);">Need us urgently? <a href="https://wa.me/2348037865059" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600;">Message us on WhatsApp</a>.</p>
+        <p style="font-size:0.85rem;margin-top:14px;"><a href="#" id="cAnother" style="text-decoration:underline;color:var(--ink-soft);">Send another message</a></p>
+      </div>
     </div>
   </div>
 </div>
@@ -180,6 +190,67 @@
 </div>
 
 <script src="js/main.js"></script>
+<script>
+  (function () {
+    var ENDPOINT = "https://vdlwnflklclenavtpamp.supabase.co/functions/v1/contact-submit";
+    var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
+    var form = document.getElementById("contactForm");
+    var errorEl = document.getElementById("cError");
+    var btn = document.getElementById("cSend");
+    var busy = false;
+
+    // A hidden field only a robot fills in.
+    var trap = document.createElement("input");
+    trap.type = "text"; trap.name = "website"; trap.tabIndex = -1; trap.autocomplete = "off";
+    trap.setAttribute("aria-hidden", "true");
+    trap.style.cssText = "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;";
+    form.appendChild(trap);
+
+    function problem(text) { errorEl.textContent = text; errorEl.style.display = "block"; }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (busy) return;
+      errorEl.style.display = "none";
+      var name = document.getElementById("cName").value.trim();
+      var email = document.getElementById("cEmail").value.trim();
+      var subject = document.getElementById("cSubject").value.trim();
+      var message = document.getElementById("cMessage").value.trim();
+      if (!name) return problem("Please tell us your name.");
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return problem("Please enter a valid email address so we can reply.");
+      if (message.length < 3) return problem("Please write your message.");
+
+      busy = true; btn.disabled = true; var label = btn.textContent; btn.textContent = "Sending...";
+      fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": ANON, "Authorization": "Bearer " + ANON },
+        body: JSON.stringify({ name: name, email: email, subject: subject, message: message, website: trap.value }),
+      })
+        .then(function (r) { return r.json().catch(function () { return null; }).then(function (j) { return { ok: r.ok, j: j || {} }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.ok) {
+            // Success: the form goes away and only the thank-you remains.
+            document.getElementById("cDoneTitle").textContent = "Thank you, " + (name.split(/\s+/)[0] || "friend") + "!";
+            document.getElementById("cDoneText").textContent = "We've received your message and will reply to " + email + " as soon as we can.";
+            form.style.display = "none";
+            document.getElementById("cDone").style.display = "block";
+            form.reset();
+          } else {
+            problem(res.j.error || "Sorry, something went wrong. Please try again, or message us on WhatsApp.");
+          }
+        })
+        .catch(function () { problem("Sorry, we couldn't reach the server. Please check your connection and try again."); })
+        .then(function () { busy = false; btn.disabled = false; btn.textContent = label; });
+    });
+
+    document.getElementById("cAnother").addEventListener("click", function (e) {
+      e.preventDefault();
+      document.getElementById("cDone").style.display = "none";
+      form.style.display = "block";
+      document.getElementById("cName").focus();
+    });
+  })();
+</script>
 
 </body>
 </html>
