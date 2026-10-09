@@ -10,8 +10,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/extra-pages.css">\n<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+<link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/responsive.css">
+<style>
+  .co-sr { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .co-req { color:#B23A3A; }
+  .co-hint { display:block; font-size:0.8rem; color:#58493A; margin-top:5px; }
+  .co-field-error { display:block; font-size:0.84rem; color:#B23A3A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"], .auth-field select[aria-invalid="true"], .auth-field textarea[aria-invalid="true"] { border-color:#B23A3A; }
+  .co-errors { border:1px solid #B23A3A; background:#FDECEC; color:#7A1F1F; border-radius:8px; padding:14px 18px; margin:0 0 20px; }
+  .co-errors ul { margin:8px 0 0 18px; padding:0; }
+  .co-errors a { color:#7A1F1F; text-decoration:underline; }
+  .co-note { background:var(--cream-deep); border-radius:8px; padding:14px 16px; font-size:0.88rem; line-height:1.6; color:var(--ink-soft); margin:0 0 20px; }
+  .co-privacy { font-size:0.8rem; color:#58493A; line-height:1.6; margin:0 0 16px; }
+  .co-privacy a { text-decoration:underline; }
+  .co-done { text-align:center; padding:30px 10px; }
+  .co-done h2 { font-family:var(--font-display); font-style:italic; font-weight:500; margin-bottom:10px; }
+  .co-done h2:focus { outline:none; }
+</style>
 </head>
 <body>
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
@@ -50,7 +67,7 @@
       </a>
       <a class="icon-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 11.5a2 2 0 01-2 1.5H7.5a2 2 0 01-2-1.5L4 7z" stroke="currentColor" stroke-width="1.5"/><path d="M8 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="badge cart-badge">3</span>
+        <span class="badge cart-badge">0</span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -79,37 +96,52 @@
 <div class="wrap">
   <div class="page-hero" style="text-align:center;"><h1>Create Your Organisation's Uniform</h1><p style="margin:8px auto 0;">Tell us what you need — we'll follow up with a quote.</p></div>
   <div class="order-form-layout">
-    <form id="customOrderForm">
+
+    <div id="coErrors" class="co-errors" role="alert" tabindex="-1" hidden>
+      <strong>Please check these details:</strong>
+      <ul id="coErrorList"></ul>
+    </div>
+
+    <form id="customOrderForm" novalidate>
+      <p class="co-hint" style="margin:0 0 18px;">Fields marked <span class="co-req" aria-hidden="true">*</span><span class="co-sr"> with an asterisk</span> are required.</p>
+
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Organisation name</label><input type="text" id="coOrgName" required></div>
-        <div class="auth-field"><label>Contact person</label><input type="text" id="coContact" required></div>
+        <div class="auth-field"><label for="coOrgName">Organisation name <span class="co-req" aria-hidden="true">*</span></label><input type="text" id="coOrgName" name="organisation" maxlength="150" autocomplete="organization" required aria-required="true" aria-describedby="coOrgNameErr"><span class="co-field-error" id="coOrgNameErr" hidden></span></div>
+        <div class="auth-field"><label for="coContact">Contact person <span class="co-req" aria-hidden="true">*</span></label><input type="text" id="coContact" name="contact" maxlength="100" autocomplete="name" required aria-required="true" aria-describedby="coContactErr"><span class="co-field-error" id="coContactErr" hidden></span></div>
       </div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Email</label><input type="email" id="coEmail" required></div>
-        <div class="auth-field"><label>Phone</label><input type="tel" id="coPhone" required></div>
+        <div class="auth-field"><label for="coEmail">Email <span class="co-req" aria-hidden="true">*</span></label><input type="email" id="coEmail" name="email" maxlength="254" autocomplete="email" inputmode="email" required aria-required="true" aria-describedby="coEmailErr"><span class="co-field-error" id="coEmailErr" hidden></span></div>
+        <div class="auth-field"><label for="coPhone">Phone / WhatsApp <span class="co-req" aria-hidden="true">*</span></label><input type="tel" id="coPhone" name="phone" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+234 803 000 0000" required aria-required="true" aria-describedby="coPhoneHint coPhoneErr"><span class="co-hint" id="coPhoneHint">Include your country code, for example +234 or +44.</span><span class="co-field-error" id="coPhoneErr" hidden></span></div>
       </div>
       <div class="auth-field">
-        <label>Organisation type</label>
-        <select id="coOrgType" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:0.92rem;">
+        <label for="coOrgType">Organisation type</label>
+        <select id="coOrgType" name="orgType" style="width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:6px;font-family:inherit;font-size:0.92rem;">
           <option>School</option><option>Hospital</option><option>Company</option><option>Hotel</option><option>Restaurant</option><option>Sports Organisation</option><option>Security</option><option>Other</option>
         </select>
       </div>
-      <div class="auth-field"><label>Uniform type</label><input type="text" id="coUniformType" placeholder="e.g. Blazers, shirts, PE kits"></div>
+      <div class="auth-field"><label for="coUniformType">Uniform type</label><input type="text" id="coUniformType" name="uniform" maxlength="200" placeholder="e.g. Blazers, shirts, PE kits"></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Quantity</label><input type="number" id="coQuantity" min="1"></div>
-        <div class="auth-field"><label>Required date</label><input type="date" id="coDate"></div>
+        <div class="auth-field"><label for="coQuantity">Quantity</label><input type="number" id="coQuantity" name="quantity" min="1" max="100000" step="1" inputmode="numeric" aria-describedby="coQuantityErr"><span class="co-field-error" id="coQuantityErr" hidden></span></div>
+        <div class="auth-field"><label for="coDate">Date you need it by</label><input type="date" id="coDate" name="requiredDate" aria-describedby="coDateErr"><span class="co-field-error" id="coDateErr" hidden></span></div>
       </div>
-      <div class="auth-field"><label>Sizes needed</label><input type="text" id="coSizes" placeholder="e.g. Age 8-14, chest 28-36"></div>
-      <div class="auth-field"><label>Preferred colours</label><input type="text" id="coColours"></div>
-      <div class="auth-field">
-        <label>Logo / branding artwork</label>
-        <div class="file-upload-field">Drag a file here or click to upload (not yet functional — visual only)</div>
-      </div>
-      <div class="auth-field"><label>Additional notes</label><textarea id="coNotes"></textarea></div>
-      <p id="coError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
-      <p id="coSuccess" style="display:none;color:#2D6B3B;font-size:0.9rem;margin-bottom:10px;">Thank you — your request has been received. We'll be in touch shortly.</p>
+      <div class="auth-field"><label for="coSizes">Sizes needed</label><input type="text" id="coSizes" name="sizes" maxlength="300" placeholder="e.g. Age 8-14, chest 28-36"></div>
+      <div class="auth-field"><label for="coColours">Preferred colours</label><input type="text" id="coColours" name="colours" maxlength="200"></div>
+
+      <div class="co-note"><strong>Have a logo or artwork?</strong> After you send this form we'll email you a confirmation. Just reply to it and attach your logo, or send it on WhatsApp to +234 803 786 5059.</div>
+
+      <div class="auth-field"><label for="coNotes">Additional notes</label><textarea id="coNotes" name="notes" maxlength="3000" rows="5"></textarea></div>
+
+      <p class="co-privacy">We use these details only to reply to your request, and we keep them safe. We won't add you to any mailing list. Read our <a href="privacy.html">Privacy Policy</a>.</p>
       <button type="submit" class="btn btn-gold auth-submit" id="coSubmitBtn">Request a Quote</button>
     </form>
+
+    <div id="coDone" class="co-done" hidden>
+      <div aria-hidden="true" style="width:64px;height:64px;border-radius:50%;background:#E8F5EA;color:#2D6B3B;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem;font-weight:700;">&#10003;</div>
+      <h2 id="coDoneTitle" tabindex="-1"></h2>
+      <p id="coDoneText" style="color:var(--ink-soft);font-size:0.95rem;line-height:1.6;margin-bottom:14px;"></p>
+      <p style="font-size:0.88rem;color:var(--ink-soft);">Need us urgently? <a href="https://wa.me/2348037865059" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600;">Message us on WhatsApp<span class="co-sr"> (opens in a new tab)</span></a>.</p>
+      <p style="font-size:0.85rem;margin-top:14px;"><a href="#" id="coAnother" style="text-decoration:underline;color:var(--ink-soft);">Send another request</a></p>
+    </div>
   </div>
 </div>
 <footer class="site-footer">
@@ -179,51 +211,106 @@
 </div>
 
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  const supabaseClient = supabase.createClient(
-    "https://vdlwnflklclenavtpamp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
-  );
+  (function () {
+    var ENDPOINT = "https://vdlwnflklclenavtpamp.supabase.co/functions/v1/custom-order-submit";
+    var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
+    var form = document.getElementById("customOrderForm");
+    var summary = document.getElementById("coErrors"), summaryList = document.getElementById("coErrorList");
+    var btn = document.getElementById("coSubmitBtn");
+    var busy = false;
+    var $ = function (id) { return document.getElementById(id); };
 
-  document.getElementById("customOrderForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const errorEl = document.getElementById("coError");
-    const successEl = document.getElementById("coSuccess");
-    const btn = document.getElementById("coSubmitBtn");
-    errorEl.style.display = "none";
-    successEl.style.display = "none";
-    btn.disabled = true;
-    btn.textContent = "Sending...";
+    // Earliest date offered = today on the visitor's own calendar (so it works in any time zone).
+    function localISO(d) { var m = d.getMonth() + 1, day = d.getDate(); return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day; }
+    var today = localISO(new Date());
+    $("coDate").setAttribute("min", today);
 
-    const { error } = await supabaseClient.from("custom_order_requests").insert({
-      organisation_name: document.getElementById("coOrgName").value.trim(),
-      contact_person: document.getElementById("coContact").value.trim(),
-      email: document.getElementById("coEmail").value.trim(),
-      phone: document.getElementById("coPhone").value.trim(),
-      organisation_type: document.getElementById("coOrgType").value,
-      uniform_type: document.getElementById("coUniformType").value.trim(),
-      quantity: parseInt(document.getElementById("coQuantity").value, 10) || null,
-      required_date: document.getElementById("coDate").value || null,
-      sizes_needed: document.getElementById("coSizes").value.trim(),
-      preferred_colours: document.getElementById("coColours").value.trim(),
-      notes: document.getElementById("coNotes").value.trim(),
-    });
+    // A hidden field only a robot fills in.
+    var trap = document.createElement("input");
+    trap.type = "text"; trap.name = "website"; trap.tabIndex = -1; trap.autocomplete = "off";
+    trap.setAttribute("aria-hidden", "true");
+    trap.style.cssText = "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;";
+    form.appendChild(trap);
 
-    if (error) {
-      console.error(error);
-      errorEl.textContent = "Something went wrong sending your request. Please try again.";
-      errorEl.style.display = "block";
-      btn.disabled = false;
-      btn.textContent = "Request a Quote";
-      return;
+    var FIELD_ERROR = { coOrgName: "coOrgNameErr", coContact: "coContactErr", coEmail: "coEmailErr", coPhone: "coPhoneErr", coQuantity: "coQuantityErr", coDate: "coDateErr" };
+
+    function validate() {
+      var p = [];
+      var v = function (id) { return $(id).value.trim(); };
+      if (!v("coOrgName")) p.push(["coOrgName", "Please enter your organisation's name."]);
+      if (!v("coContact")) p.push(["coContact", "Please enter a contact person."]);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("coEmail"))) p.push(["coEmail", "Please enter a valid email address, like name@example.com."]);
+      var digits = v("coPhone").replace(/\D/g, "").length;
+      if (digits < 7 || digits > 15) p.push(["coPhone", "Please enter a phone number with your country code, like +234 803 000 0000."]);
+      var q = v("coQuantity");
+      if (q !== "" && (!/^\d+$/.test(q) || +q < 1 || +q > 100000)) p.push(["coQuantity", "Quantity must be a whole number between 1 and 100,000."]);
+      var d = v("coDate");
+      if (d !== "" && d < today) p.push(["coDate", "Please choose today's date or a later one."]);
+      return p;
     }
 
-    document.getElementById("customOrderForm").style.display = "none";
-    successEl.style.fontSize = "1rem";
-    successEl.style.display = "block";
-    btn.style.display = "none";
-  });
+    function clearErrors() {
+      summary.hidden = true; summaryList.innerHTML = "";
+      Object.keys(FIELD_ERROR).forEach(function (id) { $(id).removeAttribute("aria-invalid"); var e = $(FIELD_ERROR[id]); e.hidden = true; e.textContent = ""; });
+    }
+    function showProblems(problems) {
+      problems.forEach(function (pr) {
+        var id = pr[0], msg = pr[1], li = document.createElement("li");
+        if (FIELD_ERROR[id]) {
+          $(id).setAttribute("aria-invalid", "true");
+          var e = $(FIELD_ERROR[id]); e.textContent = msg; e.hidden = false;
+          var a = document.createElement("a"); a.href = "#" + id; a.textContent = msg;
+          a.addEventListener("click", function (ev) { ev.preventDefault(); $(id).focus(); });
+          li.appendChild(a);
+        } else { li.textContent = msg; }
+        summaryList.appendChild(li);
+      });
+      summary.hidden = false;
+      summary.focus();   // screen readers announce the problems; sighted users are taken to them
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (busy) return;
+      clearErrors();
+      var problems = validate();
+      if (problems.length) return showProblems(problems);
+
+      var v = function (id) { return $(id).value.trim(); };
+      var payload = {
+        organisation: v("coOrgName"), contact: v("coContact"), email: v("coEmail"), phone: v("coPhone"),
+        orgType: $("coOrgType").value, uniform: v("coUniformType"), quantity: v("coQuantity") === "" ? null : parseInt(v("coQuantity"), 10),
+        requiredDate: v("coDate") || null, sizes: v("coSizes"), colours: v("coColours"), notes: v("coNotes"), website: trap.value,
+      };
+      busy = true; btn.disabled = true; btn.setAttribute("aria-busy", "true"); var label = btn.textContent; btn.textContent = "Sending...";
+
+      fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": ANON, "Authorization": "Bearer " + ANON },
+        body: JSON.stringify(payload),
+      })
+        .then(function (r) { return r.json().catch(function () { return null; }).then(function (j) { return { ok: r.ok, j: j || {} }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.ok) {
+            var first = payload.contact.split(/\s+/)[0] || "there";
+            $("coDoneTitle").textContent = "Thank you, " + first + ".";
+            $("coDoneText").textContent = "Your request has been received. Your reference is " + res.j.reference + ". We've emailed a confirmation to " + payload.email + " (please check your spam folder if you don't see it) and will reply there with a quote.";
+            form.hidden = true; $("coDone").hidden = false; $("coDoneTitle").focus();
+            form.reset(); $("coOrgType").selectedIndex = 0;
+          } else {
+            showProblems([["", res.j.error || "Sorry, something went wrong sending your request. Please try again, or message us on WhatsApp."]]);
+          }
+        })
+        .catch(function () { showProblems([["", "Sorry, we couldn't reach the server. Please check your connection and try again."]]); })
+        .then(function () { busy = false; btn.disabled = false; btn.removeAttribute("aria-busy"); btn.textContent = label; });
+    });
+
+    $("coAnother").addEventListener("click", function (e) {
+      e.preventDefault();
+      $("coDone").hidden = true; form.hidden = false; clearErrors(); $("coOrgName").focus();
+    });
+  })();
 </script>
 
 </body>
