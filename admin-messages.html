@@ -266,6 +266,7 @@ ${quoteHtml}
     const to = (v.to.match(EMAIL_RE) || [""])[0].toLowerCase();
     if (!confirm(`Send this email to ${to}?\n\nSubject: ${v.subject}\n\nThis can't be undone.`)) return;
     setBusy(true); $("cmSendBtn").textContent = "Sending…";
+    const answered = related;
     const r = await callSender({ action: "send", to, to_name: v.name, subject: v.subject, message: messageOf(v), related, confirm_reply: true });
     $("cmSendBtn").textContent = "Send to customer"; setBusy(false);
     if (r.ok) {
@@ -273,6 +274,10 @@ ${quoteHtml}
       setForm({ ...DEFAULTS, greeting: v.greeting === DEFAULTS.greeting ? v.greeting : DEFAULTS.greeting, closing: v.closing, style: v.style });
       $("cmEnquiry").value = ""; $("cmRef").style.display = "none"; $("cmNote").style.display = "none"; $("cmConfirm").checked = false; related = "";
       onEdit(); refreshPreview();
+      if (answered.startsWith("contact_messages:")) {
+        await supabaseClient.from("contact_messages").update({ status: "replied", replied_at: new Date().toISOString() }).eq("id", answered.slice("contact_messages:".length));
+        await loadEnquiries();
+      }
     } else say(r.j.error || "Something went wrong.", false);
     await loadHistory();
   }
@@ -282,6 +287,13 @@ ${quoteHtml}
   const firstName = (n) => String(n || "").trim().split(/\s+/)[0] || "";
   function summarise(pairs) { return pairs.filter(([, v]) => v !== undefined && v !== null && String(v).trim() !== "").map(([k, v]) => `${k}: ${v}`).join("\n"); }
   function enquiryInfo(kind, r) {
+    if (kind === "contact") {
+      const email = pickEmail(r.email);
+      return { name: r.name || "", email, related: "contact_messages:" + r.id,
+        subject: "Re: " + (r.subject && r.subject.trim() ? r.subject.trim() : "your message"),
+        summary: `From: ${r.name || "?"} <${r.email || "?"}>\n${r.subject ? "Subject: " + r.subject + "\n" : ""}\n${r.message || ""}`.trim(),
+        quote: r.message || "", note: "" };
+    }
     if (kind === "custom") {
       const email = pickEmail(r.email), org = r.organisation_name || "";
       return { name: r.contact_person || "", email, related: "custom_order_requests:" + r.id,
@@ -301,17 +313,19 @@ ${quoteHtml}
     const info = enquiryInfo(item.kind, item.row);
     related = info.related;
     const first = firstName(info.name);
-    setForm({ ...getForm(), to: info.email, name: info.name, subject: info.subject, greeting: first ? `Hello ${first},` : "Hello,", quote: info.summary });
+    setForm({ ...getForm(), to: info.email, name: info.name, subject: info.subject, greeting: first ? `Hello ${first},` : "Hello,", quote: info.quote !== undefined ? info.quote : info.summary });
     $("cmRef").textContent = info.summary || "(no details were filled in)"; $("cmRef").style.display = "block";
     $("cmNote").textContent = info.note; $("cmNote").style.display = info.note ? "block" : "none";
     onEdit(); refreshPreview();
   }
   async function loadEnquiries() {
-    const [c, b] = await Promise.all([
+    const [c, b, k] = await Promise.all([
       supabaseClient.from("custom_order_requests").select("*").order("created_at", { ascending: false }).limit(30),
       supabaseClient.from("bulk_order_requests").select("*").order("created_at", { ascending: false }).limit(30),
+      supabaseClient.from("contact_messages").select("*").order("created_at", { ascending: false }).limit(30),
     ]);
     enquiries = [
+      ...((k.data || []).map((r) => ({ key: "contact:" + r.id, kind: "contact", row: r, label: `${r.status === "new" ? "NEW · " : r.status === "replied" ? "✓ " : ""}Contact message — ${r.name || "?"}${r.subject ? ": " + r.subject : ""}` }))),
       ...((c.data || []).map((r) => ({ key: "custom:" + r.id, kind: "custom", row: r, label: `Custom order — ${r.organisation_name || "?"}${r.contact_person ? " (" + r.contact_person + ")" : ""}` }))),
       ...((b.data || []).map((r) => ({ key: "bulk:" + r.id, kind: "bulk", row: r, label: `Bulk enquiry — ${r.product_name || "?"}${r.organisation ? " (" + r.organisation + ")" : ""}` }))),
     ];
