@@ -214,6 +214,8 @@ ${quoteHtml}
   const DEFAULTS = { to: "", name: "", subject: "", greeting: "Hello,", body: "", closing: "Warm regards,\nMolly Samuels", quote: "", style: "simple", buttonLabel: "", buttonUrl: "" };
   const EMAIL_RE = /[^\s@<>"',;()]+@[^\s@<>"',;()]+\.[^\s@<>"',;()]{2,}/;
   let busy = false, previewTimer = null, related = "", enquiries = [];
+  // The reference customers are given in their confirmation email (CO- plus the first 8 characters of the request's id).
+  const refOf = (id) => "CO-" + String(id).replace(/-/g, "").slice(0, 8).toUpperCase();
 
   function setForm(v) { Object.entries(FIELDS).forEach(([k, id]) => { $(id).value = v[k] ?? DEFAULTS[k]; }); }
   function getForm() { const v = {}; Object.entries(FIELDS).forEach(([k, id]) => { v[k] = $(id).value; }); return v; }
@@ -298,7 +300,7 @@ ${quoteHtml}
       const email = pickEmail(r.email), org = r.organisation_name || "";
       return { name: r.contact_person || "", email, related: "custom_order_requests:" + r.id,
         subject: `Re: your custom uniform enquiry${org ? " — " + org : ""}`,
-        summary: summarise([["Organisation", org], ["Type", r.organisation_type], ["Uniform", r.uniform_type], ["Quantity", r.quantity], ["Sizes", r.sizes_needed], ["Colours", r.preferred_colours], ["Needed by", r.required_date ? new Date(r.required_date).toLocaleDateString() : ""], ["Notes", r.notes]]),
+        summary: summarise([["Reference", refOf(r.id)], ["Organisation", org], ["Type", r.organisation_type], ["Uniform", r.uniform_type], ["Quantity", r.quantity], ["Sizes", r.sizes_needed], ["Colours", r.preferred_colours], ["Needed by", r.required_date ? new Date(r.required_date).toLocaleDateString() : ""], ["Notes", r.notes]]),
         note: email ? "" : (r.phone ? `There's no email on this enquiry. Their phone number is ${r.phone}.` : "There's no email on this enquiry.") };
     }
     const email = pickEmail(r.contact_info), prod = r.product_name || "";
@@ -326,7 +328,7 @@ ${quoteHtml}
     ]);
     enquiries = [
       ...((k.data || []).map((r) => ({ key: "contact:" + r.id, kind: "contact", row: r, label: `${r.status === "new" ? "NEW · " : r.status === "replied" ? "✓ " : ""}Contact message — ${r.name || "?"}${r.subject ? ": " + r.subject : ""}` }))),
-      ...((c.data || []).map((r) => ({ key: "custom:" + r.id, kind: "custom", row: r, label: `Custom order — ${r.organisation_name || "?"}${r.contact_person ? " (" + r.contact_person + ")" : ""}` }))),
+      ...((c.data || []).map((r) => ({ key: "custom:" + r.id, kind: "custom", row: r, label: `Custom order ${refOf(r.id)} — ${r.organisation_name || "?"}${r.contact_person ? " (" + r.contact_person + ")" : ""}` }))),
       ...((b.data || []).map((r) => ({ key: "bulk:" + r.id, kind: "bulk", row: r, label: `Bulk enquiry — ${r.product_name || "?"}${r.organisation ? " (" + r.organisation + ")" : ""}` }))),
     ];
     const sel = $("cmEnquiry");
