@@ -1,0 +1,17 @@
+# Molly Samuels — mollysamuels.com
+User-agent: *
+Allow: /
+# Private or personal pages: nothing for a search engine to show.
+# (This only asks well-behaved crawlers to stay away — it is not security. The admin is protected by login.)
+Disallow: /admin
+Disallow: /cart.html
+Disallow: /checkout
+Disallow: /account.html
+Disallow: /login.html
+Disallow: /register.html
+Disallow: /reset-password.html
+Disallow: /wishlist.html
+Disallow: /order-success
+Disallow: /track-order.html
+
+Sitemap: https://mollysamuels.com/sitemap.xml
