@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
 <title>Dashboard — Admin — Molly Samuels</title>
-<meta name="description" content="Admin dashboard for Molly Samuels.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,10 +14,18 @@
 <link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/admin.css">
 <link rel="stylesheet" href="css/responsive.css">
+<style>
+  .skip-link { position:absolute; left:-9999px; top:8px; background:#000; color:#fff; padding:10px 16px; border-radius:6px; z-index:1000; }
+  .skip-link:focus { left:8px; }
+  .adm-msg { font-size:0.85rem; margin:0 0 10px; }
+  .adm-msg.ok { color:#2D6B3B; } .adm-msg.err { color:#B23A3A; }
+  .adm-hint { display:block; font-size:0.78rem; color:#58493A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"] { border-color:#B23A3A; }
+  :focus-visible { outline:2px solid #1B2A4A; outline-offset:2px; }
+</style>
 </head>
 <body class="admin-body" style="visibility:hidden;">
-<!-- Supabase client — replace the two placeholder values below with your own
-     Project URL and anon public key from Settings > Data API before uploading. -->
+<a href="#main" class="skip-link">Skip to main content</a>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
   const supabaseClient = supabase.createClient(
@@ -33,44 +42,48 @@
 <aside class="admin-sidebar">
   <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
   <span class="admin-tag">Admin Panel</span>
-  <nav class="admin-nav-list" style="display:flex;flex-direction:column;gap:2px;">
-    <a href="admin-dashboard.html" class="admin-nav active"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
-<a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
-<a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
-<a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
-<a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
-<a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
-<a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+  <nav class="admin-nav-list" aria-label="Admin" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav active" aria-current="page"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
 
   </nav>
   <div class="admin-nav-logout">
     <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
   </div>
 </aside>
-<main class="admin-main">
+<main class="admin-main" id="main">
 <div class="admin-topbar">
   <h1>Dashboard</h1>
-  <div class="admin-topbar-user"><div class="admin-avatar">A</div> Admin</div>
+  <div class="admin-topbar-user"><div class="admin-avatar" aria-hidden="true">A</div> Admin</div>
 </div>
 <div class="admin-content">
 
-  <div class="admin-stats-grid">
+  <div class="admin-stats-grid" role="group" aria-label="Last 30 days and totals">
     <div class="admin-stat-card"><div class="label">Orders (30d)</div><div class="value" id="statOrders30d">—</div></div>
     <div class="admin-stat-card"><div class="label">Revenue (30d)</div><div class="value" id="statRevenue30d">—</div></div>
     <div class="admin-stat-card"><div class="label">Products</div><div class="value" id="statProducts">—</div></div>
     <div class="admin-stat-card"><div class="label">Customers</div><div class="value" id="statCustomers">—</div></div>
   </div>
 
-  <div class="admin-stats-grid" style="grid-template-columns: repeat(3, 1fr);">
-    <div class="admin-stat-card"><div class="label">Low Stock Sizes</div><div class="value" id="statLowStock">—</div></div>
-    <div class="admin-stat-card"><div class="label">Custom Order Requests</div><div class="value" id="statCustomReq">—</div></div>
-    <div class="admin-stat-card"><div class="label">Bulk Enquiries</div><div class="value" id="statBulkReq">—</div></div>
+  <div class="admin-stats-grid" style="grid-template-columns: repeat(3, 1fr);" role="group" aria-label="Needs attention">
+    <div class="admin-stat-card"><div class="label">Sold-Out Sizes</div><div class="value" id="statLowStock">—</div></div>
+    <div class="admin-stat-card"><div class="label"><a href="admin-custom-orders.html" style="color:inherit;text-decoration:underline;">New Custom Requests</a></div><div class="value" id="statCustomReq">—</div></div>
+    <div class="admin-stat-card"><div class="label"><a href="admin-custom-orders.html" style="color:inherit;text-decoration:underline;">New Bulk Enquiries</a></div><div class="value" id="statBulkReq">—</div></div>
   </div>
 
   <div class="admin-panel">
-    <div class="admin-panel-head"><h2>Recent Orders</h2><a href="admin-orders.html" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:underline;">View all →</a></div>
+    <div class="admin-panel-head"><h2>Recent Orders</h2><a href="admin-orders.html" style="font-size:0.85rem;color:var(--ink-soft);text-decoration:underline;">View all<span aria-hidden="true"> →</span></a></div>
     <table class="admin-table">
-      <tr><th>Order</th><th>Amount</th><th>Status</th></tr>
+      <caption class="sr-only" style="position:absolute;left:-9999px;">Your five most recent orders</caption>
+      <thead><tr><th scope="col">Order</th><th scope="col">Amount</th><th scope="col">Status</th></tr></thead>
       <tbody id="dashRecentOrders"><tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
     </table>
   </div>
@@ -79,8 +92,18 @@
 </main>
 </div>
 <script>
+  // Anything that came from the database is turned into plain text before it is
+  // placed on the page, so a typed name can never run as code.
+  function esc(v) {
+    return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  // Revenue counts only orders that are real sales: cancelled, pending, failed and refunded orders are left out.
+  const NOT_REVENUE = ["cancelled", "pending", "failed", "refunded"];
+  const cap = (s) => { s = String(s || "unknown"); return s.charAt(0).toUpperCase() + s.slice(1); };
+
   document.addEventListener("adminReady", async () => {
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+    const set = (id, v) => { document.getElementById(id).textContent = v; };
 
     const [ordersRes, productsRes, customersRes, sizesRes, customReqRes, bulkReqRes] = await Promise.all([
       supabaseClient.from("orders").select("total, order_number, status, created_at").gte("created_at", thirtyDaysAgo).order("created_at", { ascending: false }),
@@ -91,27 +114,36 @@
       supabaseClient.from("bulk_order_requests").select("id", { count: "exact", head: true }).eq("status", "new"),
     ]);
 
-    const orders = ordersRes.data || [];
-    document.getElementById("statOrders30d").textContent = orders.length;
-    document.getElementById("statRevenue30d").textContent = `₦${orders.reduce((sum, o) => sum + Number(o.total), 0).toLocaleString()}`;
-    document.getElementById("statProducts").textContent = productsRes.count ?? "—";
-    document.getElementById("statCustomers").textContent = customersRes.count ?? "—";
-    document.getElementById("statLowStock").textContent = sizesRes.count ?? "—";
-    document.getElementById("statCustomReq").textContent = customReqRes.count ?? "—";
-    document.getElementById("statBulkReq").textContent = bulkReqRes.count ?? "—";
-
     const tbody = document.getElementById("dashRecentOrders");
-    const recent = orders.slice(0, 5);
-    if (!recent.length) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">No orders in the last 30 days.</td></tr>`;
+    if (ordersRes.error) {
+      console.error(ordersRes.error);
+      set("statOrders30d", "—"); set("statRevenue30d", "—");
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:#B23A3A;padding:20px;">Couldn't load orders.</td></tr>`;
     } else {
-      tbody.innerHTML = recent.map((o) => `
+      const orders = ordersRes.data || [];
+      const sales = orders.filter((o) => !NOT_REVENUE.includes(String(o.status || "").toLowerCase()));
+      set("statOrders30d", orders.length);
+      set("statRevenue30d", "₦" + sales.reduce((sum, o) => sum + (Number(o.total) || 0), 0).toLocaleString());
+      const recent = orders.slice(0, 5);
+      if (!recent.length) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px;">No orders in the last 30 days.</td></tr>`;
+      } else {
+        tbody.innerHTML = recent.map((o) => {
+          const st = String(o.status || "").toLowerCase();
+          return `
         <tr>
-          <td>${o.order_number}</td>
-          <td>₦${Number(o.total).toLocaleString()}</td>
-          <td><span class="admin-status-pill ${o.status === "delivered" || o.status === "paid" ? "active" : o.status === "cancelled" ? "low" : "pending"}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span></td>
-        </tr>`).join("");
+          <td>${esc(o.order_number)}</td>
+          <td>₦${(Number(o.total) || 0).toLocaleString()}</td>
+          <td><span class="admin-status-pill ${st === "delivered" || st === "paid" ? "active" : st === "cancelled" ? "low" : "pending"}">${esc(cap(o.status))}</span></td>
+        </tr>`;
+        }).join("");
+      }
     }
+    set("statProducts", productsRes.count ?? "—");
+    set("statCustomers", customersRes.count ?? "—");
+    set("statLowStock", sizesRes.count ?? "—");
+    set("statCustomReq", customReqRes.count ?? "—");
+    set("statBulkReq", bulkReqRes.count ?? "—");
   });
 </script>
 </body>
