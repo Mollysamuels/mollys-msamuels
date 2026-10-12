@@ -67,8 +67,8 @@
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>Bulk Pricing Enquiries</h2></div>
     <table class="admin-table">
-      <tr><th>Product</th><th>Organisation</th><th>Quantity</th><th>Contact</th><th>Status</th><th></th></tr>
-      <tbody id="boRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading…</td></tr></tbody>
+      <tr><th>Ref</th><th>Product</th><th>Organisation</th><th>Quantity</th><th>Needed by</th><th>Contact</th><th>Status</th></tr>
+      <tbody id="boRows"><tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:30px;">Loading…</td></tr></tbody>
     </table>
   </div>
 </div>
@@ -80,9 +80,11 @@
   function esc(v) {
     return String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   }
+  // "2026-11-05" is a calendar day, not a moment: format it without any time-zone shift.
+  const fmtDate = (d) => { const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString(undefined, { timeZone: "UTC", day: "numeric", month: "short", year: "numeric" }) : "—"; };
   const REQ_STATUS = ["new", "processing", "quoted", "closed"];
-  // The reference customers are given in their confirmation email (CO- plus the first 8 characters of the request's id).
-  const refOf = (id) => "CO-" + String(id).replace(/-/g, "").slice(0, 8).toUpperCase();
+  // The reference customers are given in their confirmation email (CO- or BO- plus the first 8 characters of the request's id).
+  const refOf = (id, prefix = "CO") => prefix + "-" + String(id).replace(/-/g, "").slice(0, 8).toUpperCase();
 
   document.addEventListener("adminReady", async () => {
     loadCustomOrders();
@@ -101,8 +103,8 @@
         <td>${esc(r.contact_person || "—")}</td>
         <td>${esc(r.organisation_type || "—")}</td>
         <td>${esc(r.quantity || "—")}</td>
-        <td>${r.required_date ? new Date(r.required_date).toLocaleDateString() : "—"}</td>
-        <td><select class="co-status" data-id="${esc(r.id)}" data-table="custom_order_requests" style="padding:4px 8px;border-radius:20px;border:1px solid var(--line);font-size:0.78rem;">${REQ_STATUS.map((s) => `<option value="${s}" ${s === r.status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}</select></td>
+        <td>${fmtDate(r.required_date)}</td>
+        <td><select class="co-status" aria-label="Status for ${esc(refOf(r.id))}" data-id="${esc(r.id)}" data-table="custom_order_requests" style="padding:4px 8px;border-radius:20px;border:1px solid var(--line);font-size:0.78rem;">${REQ_STATUS.map((s) => `<option value="${s}" ${s === r.status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}</select></td>
         <td></td>
       </tr>`).join("");
     wireStatusSelects();
@@ -111,17 +113,23 @@
   async function loadBulkOrders() {
     const { data, error } = await supabaseClient.from("bulk_order_requests").select("*").order("created_at", { ascending: false });
     const tbody = document.getElementById("boRows");
-    if (error) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load enquiries.</td></tr>`; console.error(error); return; }
-    if (!data || !data.length) { tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:30px;">No bulk pricing enquiries yet.</td></tr>`; return; }
-    tbody.innerHTML = data.map((r) => `
+    if (error) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load enquiries.</td></tr>`; console.error(error); return; }
+    if (!data || !data.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:30px;">No bulk pricing enquiries yet.</td></tr>`; return; }
+    tbody.innerHTML = data.map((r) => {
+      // New requests have separate email + phone; older ones only have the single "contact_info" box.
+      const contact = [r.contact_name, r.email, r.phone].filter(Boolean).map(esc).join("<br>") || esc(r.contact_info || "—");
+      const extra = [r.size_breakdown && "Sizes: " + r.size_breakdown, r.colour && "Colour: " + r.colour, r.delivery_location && "Deliver to: " + r.delivery_location].filter(Boolean).map(esc).join("<br>");
+      return `
       <tr>
-        <td>${esc(r.product_name || "—")}</td>
+        <td style="white-space:nowrap;font-size:0.8rem;">${esc(refOf(r.id, "BO"))}</td>
+        <td>${esc(r.product_name || "—")}${extra ? `<div style="font-size:0.78rem;color:var(--ink-soft);margin-top:4px;">${extra}</div>` : ""}</td>
         <td>${esc(r.organisation || "—")}</td>
         <td>${esc(r.quantity || "—")}</td>
-        <td>${esc(r.contact_info || "—")}</td>
-        <td><select class="co-status" data-id="${esc(r.id)}" data-table="bulk_order_requests" style="padding:4px 8px;border-radius:20px;border:1px solid var(--line);font-size:0.78rem;">${REQ_STATUS.map((s) => `<option value="${s}" ${s === r.status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}</select></td>
-        <td></td>
-      </tr>`).join("");
+        <td>${fmtDate(r.required_date)}</td>
+        <td style="font-size:0.85rem;">${contact}</td>
+        <td><select class="co-status" aria-label="Status for ${esc(refOf(r.id, "BO"))}" data-id="${esc(r.id)}" data-table="bulk_order_requests" style="padding:4px 8px;border-radius:20px;border:1px solid var(--line);font-size:0.78rem;">${REQ_STATUS.map((s) => `<option value="${s}" ${s === r.status ? "selected" : ""}>${s.charAt(0).toUpperCase() + s.slice(1)}</option>`).join("")}</select></td>
+      </tr>`;
+    }).join("");
     wireStatusSelects();
   }
 
