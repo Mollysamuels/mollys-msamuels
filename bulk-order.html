@@ -10,8 +10,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/extra-pages.css">\n<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/extra-pages.css">
+<link rel="stylesheet" href="css/auth.css">
 <link rel="stylesheet" href="css/responsive.css">
+<style>
+  .co-sr { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  .co-req { color:#B23A3A; }
+  .co-hint { display:block; font-size:0.8rem; color:#58493A; margin-top:5px; }
+  .co-field-error { display:block; font-size:0.84rem; color:#B23A3A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"], .auth-field select[aria-invalid="true"], .auth-field textarea[aria-invalid="true"] { border-color:#B23A3A; }
+  .co-errors { border:1px solid #B23A3A; background:#FDECEC; color:#7A1F1F; border-radius:8px; padding:14px 18px; margin:0 0 20px; }
+  .co-errors ul { margin:8px 0 0 18px; padding:0; }
+  .co-errors a { color:#7A1F1F; text-decoration:underline; }
+  .co-note { background:var(--cream-deep); border-radius:8px; padding:14px 16px; font-size:0.88rem; line-height:1.6; color:var(--ink-soft); margin:0 0 20px; }
+  .co-privacy { font-size:0.8rem; color:#58493A; line-height:1.6; margin:0 0 16px; }
+  .co-privacy a { text-decoration:underline; }
+  .co-done { text-align:center; padding:30px 10px; }
+  .co-done h2 { font-family:var(--font-display); font-style:italic; font-weight:500; margin-bottom:10px; }
+  .co-done h2:focus { outline:none; }
+</style>
 </head>
 <body>
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
@@ -50,7 +67,7 @@
       </a>
       <a class="icon-btn" href="cart.html" aria-label="Cart">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16l-1.5 11.5a2 2 0 01-2 1.5H7.5a2 2 0 01-2-1.5L4 7z" stroke="currentColor" stroke-width="1.5"/><path d="M8 7a4 4 0 018 0" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span class="badge cart-badge">3</span>
+        <span class="badge cart-badge">0</span>
       </a>
       <button class="menu-toggle" type="button" aria-label="Menu">
         <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
@@ -76,31 +93,48 @@
     </div>
   </nav>
 </header>
-<div class="wrap">
+<main id="main" class="wrap">
   <div class="page-hero" style="text-align:center;"><h1>Request Bulk Pricing</h1><p style="margin:8px auto 0;">Ordering in larger quantities? Let's talk numbers.</p></div>
   <div class="order-form-layout">
-    <form id="bulkOrderForm">
-      <div class="auth-field"><label>Product</label><input type="text" id="boProduct" placeholder="e.g. School Blazer"></div>
+
+    <div id="coErrors" class="co-errors" role="alert" tabindex="-1" hidden>
+      <strong>Please check these details:</strong>
+      <ul id="coErrorList"></ul>
+    </div>
+
+    <form id="bulkOrderForm" novalidate>
+      <p class="co-hint" style="margin:0 0 18px;">Fields marked <span class="co-req" aria-hidden="true">*</span><span class="co-sr"> with an asterisk</span> are required.</p>
+
+      <div class="auth-field"><label for="boProduct">Product <span class="co-req" aria-hidden="true">*</span></label><input type="text" id="boProduct" name="product" maxlength="200" placeholder="e.g. School Blazer" required aria-required="true" aria-describedby="boProductErr"><span class="co-field-error" id="boProductErr" hidden></span></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Quantity</label><input type="number" id="boQuantity" min="1"></div>
-        <div class="auth-field"><label>Required date</label><input type="date" id="boDate"></div>
+        <div class="auth-field"><label for="boQuantity">Quantity <span class="co-req" aria-hidden="true">*</span></label><input type="number" id="boQuantity" name="quantity" min="1" max="100000" step="1" inputmode="numeric" required aria-required="true" aria-describedby="boQuantityErr"><span class="co-field-error" id="boQuantityErr" hidden></span></div>
+        <div class="auth-field"><label for="boDate">Date you need it by</label><input type="date" id="boDate" name="requiredDate" aria-describedby="boDateErr"><span class="co-field-error" id="boDateErr" hidden></span></div>
       </div>
-      <div class="auth-field"><label>Size breakdown</label><textarea id="boSizeBreakdown" placeholder="e.g. 20 x Age 8, 30 x Age 10, 25 x Age 12"></textarea></div>
-      <div class="auth-field"><label>Colour</label><input type="text" id="boColour"></div>
+      <div class="auth-field"><label for="boSizeBreakdown">Size breakdown</label><textarea id="boSizeBreakdown" name="sizes" maxlength="600" rows="3" placeholder="e.g. 20 x Age 8, 30 x Age 10, 25 x Age 12"></textarea></div>
+      <div class="auth-field"><label for="boColour">Colour</label><input type="text" id="boColour" name="colour" maxlength="200"></div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Organisation</label><input type="text" id="boOrg"></div>
-        <div class="auth-field"><label>Delivery location</label><input type="text" id="boLocation"></div>
+        <div class="auth-field"><label for="boOrg">Organisation <span class="co-req" aria-hidden="true">*</span></label><input type="text" id="boOrg" name="organisation" maxlength="150" autocomplete="organization" required aria-required="true" aria-describedby="boOrgErr"><span class="co-field-error" id="boOrgErr" hidden></span></div>
+        <div class="auth-field"><label for="boLocation">Delivery location</label><input type="text" id="boLocation" name="location" maxlength="200" autocomplete="street-address"></div>
       </div>
       <div class="checkout-grid-2">
-        <div class="auth-field"><label>Contact name</label><input type="text" id="boContactName"></div>
-        <div class="auth-field"><label>Phone / Email</label><input type="text" id="boContactInfo"></div>
+        <div class="auth-field"><label for="boContactName">Contact name <span class="co-req" aria-hidden="true">*</span></label><input type="text" id="boContactName" name="contact" maxlength="100" autocomplete="name" required aria-required="true" aria-describedby="boContactNameErr"><span class="co-field-error" id="boContactNameErr" hidden></span></div>
+        <div class="auth-field"><label for="boEmail">Email <span class="co-req" aria-hidden="true">*</span></label><input type="email" id="boEmail" name="email" maxlength="254" autocomplete="email" inputmode="email" required aria-required="true" aria-describedby="boEmailErr"><span class="co-field-error" id="boEmailErr" hidden></span></div>
       </div>
-      <p id="boError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:10px;"></p>
-      <p id="boSuccess" style="display:none;color:#2D6B3B;font-size:0.9rem;margin-bottom:10px;">Thank you — your request has been received. We'll be in touch shortly.</p>
+      <div class="auth-field"><label for="boPhone">Phone / WhatsApp <span class="co-req" aria-hidden="true">*</span></label><input type="tel" id="boPhone" name="phone" maxlength="30" autocomplete="tel" inputmode="tel" placeholder="+234 803 000 0000" required aria-required="true" aria-describedby="boPhoneHint boPhoneErr"><span class="co-hint" id="boPhoneHint">Include your country code, for example +234 or +44.</span><span class="co-field-error" id="boPhoneErr" hidden></span></div>
+
+      <p class="co-privacy">We use these details only to reply to your request, and we keep them safe. We won't add you to any mailing list. Read our <a href="privacy.html">Privacy Policy</a>.</p>
       <button type="submit" class="btn btn-gold auth-submit" id="boSubmitBtn">Request Bulk Pricing</button>
     </form>
+
+    <div id="coDone" class="co-done" hidden>
+      <div aria-hidden="true" style="width:64px;height:64px;border-radius:50%;background:#E8F5EA;color:#2D6B3B;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem;font-weight:700;">&#10003;</div>
+      <h2 id="coDoneTitle" tabindex="-1"></h2>
+      <p id="coDoneText" style="color:var(--ink-soft);font-size:0.95rem;line-height:1.6;margin-bottom:14px;"></p>
+      <p style="font-size:0.88rem;color:var(--ink-soft);">Need us urgently? <a href="https://wa.me/2348037865059" target="_blank" rel="noopener" style="text-decoration:underline;font-weight:600;">Message us on WhatsApp<span class="co-sr"> (opens in a new tab)</span></a>.</p>
+      <p style="font-size:0.85rem;margin-top:14px;"><a href="#" id="coAnother" style="text-decoration:underline;color:var(--ink-soft);">Send another request</a></p>
+    </div>
   </div>
-</div>
+</main>
 <footer class="site-footer">
   <div class="wrap">
     <div class="footer-grid">
@@ -168,47 +202,107 @@
 </div>
 
 <script src="js/main.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-  const supabaseClient = supabase.createClient(
-    "https://vdlwnflklclenavtpamp.supabase.co",
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
-  );
+  (function () {
+    var ENDPOINT = "https://vdlwnflklclenavtpamp.supabase.co/functions/v1/bulk-order-submit";
+    var ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
+    var form = document.getElementById("bulkOrderForm");
+    var summary = document.getElementById("coErrors"), summaryList = document.getElementById("coErrorList");
+    var btn = document.getElementById("boSubmitBtn");
+    var busy = false;
+    var $ = function (id) { return document.getElementById(id); };
 
-  document.getElementById("bulkOrderForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const errorEl = document.getElementById("boError");
-    const successEl = document.getElementById("boSuccess");
-    const btn = document.getElementById("boSubmitBtn");
-    errorEl.style.display = "none";
-    successEl.style.display = "none";
-    btn.disabled = true;
-    btn.textContent = "Sending...";
+    // Earliest date offered = today on the visitor's own calendar (so it works in any time zone).
+    function localISO(d) { var m = d.getMonth() + 1, day = d.getDate(); return d.getFullYear() + "-" + (m < 10 ? "0" : "") + m + "-" + (day < 10 ? "0" : "") + day; }
+    var today = localISO(new Date());
+    $("boDate").setAttribute("min", today);
 
-    const { error } = await supabaseClient.from("bulk_order_requests").insert({
-      product_name: document.getElementById("boProduct").value.trim(),
-      quantity: parseInt(document.getElementById("boQuantity").value, 10) || null,
-      size_breakdown: document.getElementById("boSizeBreakdown").value.trim(),
-      colour: document.getElementById("boColour").value.trim(),
-      organisation: document.getElementById("boOrg").value.trim(),
-      delivery_location: document.getElementById("boLocation").value.trim(),
-      contact_name: document.getElementById("boContactName").value.trim(),
-      contact_info: document.getElementById("boContactInfo").value.trim(),
-    });
+    // A hidden field only a robot fills in.
+    var trap = document.createElement("input");
+    trap.type = "text"; trap.name = "website"; trap.tabIndex = -1; trap.autocomplete = "off";
+    trap.setAttribute("aria-hidden", "true");
+    trap.style.cssText = "position:absolute;left:-9999px;width:1px;height:1px;opacity:0;";
+    form.appendChild(trap);
 
-    if (error) {
-      console.error(error);
-      errorEl.textContent = "Something went wrong sending your request. Please try again.";
-      errorEl.style.display = "block";
-      btn.disabled = false;
-      btn.textContent = "Request Bulk Pricing";
-      return;
+    var FIELD_ERROR = { boProduct: "boProductErr", boQuantity: "boQuantityErr", boDate: "boDateErr", boOrg: "boOrgErr", boContactName: "boContactNameErr", boEmail: "boEmailErr", boPhone: "boPhoneErr" };
+
+    function validate() {
+      var p = [];
+      var v = function (id) { return $(id).value.trim(); };
+      if (!v("boProduct")) p.push(["boProduct", "Please tell us which product you need."]);
+      var q = v("boQuantity");
+      if (!/^\d+$/.test(q) || +q < 1 || +q > 100000) p.push(["boQuantity", "Please enter a whole number of items between 1 and 100,000."]);
+      var d = v("boDate");
+      if (d !== "" && d < today) p.push(["boDate", "Please choose today's date or a later one."]);
+      if (!v("boOrg")) p.push(["boOrg", "Please enter your organisation's name."]);
+      if (!v("boContactName")) p.push(["boContactName", "Please enter a contact name."]);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v("boEmail"))) p.push(["boEmail", "Please enter a valid email address, like name@example.com."]);
+      var digits = v("boPhone").replace(/\D/g, "").length;
+      if (digits < 7 || digits > 15) p.push(["boPhone", "Please enter a phone number with your country code, like +234 803 000 0000."]);
+      return p;
     }
 
-    document.getElementById("bulkOrderForm").style.display = "none";
-    successEl.style.fontSize = "1rem";
-    successEl.style.display = "block";
-  });
+    function clearErrors() {
+      summary.hidden = true; summaryList.innerHTML = "";
+      Object.keys(FIELD_ERROR).forEach(function (id) { $(id).removeAttribute("aria-invalid"); var e = $(FIELD_ERROR[id]); e.hidden = true; e.textContent = ""; });
+    }
+    function showProblems(problems) {
+      problems.forEach(function (pr) {
+        var id = pr[0], msg = pr[1], li = document.createElement("li");
+        if (FIELD_ERROR[id]) {
+          $(id).setAttribute("aria-invalid", "true");
+          var e = $(FIELD_ERROR[id]); e.textContent = msg; e.hidden = false;
+          var a = document.createElement("a"); a.href = "#" + id; a.textContent = msg;
+          a.addEventListener("click", function (ev) { ev.preventDefault(); $(id).focus(); });
+          li.appendChild(a);
+        } else { li.textContent = msg; }
+        summaryList.appendChild(li);
+      });
+      summary.hidden = false;
+      summary.focus();   // screen readers announce the problems; sighted users are taken to them
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (busy) return;
+      clearErrors();
+      var problems = validate();
+      if (problems.length) return showProblems(problems);
+
+      var v = function (id) { return $(id).value.trim(); };
+      var payload = {
+        product: v("boProduct"), quantity: parseInt(v("boQuantity"), 10), requiredDate: v("boDate") || null,
+        sizes: v("boSizeBreakdown"), colour: v("boColour"), organisation: v("boOrg"), location: v("boLocation"),
+        contact: v("boContactName"), email: v("boEmail"), phone: v("boPhone"), website: trap.value,
+      };
+      busy = true; btn.disabled = true; btn.setAttribute("aria-busy", "true"); var label = btn.textContent; btn.textContent = "Sending...";
+
+      fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "apikey": ANON, "Authorization": "Bearer " + ANON },
+        body: JSON.stringify(payload),
+      })
+        .then(function (r) { return r.json().catch(function () { return null; }).then(function (j) { return { ok: r.ok, j: j || {} }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.ok) {
+            var first = payload.contact.split(/\s+/)[0] || "there";
+            $("coDoneTitle").textContent = "Thank you, " + first + ".";
+            $("coDoneText").textContent = "Your request has been received. Your reference is " + res.j.reference + ". We've emailed a confirmation to " + payload.email + " (please check your spam folder if you don't see it) and will reply there with your bulk prices.";
+            form.hidden = true; $("coDone").hidden = false; $("coDoneTitle").focus();
+            form.reset();
+          } else {
+            showProblems([["", res.j.error || "Sorry, something went wrong sending your request. Please try again, or message us on WhatsApp."]]);
+          }
+        })
+        .catch(function () { showProblems([["", "Sorry, we couldn't reach the server. Please check your connection and try again."]]); })
+        .then(function () { busy = false; btn.disabled = false; btn.removeAttribute("aria-busy"); btn.textContent = label; });
+    });
+
+    $("coAnother").addEventListener("click", function (e) {
+      e.preventDefault();
+      $("coDone").hidden = true; form.hidden = false; clearErrors(); $("boProduct").focus();
+    });
+  })();
 </script>
 
 </body>
