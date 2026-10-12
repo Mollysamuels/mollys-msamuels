@@ -18,6 +18,16 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#000000">
+<style>
+.explore-mollys{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:#000;color:#fff;border-radius:14px;padding:22px 28px;margin:0 0 28px}
+.explore-mollys[hidden]{display:none}
+.explore-mollys .em-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F4D900}
+.explore-mollys h2{font-family:var(--font-display,Georgia,serif);font-style:italic;font-weight:500;font-size:1.6rem;margin:4px 0 4px;color:#fff}
+.explore-mollys p{margin:0;font-size:.92rem;color:#E8E2C8;max-width:46em}
+.explore-mollys .em-btn{display:inline-flex;align-items:center;min-height:46px;padding:0 24px;border-radius:8px;background:#F4D900;color:#000;font-weight:600;text-decoration:none;border:0;cursor:pointer;font-size:.95rem}
+.explore-mollys .em-btn:hover{background:#fff}
+.explore-mollys .em-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+</style>
 </head>
 <body>
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
@@ -102,6 +112,16 @@
     </div>
   </div>
 
+
+  <div class="explore-mollys" id="exploreMollys" role="region" aria-label="Explore the Mollys Collection">
+    <div>
+      <span class="em-eyebrow">Mollys</span>
+      <h2>Explore the Mollys Collection</h2>
+      <p>A dedicated fashion archive, from current collections to past designs and photoshoot highlights.</p>
+    </div>
+    <a href="#explore-collection" class="em-btn" data-explore-collection aria-haspopup="dialog">Explore the collection</a>
+  </div>
+
   <div class="product-grid" id="shopGrid"></div>
 </div>
 <footer class="site-footer">
@@ -181,6 +201,23 @@
   );
 </script>
 <script src="js/shop.js"></script>
+<script src="js/explore-collection.js"></script>
+<script>
+  /* Show the "Explore the Mollys Collection" card only while the Mollys tab is selected. */
+  (function () {
+    var box = document.getElementById("exploreMollys");
+    var group = document.querySelector(".shop-filter-group");
+    if (!box || !group) return;
+    function sync() {
+      var a = group.querySelector(".shop-filter-btn.active");
+      box.hidden = !(a && a.getAttribute("data-division") === "mollys");
+    }
+    sync();
+    new MutationObserver(sync).observe(group, { attributes: true, subtree: true, attributeFilter: ["class"] });
+    group.addEventListener("click", function () { setTimeout(sync, 0); });
+  })();
+</script>
+
 <script src="js/cookie-notice.js"></script>
 </body>
 </html>
