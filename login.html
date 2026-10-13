@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Log In — Molly Samuels</title>
+<link rel="canonical" href="https://mollysamuels.com/login">
 <meta name="description" content="Log in to your Molly Samuels account.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +32,7 @@
 
   <div class="auth-form-side">
     <div class="auth-wrap">
-      <a href="index.html" class="logo-mark">Molly <span>Samuels</span></a>
+      <a href="/" class="logo-mark">Molly <span>Samuels</span></a>
       <h1>Log in</h1>
       <p class="auth-sub">Access your Molly Samuels account.</p>
       <p id="loginError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:16px;"></p>
@@ -50,7 +51,7 @@
         </div>
         <button type="submit" class="btn btn-gold auth-submit" id="loginBtn">Log In</button>
       </form>
-      <p class="auth-switch">Don't have an account? <a href="register.html" id="createAccountLink">Create one</a></p>
+      <p class="auth-switch">Don't have an account? <a href="register" id="createAccountLink">Create one</a></p>
     </div>
   </div>
 </div>
@@ -66,7 +67,7 @@
 
   const redirectParam = new URLSearchParams(window.location.search).get("redirect");
   if (redirectParam) {
-    document.getElementById("createAccountLink").href = `register.html?redirect=${encodeURIComponent(redirectParam)}`;
+    document.getElementById("createAccountLink").href = `register?redirect=${encodeURIComponent(redirectParam)}`;
   }
 
   document.getElementById("loginForm").addEventListener("submit", async (e) => {    e.preventDefault();
@@ -90,10 +91,10 @@
       btn.disabled = false;
       return;
     }
-    // A redirect is only honoured if it's a plain page name like "checkout.html" —
+    // A redirect is only honoured if it's a plain page name like "checkout" —
     // never a full web address or script, so a crafted link can't send people elsewhere.
     const rawRedirect = new URLSearchParams(window.location.search).get("redirect");
-    const safeRedirect = rawRedirect && /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&%.-]*)?$/.test(rawRedirect) ? rawRedirect : null;
+    const safeRedirect = rawRedirect && /^[A-Za-z0-9_-]+(\.html)?(\?[A-Za-z0-9_=&%.-]*)?$/.test(rawRedirect) ? rawRedirect : null;
     if (safeRedirect) {
       window.location.href = safeRedirect;
       return;
@@ -105,7 +106,7 @@
       .select("id")
       .eq("id", data.user.id)
       .maybeSingle();
-    window.location.href = adminRow ? "admin-dashboard.html" : "account.html";
+    window.location.href = adminRow ? "admin-dashboard.html" : "account";
   });
 </script>
 <script src="js/cookie-notice.js"></script>

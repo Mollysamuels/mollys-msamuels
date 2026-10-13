@@ -7,87 +7,93 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/shop.html</loc>
+    <loc>https://mollysamuels.com/shop</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/mollys.html</loc>
+    <loc>https://mollysamuels.com/mollys</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/msamuels.html</loc>
+    <loc>https://mollysamuels.com/msamuels</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/new-arrivals.html</loc>
+    <loc>https://mollysamuels.com/new-arrivals</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/custom-order.html</loc>
+    <loc>https://mollysamuels.com/custom-order</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/bulk-order.html</loc>
+    <loc>https://mollysamuels.com/bulk-order</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/about.html</loc>
+    <loc>https://mollysamuels.com/about</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/contact.html</loc>
+    <loc>https://mollysamuels.com/contact</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/faq.html</loc>
+    <loc>https://mollysamuels.com/faq</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/shipping.html</loc>
+    <loc>https://mollysamuels.com/shipping</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/returns.html</loc>
+    <loc>https://mollysamuels.com/returns</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/size-guide.html</loc>
+    <loc>https://mollysamuels.com/size-guide</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/privacy.html</loc>
+    <loc>https://mollysamuels.com/privacy</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://mollysamuels.com/terms.html</loc>
+    <loc>https://mollysamuels.com/terms</loc>
     <lastmod>2026-10-12</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://mollysamuels.com/msamuels-catalogue</loc>
+    <lastmod>2026-10-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

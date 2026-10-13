@@ -1,0 +1,137 @@
+// ============================================
+// SHOP.HTML — all products across both divisions
+// Real Supabase products are fetched first; these hardcoded ones fill in
+// for everything not in the database yet. The School Blazer placeholder
+// below is intentionally removed — it's now the real Supabase product.
+// ============================================
+
+const SHOP_PRODUCTS = [
+  { name: "Emerald Wrap Gown", price: 26500, division: "mollys", category: "gowns", img: "assets/images/mollys/prod-gown-1.jpg" },
+  { name: "Structured Crossbody Bag", price: 19500, division: "mollys", category: "bags", img: "assets/images/mollys/prod-bag-1.jpg" },
+  { name: "Ankle-Strap Heels", price: 17800, division: "mollys", category: "heels", img: "assets/images/mollys/prod-heels-1.jpg" },
+  { name: "Layered Gold Necklace", price: 10500, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-necklace-1.jpg" },
+  { name: "Woven Slide Sandals", price: 13200, division: "mollys", category: "sandals", img: "assets/images/mollys/prod-sandals-1.jpg" },
+  { name: "Linen Wrap Top", price: 12800, division: "mollys", category: "tops", img: "assets/images/mollys/prod-top-1.jpg" },
+  { name: "Gold Hoop Earrings", price: 6200, division: "mollys", category: "jewellery", img: "assets/images/mollys/prod-earrings-1.jpg" },
+  { name: "Short Sleeve Shirt", price: 9800, division: "msamuels", category: "boys-shirts", img: "assets/images/msamuels/short-sleeve-shirt-main.jpg" },
+  { name: "Zip Front Pinafore", price: 16500, division: "msamuels", category: "skirts-and-pinafores", img: "assets/images/msamuels/zip-front-pinafore-main.jpg" },
+  { name: "Varsity Jacket", price: 21500, division: "msamuels", category: "jackets-and-coats", img: "assets/images/msamuels/varsity-jacket-main.jpg" },
+];
+
+async function fetchRealProducts() {
+  try {
+    const { data, error } = await supabaseClient
+      .from("products")
+      .select("*, categories(slug)")
+      .neq("status", "discontinued");
+    if (error || !data) return [];
+    return data.map((p) => {
+      const fallbackImg = p.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
+      return {
+        name: p.name, price: p.price_ngn, division: p.division,
+        category: (p.categories && p.categories.slug) || "",
+        img: p.main_image_url || fallbackImg,
+        linkOverride: `product?id=${p.id}`,
+      };
+    });
+  } catch (e) {
+    console.error("Shop: Supabase fetch failed, using placeholders only:", e);
+    return [];
+  }
+}
+
+function renderShopCard(p, index) {
+  const params = new URLSearchParams({
+    item: `shop-${index}`,
+    name: p.name, price: p.price, division: p.division, category: p.category, img1: p.img,
+  });
+  const link = p.linkOverride || `product?${params.toString()}`;
+  return `
+    <div class="product-card" data-division="${p.division}" data-price="${p.price}">
+      <div class="product-media">
+        <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
+        <a href="${link}"><img class="main" src="${p.img}" alt="${p.name}"><img class="alt" src="${p.img}" alt=""></a>
+        <button class="quick-add">Quick add</button>
+      </div>
+      <div class="product-info">
+        <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
+        <div class="product-price"><span class="now" data-price-ngn="${p.price}">${formatPrice(p.price)}</span></div>
+      </div>
+    </div>`;
+}
+
+document.addEventListener("DOMContentLoaded", async function () {
+  await loadExchangeRate();
+  const grid = document.getElementById("shopGrid");
+  if (!grid) return;
+
+  const realProducts = await fetchRealProducts();
+  const ALL_PRODUCTS = [...realProducts, ...SHOP_PRODUCTS]; // real products shown first
+
+  function render(list) {
+    if (!list.length && searchQuery) {
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;"><p style="color:var(--ink-soft);margin-bottom:16px;" id="noResultsMsg"></p><a href="shop" class="btn btn-gold">Browse all products</a></div>';
+      document.getElementById("noResultsMsg").textContent = `No products found for “${rawQuery}”.`;
+      document.getElementById("shopCount").textContent = "0 products";
+      return;
+    }
+    grid.innerHTML = list.map(renderShopCard).join("");
+    document.getElementById("shopCount").textContent = `${list.length} products`;
+    grid.querySelectorAll(".quick-add").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const card = btn.closest(".product-card");
+        if (card) addToCartFromCard(card);
+      });
+    });
+    grid.querySelectorAll(".wish-btn").forEach((btn) => btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const card = btn.closest(".product-card");
+      if (card) toggleWishlistFromCard(card, btn);
+    }));
+    wireCardImageToggle(grid);
+  }
+
+  // Search mode: shop?q=term (optionally &division=msamuels|mollys)
+  const urlParams = new URLSearchParams(window.location.search);
+  const rawQuery = (urlParams.get("q") || "").trim();
+  const searchQuery = rawQuery.toLowerCase();
+  const searchDivision = urlParams.get("division");
+
+  if (searchQuery) {
+    const heading = document.querySelector(".shop-header h1");
+    if (heading) heading.textContent = `Results for “${rawQuery}”`;
+    const tabs = document.querySelector(".shop-filter-group");
+    if (tabs) tabs.style.display = "none";
+  }
+
+  let currentDivision = "mollys";
+  function apply() {
+    let list;
+    if (searchQuery) {
+      list = ALL_PRODUCTS.filter((p) =>
+        (!searchDivision || p.division === searchDivision) &&
+        (p.name.toLowerCase().includes(searchQuery) ||
+         (p.category || "").replace(/-/g, " ").includes(searchQuery))
+      );
+    } else {
+      list = ALL_PRODUCTS.filter((p) => p.division === currentDivision);
+    }
+    const sortVal = document.getElementById("shopSort").value;
+    if (sortVal === "price-low") list = [...list].sort((a, b) => a.price - b.price);
+    if (sortVal === "price-high") list = [...list].sort((a, b) => b.price - a.price);
+    render(list);
+  }
+
+  document.querySelectorAll(".shop-filter-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".shop-filter-btn").forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      currentDivision = btn.dataset.division;
+      apply();
+    });
+  });
+  document.getElementById("shopSort").addEventListener("change", apply);
+
+  apply();
+});

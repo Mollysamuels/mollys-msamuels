@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Create Account — Molly Samuels</title>
+<link rel="canonical" href="https://mollysamuels.com/register">
 <meta name="description" content="Create a Molly Samuels account.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +32,7 @@
 
   <div class="auth-form-side">
     <div class="auth-wrap">
-      <a href="index.html" class="logo-mark">Molly <span>Samuels</span></a>
+      <a href="/" class="logo-mark">Molly <span>Samuels</span></a>
       <h1>Create account</h1>
       <p class="auth-sub">Join Molly Samuels — shop Mollys and M. Samuels in one place.</p>
       <p id="regError" style="display:none;color:#B23A3A;font-size:0.85rem;margin-bottom:16px;"></p>
@@ -58,7 +59,7 @@
         </div>
         <button type="submit" class="btn btn-gold auth-submit" id="regBtn">Create Account</button>
       </form>
-      <p class="auth-switch">Already have an account? <a href="login.html" id="loginLink">Log in</a></p>
+      <p class="auth-switch">Already have an account? <a href="login" id="loginLink">Log in</a></p>
     </div>
   </div>
 </div>
@@ -73,11 +74,11 @@
   );
 
   const redirectParam = new URLSearchParams(window.location.search).get("redirect");
-  // Only a plain page name like "checkout.html" is accepted as a redirect target —
+  // Only a plain page name like "checkout" is accepted as a redirect target —
   // never a full web address or script, so a crafted link can't send people elsewhere.
-  const safeRedirect = redirectParam && /^[A-Za-z0-9_-]+\.html(\?[A-Za-z0-9_=&%.-]*)?$/.test(redirectParam) ? redirectParam : null;
+  const safeRedirect = redirectParam && /^[A-Za-z0-9_-]+(\.html)?(\?[A-Za-z0-9_=&%.-]*)?$/.test(redirectParam) ? redirectParam : null;
   if (redirectParam) {
-    document.getElementById("loginLink").href = `login.html?redirect=${encodeURIComponent(redirectParam)}`;
+    document.getElementById("loginLink").href = `login?redirect=${encodeURIComponent(redirectParam)}`;
   }
 
   document.getElementById("registerForm").addEventListener("submit", async (e) => {
@@ -108,7 +109,7 @@
         // Send them back to wherever they actually came from (e.g. checkout)
         // once they click the confirmation link in their email — not just
         // the generic homepage.
-        emailRedirectTo: `https://mollysamuels.com/${safeRedirect || "account.html"}`,
+        emailRedirectTo: "https://mollysamuels.com/" + (safeRedirect ? safeRedirect.replace(/^([A-Za-z0-9_-]+)(\.html)?/, "$1.html") : "account.html"),
       },
     });
 
@@ -140,7 +141,7 @@
       return;
     }
 
-    window.location.href = safeRedirect || "index.html";
+    window.location.href = safeRedirect || "/";
   });
 </script>
 <script src="js/cookie-notice.js"></script>
