@@ -3,110 +3,303 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M. Samuels — Schoolwear You Can Trust</title>
-<meta name="description" content="M. Samuels — school uniforms for boys and girls, and uniform accessories.">
-
+<title>School Uniform Catalogue 2026 — M. Samuels</title>
+<meta name="description" content="M. Samuels school uniform catalogue 2026: blazers, shirts, trousers, skirts, pinafores, knitwear, sportswear and professional uniforms, with colour codes and wholesale prices.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/msamuels.css">
-<link rel="stylesheet" href="css/responsive.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;1,500;1,600&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="manifest" href="site.webmanifest">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#F4D900">
+<style>
+:root{--y:#F4D900;--k:#14110A;--tint:#FBF4C9;--line:#E4DAA0;--mute:#5A5230;--gold:#7A5F00}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;font-family:'Work Sans',system-ui,sans-serif;color:var(--k);background:#fff;line-height:1.55}
+h1,h2,h3,p,ul,dl,dd{margin:0}ul{padding:0;list-style:none}
+a{color:inherit}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--y);color:var(--k);padding:10px 14px;font-weight:700;z-index:50}.skip:focus{top:8px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 20px}
+header.top{background:var(--k);color:#fff;border-bottom:5px solid var(--y);position:sticky;top:0;z-index:20}
+header.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.mono{width:40px;height:40px;border-radius:50%;border:2px solid var(--y);color:var(--y);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-weight:600}
+.brand span.n{font-family:'Fraunces',serif;font-style:italic;font-size:1.3rem}
+nav ul{display:flex;gap:4px 18px;flex-wrap:wrap}nav a{display:inline-block;padding:10px 2px;text-decoration:none;font-size:.9rem;font-weight:500}nav a:hover{color:var(--y)}
+.btn{display:inline-flex;align-items:center;min-height:46px;padding:0 22px;border-radius:999px;font-weight:700;text-decoration:none;border:2px solid var(--k)}
+.btn.dark{background:var(--k);color:#fff}.btn.dark:hover{background:#2a2410}.btn.line:hover{background:var(--k);color:var(--y)}
+.btn.y{background:var(--y);color:var(--k);border-color:var(--y)}
+.hero{background:var(--y)}
+.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;padding-top:56px;padding-bottom:56px}
+.eye{font-size:.8rem;letter-spacing:.16em;font-weight:700;text-transform:uppercase;color:var(--gold)}
+.hero .eye{color:#3D3500}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2.6rem,7vw,5rem);line-height:1;margin:10px 0 18px;text-wrap:balance}
+h1 em{font-style:normal;background:var(--k);color:var(--y);padding:0 .2em;border-radius:.15em}
+.hero p.lead{font-size:1.15rem;max-width:34em}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.hero .art{background:var(--k);border-radius:22px;padding:22px 16px 14px}.hero .art svg{width:100%;display:block}
+.hero .art small{display:block;color:#E8E2C8;font-size:.78rem;margin-top:6px}
+.stats{background:var(--k);color:#fff}.stats ul{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:20px}
+.stats li{text-align:center}.stats b{display:block;font-family:'Fraunces',serif;font-size:1.8rem;color:var(--y)}.stats span{font-size:.9rem;color:#E8E2C8}
+.band{padding:56px 0}.band:nth-of-type(even){background:var(--tint)}
+.sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--k);padding-bottom:10px;margin-bottom:26px}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1}
+.from{font-size:.95rem}.from b{font-family:'Fraunces',serif;font-size:1.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px 14px 16px;display:flex;flex-direction:column}
+.pan{background:var(--tint);border-radius:12px;display:flex;justify-content:center;align-items:center;min-height:170px;padding:10px 4px}
+.band:nth-of-type(even) .pan{background:#fff8d6}
+.pan svg{width:33%;max-width:105px;height:auto}.card.sm .pan svg{width:55%;max-width:120px}
+.card h3{font-family:'Fraunces',serif;font-size:1.25rem;font-weight:600;margin-top:12px;line-height:1.2}
+.code{font-size:.8rem;letter-spacing:.08em;color:var(--mute);margin-top:2px}.note{font-size:.88rem;margin-top:6px}
+.chips{display:flex;flex-wrap:wrap;gap:4px 12px;margin:10px 0 14px}
+.chips li{display:flex;align-items:center;gap:5px;font-size:.8rem;font-weight:600}
+.chips i,.ckey i{display:block;width:16px;height:16px;border-radius:4px;border:1px solid #14110A60}
+.pr{margin-top:auto;display:flex;gap:10px;border-top:2px solid var(--k);padding-top:10px}.pr div{flex:1}.pr dt{font-size:.78rem;color:var(--mute)}.pr dd{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem}
+.ckey{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.ckey li{display:flex;flex-direction:column;gap:4px;font-size:.85rem}.ckey i{width:100%;height:44px;border-radius:10px}.ckey b{font-size:.92rem}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:.9rem}
+thead th{background:var(--y);text-align:left;padding:10px 12px;font-size:.78rem;letter-spacing:.06em}
+tbody th{text-align:left;font-weight:600}td,tbody th{padding:8px 12px;border-top:1px solid var(--line)}
+td.r,thead th.r{text-align:right}td.r{font-weight:700}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;counter-reset:s}
+.steps li{border:2px solid var(--k);border-radius:16px;padding:18px;background:#fff}.steps li::before{counter-increment:s;content:counter(s);display:flex;width:42px;height:42px;border-radius:50%;background:var(--y);align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;margin-bottom:10px}
+.steps h3{font-family:'Fraunces',serif;font-size:1.25rem}.steps p{font-size:.92rem;margin-top:6px}
+.terms{display:grid;grid-template-columns:200px 1fr;gap:0 20px}.terms dt{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;padding:12px 0;border-top:1px solid var(--line)}.terms dd{padding:12px 0;border-top:1px solid var(--line)}
+.contact{background:var(--y);padding:56px 0}.contact .wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.contact h2{font-size:clamp(2rem,5vw,3rem)}.contact dl div{padding:12px 0;border-top:1px solid #14110A55}.contact dt{font-size:.78rem;letter-spacing:.14em;font-weight:700;color:#3D3500}.contact dd{font-family:'Fraunces',serif;font-size:1.3rem;font-weight:600}.contact dd a{text-decoration:none}.contact dd a:hover{text-decoration:underline}
+footer{background:var(--k);color:#E8E2C8;padding:22px 0;font-size:.85rem}
+.ph{background:#fff3a3;padding:0 4px;border-radius:3px}
+@media(max-width:820px){.hero .wrap,.contact .wrap{grid-template-columns:1fr}.terms{grid-template-columns:1fr}.terms dt{padding-bottom:0;border-bottom:0}.terms dd{border-top:0;padding-top:2px}.stats ul{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
 </head>
-<body class="ms-body">
-
-<!-- ============ MS HEADER (floats over hero) ============ -->
-<header class="ms-header">
-  <div class="ms-logo-stack">
-    <a href="index.html" class="ms-logo-img">
-      <img src="assets/images/msamuels/logo.png" alt="M. Samuels">
-    </a>
-    <span class="ms-tagline">Schoolwear You Can Trust</span>
-  </div>
-
-  <div class="ms-header-actions">
-    <button class="ms-action-btn" type="button" aria-label="Search" data-search-division="msamuels">
-      <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      SEARCH
-    </button>
-    <a class="ms-action-btn" href="login.html">
-      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.6"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-      LOGIN /<br>REGISTER
-    </a>
-    <button class="ms-menu-btn" type="button" aria-label="Open menu">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-    </button>
-  </div>
-</header>
-
-<!-- ============ MS HERO ============ -->
-<section class="ms-hero">
-  <!-- Hero background: 5 images crossfading continuously in an endless loop.
-       Upload your 5 images to assets/images/msamuels/hero/ named exactly
-       hero-1.jpg through hero-5.jpg — nothing else needs to change.
-       Never use GitHub's pencil/edit icon on these files — upload/delete-and-reupload only. -->
-  <img class="ms-hero-bg active" src="assets/images/msamuels/hero/hero-1.jpg" alt="M. Samuels schoolwear">
-  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-2.jpg" alt="">
-  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-3.jpg" alt="">
-  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-4.jpg" alt="">
-  <img class="ms-hero-bg" src="assets/images/msamuels/hero/hero-5.jpg" alt="">
-  <div class="ms-hero-content">
-    <h1>Schoolwear You Can Trust</h1>
-    <div class="ms-hero-ctas">
-      <a href="about.html" class="btn-ms-outline">About Us</a>
-      <a href="msamuels-catalogue.html" class="btn-ms-outline">View Catalogue</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============ MEGA MENU OVERLAY ============ -->
-<div class="ms-mega-overlay">
-  <div class="ms-menu-panel">
-    <button class="ms-mega-close" aria-label="Close menu">
-      <svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.6"/></svg>
-    </button>
-
-    <div class="ms-mega-inner">
-
-      <div class="ms-mega-tabs">
-        <button class="ms-tab" data-tab="boys">
-          <svg viewBox="0 0 40 40"></svg>
-          boys school<br>uniform
-        </button>
-        <button class="ms-tab" data-tab="girls">
-          <svg viewBox="0 0 40 40"></svg>
-          girls school<br>uniform
-        </button>
-        <button class="ms-tab" data-tab="accessories">
-          <svg viewBox="0 0 40 40"></svg>
-          school uniform<br>accessories
-        </button>
-      </div>
-
-      <div class="ms-mega-footer">
-        <a href="about.html">about us</a>
-        <a href="size-guide.html">size guides</a>
-        <a href="contact.html">contact us</a>
-      </div>
-
-      <div class="ms-mega-auth">
-        <a href="register.html" class="register">REGISTER</a>
-        <a href="login.html" class="login">LOGIN</a>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<script src="js/main.js"></script>
-<script src="js/msamuels.js"></script>
-<script src="js/cookie-notice.js"></script>
+<body>
+<a class="skip" href="#main">Skip to catalogue</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="blz" viewBox="0 0 200 240">
+          <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M52 40 L88 24 L112 24 L148 40 L150 214 L50 214 Z" fill="currentColor"/>
+            <path d="M52 40 L30 62 L20 182 L42 186 L52 104 Z" fill="currentColor"/>
+            <path d="M148 40 L170 62 L180 182 L158 186 L148 104 Z" fill="currentColor"/>
+            <path d="M88 24 L112 24 L100 150 Z" fill="#fff"/>
+            <path d="M88 24 L100 150 L74 112 L80 64 Z" fill="currentColor"/>
+            <path d="M88 24 L100 150 L74 112 L80 64 Z" fill="#fff" fill-opacity=".14"/>
+            <path d="M112 24 L100 150 L126 112 L120 64 Z" fill="currentColor"/>
+            <path d="M112 24 L100 150 L126 112 L120 64 Z" fill="#fff" fill-opacity=".14"/>
+            <path d="M100 150 L100 214" fill="none"/>
+            <circle cx="100" cy="166" r="3.5" fill="#000" fill-opacity=".6" stroke="none"/>
+            <circle cx="100" cy="188" r="3.5" fill="#000" fill-opacity=".6" stroke="none"/>
+            <path d="M110 160 h26 v22 h-26 Z" fill="none"/>
+            <path d="M64 160 h26 v22 h-26 Z" fill="none"/>
+          </g>
+        </symbol><symbol id="shirt" viewBox="0 0 200 240">
+          <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M60 40 L88 28 L100 44 L112 28 L140 40 L184 150 L162 160 L146 96 L146 214 L54 214 L54 96 L38 160 L16 150 Z" fill="currentColor"/>
+            <path d="M88 28 L100 58 L112 28 L100 44 Z" fill="#000" fill-opacity=".1"/>
+            <path d="M100 58 L100 214" fill="none"/>
+            <circle cx="100" cy="86" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="120" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="154" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="188" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/>
+          </g>
+        </symbol><symbol id="trs" viewBox="0 0 200 240">
+          <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M54 14 L146 14 L156 228 L110 228 L100 92 L90 228 L44 228 Z" fill="currentColor"/>
+            <path d="M54 14 L146 14 L146 30 L54 30 Z" fill="#000" fill-opacity=".18"/>
+            <path d="M100 30 L100 92" fill="none"/>
+            <path d="M72 30 L72 120 M128 30 L128 120" fill="none" stroke-opacity=".2"/>
+          </g>
+        </symbol><symbol id="skt" viewBox="0 0 200 240">
+          <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M62 24 L138 24 L176 214 L24 214 Z" fill="currentColor"/>
+            <path d="M62 24 L138 24 L138 38 L62 38 Z" fill="#000" fill-opacity=".18"/>
+            <path d="M74 38 L52 214 M90 38 L80 214 M106 38 L112 214 M122 38 L140 214 M138 38 L168 214" fill="none" stroke-opacity=".3"/>
+          </g>
+        </symbol><symbol id="tie" viewBox="0 0 200 240">
+          <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+            <path d="M86 20 L114 20 L108 50 L92 50 Z" fill="currentColor"/>
+            <path d="M92 50 L108 50 L126 190 L100 214 L74 190 Z" fill="currentColor"/>
+            <path d="M88 82 L112 70 L114 82 L86 94 Z M84 116 L116 102 L118 114 L82 128 Z M80 150 L120 134 L122 146 L78 162 Z" fill="#fff" fill-opacity=".85" stroke="none"/>
+          </g>
+        </symbol><symbol id="ssh" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 40 L88 28 L100 44 L112 28 L140 40 L176 82 L156 106 L146 92 L146 214 L54 214 L54 92 L44 106 L24 82 Z" fill="currentColor"/>
+          <path d="M88 28 L100 58 L112 28 L100 44 Z" fill="#000" fill-opacity=".1"/>
+          <path d="M100 58 L100 214" fill="none"/>
+          <circle cx="100" cy="86" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="120" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="154" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="188" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/>
+        </g>
+      </symbol><symbol id="lsh" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 40 L88 28 L100 44 L112 28 L140 40 L184 150 L162 160 L146 96 L146 214 L54 214 L54 96 L38 160 L16 150 Z" fill="currentColor"/>
+          <path d="M88 28 L100 58 L112 28 L100 44 Z" fill="#000" fill-opacity=".1"/>
+          <path d="M100 58 L100 214" fill="none"/>
+          <path d="M20 148 L40 156 M180 148 L160 156" fill="none"/>
+          <circle cx="100" cy="86" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="120" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="154" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="188" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/>
+        </g>
+      </symbol><symbol id="pbl" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M64 40 Q100 58 136 40 L174 78 L156 104 L146 92 L146 212 L54 212 L54 92 L44 104 L26 78 Z" fill="currentColor"/>
+          <path d="M66 32 Q100 72 134 32 Q136 56 100 76 Q64 56 66 32 Z" fill="currentColor"/>
+          <path d="M66 32 Q100 72 134 32 Q136 56 100 76 Q64 56 66 32 Z" fill="#000" fill-opacity=".08"/>
+          <path d="M100 76 L100 212" fill="none"/>
+          <circle cx="100" cy="100" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="132" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="164" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="194" r="2.5" fill="#000" fill-opacity=".4" stroke="none"/>
+        </g>
+      </symbol><symbol id="lac" viewBox="0 0 200 240">
+        <use href="#pbl"/>
+        <g fill="#fff" stroke="#000" stroke-opacity=".25" stroke-width="1">
+          <circle cx="74" cy="42" r="3.2"/><circle cx="82" cy="52" r="3.2"/><circle cx="91" cy="60" r="3.2"/><circle cx="100" cy="64" r="3.2"/><circle cx="109" cy="60" r="3.2"/><circle cx="118" cy="52" r="3.2"/><circle cx="126" cy="42" r="3.2"/>
+        </g>
+      </symbol><symbol id="shr" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M54 50 L146 50 L156 160 L110 160 L100 108 L90 160 L44 160 Z" fill="currentColor"/>
+          <path d="M54 50 L146 50 L146 64 L54 64 Z" fill="#000" fill-opacity=".18"/>
+          <path d="M100 64 L100 108" fill="none"/>
+          <path d="M70 64 L70 110 M130 64 L130 110" fill="none" stroke-opacity=".2"/>
+        </g>
+      </symbol><symbol id="jog" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M56 14 L144 14 L150 206 L112 210 L104 104 L96 104 L88 210 L50 206 Z" fill="currentColor"/>
+          <path d="M56 14 L144 14 L144 30 L56 30 Z" fill="#000" fill-opacity=".2"/>
+          <path d="M50 192 L150 192 M50 192 L50 206 M150 192 L150 206" fill="none"/>
+          <path d="M88 192 L88 210 M112 192 L112 210" fill="none"/>
+          <path d="M96 30 L90 62 M104 30 L110 62" fill="none" stroke="#fff" stroke-opacity=".6"/>
+        </g>
+      </symbol><symbol id="pin" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M66 8 L82 8 L86 56 L66 56 Z M118 8 L134 8 L134 56 L114 56 Z" fill="currentColor"/>
+          <path d="M60 52 Q100 66 140 52 L150 104 L178 226 L22 226 L50 104 Z" fill="currentColor"/>
+          <path d="M50 104 L150 104" fill="none"/>
+          <path d="M76 104 L56 226 M92 104 L84 226 M108 104 L116 226 M124 104 L144 226" fill="none" stroke-opacity=".25"/>
+        </g>
+      </symbol><symbol id="pinz" viewBox="0 0 200 240"><use href="#pin"/><path d="M100 62 L100 104" stroke="#fff" stroke-opacity=".8" stroke-width="3" stroke-dasharray="3 2"/></symbol><symbol id="pinb" viewBox="0 0 200 240"><use href="#pin"/><path d="M100 104 L78 92 L78 118 Z M100 104 L122 92 L122 118 Z" fill="#fff" fill-opacity=".9" stroke="#000" stroke-opacity=".3"/></symbol><symbol id="pind" viewBox="0 0 200 240"><use href="#pin"/><rect x="66" y="38" width="16" height="12" fill="#D8C27A" stroke="#000" stroke-opacity=".4"/><rect x="118" y="38" width="16" height="12" fill="#D8C27A" stroke="#000" stroke-opacity=".4"/></symbol><symbol id="sko" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 70 L140 70 L162 170 L38 170 Z" fill="currentColor"/>
+          <path d="M60 70 L140 70 L140 84 L60 84 Z" fill="#000" fill-opacity=".18"/>
+          <path d="M78 84 L60 170 M96 84 L90 170 M114 84 L120 170 M130 84 L146 170" fill="none" stroke-opacity=".3"/>
+          <rect x="70" y="96" width="14" height="22" fill="#000" fill-opacity=".12"/><rect x="116" y="96" width="14" height="22" fill="#000" fill-opacity=".12"/>
+        </g>
+      </symbol><symbol id="lsk" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M62 10 L138 10 L166 232 L34 232 Z" fill="currentColor"/>
+          <path d="M62 10 L138 10 L138 24 L62 24 Z" fill="#000" fill-opacity=".18"/>
+          <path d="M80 24 L66 232 M100 24 L100 232 M120 24 L134 232" fill="none" stroke-opacity=".25"/>
+        </g>
+      </symbol><symbol id="cdg" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M54 40 L88 26 L100 62 L112 26 L146 40 L184 150 L162 160 L146 96 L146 214 L54 214 L54 96 L38 160 L16 150 Z" fill="currentColor"/>
+          <path d="M88 26 L100 62 L112 26 L100 36 Z" fill="#000" fill-opacity=".25"/>
+          <path d="M100 62 L100 214" fill="none"/>
+          <path d="M54 198 L146 198 M20 146 L40 154 M180 146 L160 154" fill="none" stroke-opacity=".5"/>
+          <circle cx="100" cy="86" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="116" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="146" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="176" r="3" fill="#fff" fill-opacity=".8" stroke="none"/>
+        </g>
+      </symbol><symbol id="vst" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 30 L88 26 L100 66 L112 26 L140 30 L152 80 L146 214 L54 214 L48 80 Z" fill="currentColor"/>
+          <path d="M88 26 L100 66 L112 26 L100 38 Z" fill="#000" fill-opacity=".25"/>
+          <path d="M100 66 L100 214" fill="none"/>
+          <path d="M54 198 L146 198" fill="none" stroke-opacity=".5"/>
+          <circle cx="100" cy="90" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="120" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="150" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="180" r="3" fill="#fff" fill-opacity=".8" stroke="none"/>
+        </g>
+      </symbol><symbol id="pol" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 40 L86 30 L114 30 L140 40 L176 82 L156 106 L146 92 L146 214 L54 214 L54 92 L44 106 L24 82 Z" fill="currentColor"/>
+          <path d="M86 30 L100 56 L114 30 L124 36 L108 62 L92 62 L76 36 Z" fill="#000" fill-opacity=".12"/>
+          <path d="M100 56 L100 96" fill="none"/>
+          <circle cx="100" cy="70" r="2.5" fill="#000" fill-opacity=".45" stroke="none"/><circle cx="100" cy="86" r="2.5" fill="#000" fill-opacity=".45" stroke="none"/>
+          <path d="M26 84 L44 100 M174 84 L156 100" fill="none" stroke-opacity=".4"/>
+        </g>
+      </symbol><symbol id="var" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 36 L86 26 L114 26 L140 36 L184 160 L160 168 L146 100 L146 206 L54 206 L54 100 L40 168 L16 160 Z" fill="#FFFFFF"/>
+          <path d="M60 36 L86 26 L114 26 L140 36 L146 100 L146 206 L54 206 L54 100 Z" fill="currentColor"/>
+          <path d="M86 26 L114 26 L112 38 L88 38 Z" fill="#000" fill-opacity=".3"/>
+          <path d="M54 192 L146 192 L146 206 L54 206 Z M40 156 L16 148 L18 160 L40 168 Z M160 156 L184 148 L182 160 L160 168 Z" fill="#000" fill-opacity=".25"/>
+          <path d="M100 38 L100 206" fill="none"/>
+          <circle cx="100" cy="64" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="100" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="136" r="3" fill="#fff" fill-opacity=".8" stroke="none"/><circle cx="100" cy="172" r="3" fill="#fff" fill-opacity=".8" stroke="none"/>
+        </g>
+      </symbol><symbol id="jer" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M62 30 L88 24 Q100 44 112 24 L138 30 L178 70 L158 96 L146 84 L146 130 L54 130 L54 84 L42 96 L22 70 Z" fill="currentColor"/>
+          <path d="M88 24 Q100 44 112 24 L112 30 Q100 52 88 30 Z" fill="#fff" fill-opacity=".85"/>
+          <path d="M54 84 L54 130 M146 84 L146 130" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="5"/>
+          <path d="M40 94 L24 72 M160 94 L176 72" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="5"/>
+          <path d="M54 136 L146 136 L152 216 L48 216 Z" fill="#1C1C1C"/>
+        </g>
+      </symbol><symbol id="sck" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".35" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M72 14 L128 14 L128 120 L164 160 Q176 196 142 206 L92 206 Q70 202 72 170 Z" fill="currentColor"/>
+          <path d="M72 14 L128 14 L128 36 L72 36 Z" fill="#fff" fill-opacity=".85"/>
+          <path d="M72 44 L128 44" stroke="#fff" stroke-opacity=".7" stroke-width="4" fill="none"/>
+          <path d="M76 176 L128 176 Q140 190 134 202 L90 202 Q74 198 76 176 Z" fill="#fff" fill-opacity=".25" stroke="none"/>
+        </g>
+      </symbol><symbol id="scr" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M62 40 L84 28 L100 66 L116 28 L138 40 L176 78 L158 102 L146 88 L146 206 L54 206 L54 88 L42 102 L24 78 Z" fill="currentColor"/>
+          <path d="M84 28 L100 66 L116 28" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="5"/>
+          <path d="M62 150 h26 v24 h-26 Z M112 150 h26 v24 h-26 Z" fill="#000" fill-opacity=".12"/>
+        </g>
+      </symbol><symbol id="chf" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 40 L84 32 L116 32 L140 40 L184 150 L162 160 L146 98 L146 214 L54 214 L54 98 L38 160 L16 150 Z" fill="currentColor"/>
+          <path d="M84 32 L116 32 L116 46 L84 46 Z" fill="#fff" fill-opacity=".8"/>
+          <path d="M100 46 L100 214" fill="none"/>
+          <circle cx="90" cy="70" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="110" cy="70" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="90" cy="104" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="110" cy="104" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="90" cy="138" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="110" cy="138" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="90" cy="172" r="3.5" fill="#1B2A4A" stroke="none"/><circle cx="110" cy="172" r="3.5" fill="#1B2A4A" stroke="none"/>
+          <path d="M18 148 L40 156 M182 148 L160 156" fill="none"/>
+        </g>
+      </symbol><symbol id="lab" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M58 30 L86 22 L114 22 L142 30 L186 160 L164 168 L148 104 L150 232 L50 232 L52 104 L36 168 L14 160 Z" fill="currentColor"/>
+          <path d="M86 22 L100 90 L114 22 L100 40 Z" fill="#000" fill-opacity=".12"/>
+          <path d="M100 90 L100 232" fill="none"/>
+          <path d="M60 170 h30 v30 h-30 Z M110 170 h30 v30 h-30 Z" fill="#000" fill-opacity=".08"/>
+          <circle cx="100" cy="120" r="3" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="150" r="3" fill="#000" fill-opacity=".4" stroke="none"/><circle cx="100" cy="180" r="3" fill="#000" fill-opacity=".4" stroke="none"/>
+        </g>
+      </symbol><symbol id="sec" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M60 40 L88 28 L100 44 L112 28 L140 40 L184 150 L162 160 L146 96 L146 214 L54 214 L54 96 L38 160 L16 150 Z" fill="currentColor"/>
+          <path d="M88 28 L100 58 L112 28 L100 44 Z" fill="#000" fill-opacity=".1"/>
+          <path d="M60 40 L84 34 L84 46 L60 52 Z M140 40 L116 34 L116 46 L140 52 Z" fill="#000" fill-opacity=".2"/>
+          <path d="M100 58 L100 214" fill="none"/>
+          <path d="M62 84 h28 v28 h-28 Z M110 84 h28 v28 h-28 Z" fill="#000" fill-opacity=".1"/>
+        </g>
+      </symbol><symbol id="tun" viewBox="0 0 200 240">
+        <g stroke="#000" stroke-opacity=".3" stroke-width="1.5" stroke-linejoin="round">
+          <path d="M62 40 L84 30 L116 30 L138 40 L176 80 L156 104 L146 90 L148 214 L52 214 L54 90 L44 104 L24 80 Z" fill="currentColor"/>
+          <path d="M84 30 Q100 52 116 30" fill="none" stroke="#fff" stroke-width="6"/>
+          <path d="M26 82 L44 102 M174 82 L156 102" fill="none" stroke="#fff" stroke-width="5" stroke-opacity=".9"/>
+          <path d="M100 48 L100 214" fill="none"/>
+          <circle cx="100" cy="64" r="3" fill="#fff" stroke="none"/><circle cx="100" cy="84" r="3" fill="#fff" stroke="none"/>
+        </g>
+      </symbol><symbol id="trsS" viewBox="0 0 200 240"><use href="#trs"/><path d="M148 30 L156 228 M52 30 L44 228" stroke="#8DB8F0" stroke-width="5" fill="none"/></symbol></defs></svg>
+<header class="top"><div class="wrap">
+<a class="brand" href="msamuels.html" aria-label="M. Samuels home"><span class="mono" aria-hidden="true">MS</span><span class="n">M. Samuels</span></a>
+<nav aria-label="Catalogue"><ul><li><a href="#blazers">Blazers</a></li><li><a href="#shirts">Shirts</a></li><li><a href="#trousers">Trousers</a></li><li><a href="#skirts">Skirts</a></li><li><a href="#knitwear">Knitwear</a></li><li><a href="#sports">Sports</a></li><li><a href="#prices">Price list</a></li><li><a href="#contact">Contact</a></li></ul></nav>
+<a class="btn y" href="bulk-order.html">Request bulk quote</a>
+</div></header>
+<main id="main">
+<section class="hero"><div class="wrap"><div>
+<p class="eye">School uniform catalogue 2026</p>
+<h1>Super smart <em>uniforms.</em></h1>
+<p class="lead">Durable. Breathable. Made in your school colours, with your logo, and delivered on time. Blazers to socks, from M. Samuels in Abuja.</p>
+<div class="cta"><a class="btn dark" href="bulk-order.html">Request a bulk quote</a><a class="btn line" href="custom-order.html">Design your uniform</a></div></div>
+<div class="art"><svg viewBox="0 0 700 260" role="img" aria-label="Drawing of a navy blazer, white shirt, striped tie, grey trousers and burgundy skirt"><use href="#blz" x="0" y="10" width="210" height="252" style="color:#1B2A4A"/><use href="#lsh" x="170" y="10" width="210" height="252" style="color:#fff"/><use href="#tie" x="262" y="40" width="120" height="144" style="color:#B3202A"/><use href="#trs" x="350" y="10" width="210" height="252" style="color:#6B6F76"/><use href="#skt" x="500" y="30" width="200" height="240" style="color:#6B1D2A"/></svg><small>Illustration only. Crest shown is a placeholder.</small></div></div></section>
+<section class="stats" aria-label="At a glance"><div class="wrap"><ul><li><b>50+</b><span>schools served today</span></li><li><b>100 to 200 pcs</b><span>minimum order on most items</span></li><li><b>35 to 60 days</b><span>production on China-made items</span></li></ul></div></section>
+<section class="band" id="blazers" aria-labelledby="h-blazers"><div class="wrap"><div class="sh"><h2 id="h-blazers">Blazers</h2><p class="from">From <b>NGN 35,500</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#blz"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#blz"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#blz"/></svg></div><h3>School blazer</h3><p class="code">MS-BLZ-01</p><p class="note">Single-breasted, two buttons, notch lapel, two patch pockets, lined. Large-volume orders are made in China.</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 35,500</dd></div><div><dt>Collaboration</dt><dd>NGN 33,500</dd></div></dl></article></div></div></section><section class="band" id="shirts" aria-labelledby="h-shirts"><div class="wrap"><div class="sh"><h2 id="h-shirts">Shirts and blouses</h2><p class="from">From <b>NGN 9,800</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#ssh"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#8DB8F0"><use href="#ssh"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#F4B6C8"><use href="#ssh"/></svg></div><h3>Short sleeve shirt</h3><p class="code">MS-SHT-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#8DB8F0"></i><span>BLU<span class="sr"> Sky blue</span></span></li><li><i style="background:#F2D94E"></i><span>YLW<span class="sr"> Yellow</span></span></li><li><i style="background:#F4B6C8"></i><span>PNK<span class="sr"> Pink</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 9,800</dd></div><div><dt>Collaboration</dt><dd>NGN 9,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#lsh"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#8DB8F0"><use href="#lsh"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#F4B6C8"><use href="#lsh"/></svg></div><h3>Long sleeve shirt</h3><p class="code">MS-SHT-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#8DB8F0"></i><span>BLU<span class="sr"> Sky blue</span></span></li><li><i style="background:#F4B6C8"></i><span>PNK<span class="sr"> Pink</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 10,800</dd></div><div><dt>Collaboration</dt><dd>NGN 10,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#pbl"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#F2D94E"><use href="#pbl"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#F4B6C8"><use href="#pbl"/></svg></div><h3>Peter Pan blouse</h3><p class="code">MS-BLS-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#8DB8F0"></i><span>BLU<span class="sr"> Sky blue</span></span></li><li><i style="background:#F2D94E"></i><span>YLW<span class="sr"> Yellow</span></span></li><li><i style="background:#F4B6C8"></i><span>PNK<span class="sr"> Pink</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 9,800</dd></div><div><dt>Collaboration</dt><dd>NGN 9,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#lac"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#8DB8F0"><use href="#lac"/></svg></div><h3>Lace collar blouse</h3><p class="code">MS-BLS-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#8DB8F0"></i><span>BLU<span class="sr"> Sky blue</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 11,800</dd></div><div><dt>Collaboration</dt><dd>NGN 11,000</dd></div></dl></article></div></div></section><section class="band" id="trousers" aria-labelledby="h-trousers"><div class="wrap"><div class="sh"><h2 id="h-trousers">Trousers, shorts and joggers</h2><p class="from">From <b>NGN 11,000</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#shr"/></svg></div><h3>Boys elastic back waist short</h3><p class="code">MS-SHO-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:repeating-linear-gradient(90deg,#6B1D2A 0 5px,#1B2A4A 5px 7px,#6B1D2A 7px 12px)"></i><span>TRT<span class="sr"> Tartan</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 11,000</dd></div><div><dt>Collaboration</dt><dd>NGN 10,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#trs"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#trs"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#trs"/></svg></div><h3>Boys elastic back waist trouser</h3><p class="code">MS-TRS-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 14,500</dd></div><div><dt>Collaboration</dt><dd>NGN 14,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#trs"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#trs"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#trs"/></svg></div><h3>Young men trouser</h3><p class="code">MS-TRS-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 16,500</dd></div><div><dt>Collaboration</dt><dd>NGN 16,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#jog"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#jog"/></svg></div><h3>Joggers</h3><p class="code">MS-JOG-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 15,500</dd></div><div><dt>Collaboration</dt><dd>NGN 14,500</dd></div></dl></article></div></div></section><section class="band" id="skirts" aria-labelledby="h-skirts"><div class="wrap"><div class="sh"><h2 id="h-skirts">Pinafores and skirts</h2><p class="from">From <b>NGN 12,000</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#pinz"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#pinz"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#pinz"/></svg></div><h3>Zip front pinafore, polyviscose</h3><p class="code">MS-PIN-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:repeating-linear-gradient(90deg,#6B1D2A 0 5px,#1B2A4A 5px 7px,#6B1D2A 7px 12px)"></i><span>TRT<span class="sr"> Tartan</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 16,500</dd></div><div><dt>Collaboration</dt><dd>NGN 16,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#pinb"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1F4FA3"><use href="#pinb"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#pinb"/></svg></div><h3>Ribbon bow pleat pinafore</h3><p class="code">MS-PIN-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 16,500</dd></div><div><dt>Collaboration</dt><dd>NGN 16,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#pind"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1F4FA3"><use href="#pind"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#pind"/></svg></div><h3>Double buckle pinafore, polyester</h3><p class="code">MS-PIN-03</p><ul class="chips" aria-label="Colours"><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 13,800</dd></div><div><dt>Collaboration</dt><dd>NGN 12,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#skt"/></svg></div><h3>Senior girls box down pleat skirt</h3><p class="code">MS-SKT-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:repeating-linear-gradient(90deg,#6B1D2A 0 5px,#1B2A4A 5px 7px,#6B1D2A 7px 12px)"></i><span>TRT<span class="sr"> Tartan</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 15,500</dd></div><div><dt>Collaboration</dt><dd>NGN 14,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C2B280"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#skt"/></svg></div><h3>Girls pleat skirt</h3><p class="code">MS-SKT-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 12,500</dd></div><div><dt>Collaboration</dt><dd>NGN 11,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#skt"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#skt"/></svg></div><h3>Girls all round box pleat skirt</h3><p class="code">MS-SKT-03</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 12,500</dd></div><div><dt>Collaboration</dt><dd>NGN 11,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#sko"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#sko"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#sko"/></svg></div><h3>Two tab skort, polyester</h3><p class="code">MS-SKO-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 12,000</dd></div><div><dt>Collaboration</dt><dd>NGN 11,450</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#lsk"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#lsk"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#lsk"/></svg></div><h3>Girls all long skirt</h3><p class="code">MS-SKT-04</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 21,000</dd></div><div><dt>Collaboration</dt><dd>NGN 19,450</dd></div></dl></article></div></div></section><section class="band" id="knitwear" aria-labelledby="h-knitwear"><div class="wrap"><div class="sh"><h2 id="h-knitwear">Cardigans, polos and jackets</h2><p class="from">From <b>NGN 8,500</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#cdg"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1E6B3A"><use href="#cdg"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#cdg"/></svg></div><h3>Knitted cardigan</h3><p class="code">MS-KNT-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 15,500</dd></div><div><dt>Collaboration</dt><dd>NGN 14,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1E6B3A"><use href="#vst"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#vst"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B6F76"><use href="#vst"/></svg></div><h3>Knitted sleeveless cardigan</h3><p class="code">MS-KNT-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 13,500</dd></div><div><dt>Collaboration</dt><dd>NGN 12,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#F2D94E"><use href="#pol"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1F4FA3"><use href="#pol"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#pol"/></svg></div><h3>Polo T-shirt</h3><p class="code">MS-POL-01</p><p class="note">Add your own logo and design.</p><ul class="chips" aria-label="Colours"><li><i style="background:#F2D94E"></i><span>YLW<span class="sr"> Yellow</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 8,500</dd></div><div><dt>Collaboration</dt><dd>NGN 7,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#var"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#var"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#var"/></svg></div><h3>Varsity jacket</h3><p class="code">MS-VAR-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B6F76"></i><span>GRY<span class="sr"> Grey</span></span></li><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 21,500</dd></div><div><dt>Collaboration</dt><dd>NGN 19,500</dd></div></dl></article></div></div></section><section class="band" id="sports" aria-labelledby="h-sports"><div class="wrap"><div class="sh"><h2 id="h-sports">Sportswear, ties and socks</h2><p class="from">From <b>NGN 2,500</b></p></div><div class="grid"><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1F4FA3"><use href="#jer"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#jer"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1E6B3A"><use href="#jer"/></svg></div><h3>Sportswear</h3><p class="code">MS-SPT-01</p><p class="note">All colours and styles. Add your own logo and design.</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li><li><i style="background:#F2D94E"></i><span>YLW<span class="sr"> Yellow</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 13,500</dd></div><div><dt>Collaboration</dt><dd>NGN 12,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#shr"/></svg></div><h3>PE short</h3><p class="code">MS-PES-01</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li><li><i style="background:#C2B280"></i><span>KHK<span class="sr"> Khaki</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#0F4D33"></i><span>BTG<span class="sr"> Bottle green</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 9,500</dd></div><div><dt>Collaboration</dt><dd>NGN 9,000</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#shr"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#shr"/></svg></div><h3>Senior PE short</h3><p class="code">MS-PES-02</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 10,500</dd></div><div><dt>Collaboration</dt><dd>NGN 9,500</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#tie"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#6B1D2A"><use href="#tie"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#C8202B"><use href="#tie"/></svg></div><h3>Ties, plain and pattern</h3><p class="code">MS-TIE-01</p><p class="note">Minimum order 200. Produced in China.</p><ul class="chips" aria-label="Colours"><li><i style="background:#1B2A4A"></i><span>NVY<span class="sr"> Navy</span></span></li><li><i style="background:#6B1D2A"></i><span>BRG<span class="sr"> Burgundy</span></span></li><li><i style="background:#C8202B"></i><span>RED<span class="sr"> Red</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li><li><i style="background:#1E6B3A"></i><span>GRN<span class="sr"> Green</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 3,600</dd></div><div><dt>Collaboration</dt><dd>NGN 3,600</dd></div></dl></article><article class="card"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#sck"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1C1C1C"><use href="#sck"/></svg><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1F4FA3"><use href="#sck"/></svg></div><h3>Customised socks</h3><p class="code">MS-SCK-01</p><p class="note">Minimum order 200.</p><ul class="chips" aria-label="Colours"><li><i style="background:#FFFFFF"></i><span>WHT<span class="sr"> White</span></span></li><li><i style="background:#1C1C1C"></i><span>BLK<span class="sr"> Black</span></span></li><li><i style="background:#1F4FA3"></i><span>RYL<span class="sr"> Royal blue</span></span></li></ul><dl class="pr"><div><dt>Wholesale</dt><dd>NGN 2,500</dd></div><div><dt>Collaboration</dt><dd>NGN 2,500</dd></div></dl></article></div></div></section>
+<section class="band" id="professional" aria-labelledby="h-prof"><div class="wrap"><div class="sh"><h2 id="h-prof">Professional uniforms</h2><p class="from">Priced by quote</p></div><div class="grid"><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#8DB8F0"><use href="#sec"/></svg></div><h3>Security uniforms</h3><p class="code">Request a quote</p></article><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#4F86B8"><use href="#tun"/></svg></div><h3>Maids and drivers</h3><p class="code">Request a quote</p></article><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#1B2A4A"><use href="#scr"/></svg></div><h3>Doctors' uniforms</h3><p class="code">Request a quote</p></article><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#E7A6A0"><use href="#scr"/></svg></div><h3>Nurses' uniforms</h3><p class="code">Request a quote</p></article><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#lab"/></svg></div><h3>Lab coats</h3><p class="code">Request a quote</p></article><article class="card sm"><div class="pan"><svg viewBox="0 0 200 240" aria-hidden="true" focusable="false" style="color:#FFFFFF"><use href="#chf"/></svg></div><h3>Chef uniforms</h3><p class="code">Request a quote</p></article></div><p style="margin-top:18px">We produce all types of uniforms. Tell us the role, the colours and the quantity. <a href="bulk-order.html">Request a quote</a>.</p></div></section>
+<section class="band" id="colours" aria-labelledby="h-col"><div class="wrap"><div class="sh"><h2 id="h-col">Colour key</h2><p class="from">Quote the code when you order</p></div><ul class="ckey"><li><i style="background:#1B2A4A"></i><b>NVY Navy</b><span>#1B2A4A</span></li><li><i style="background:#1C1C1C"></i><b>BLK Black</b><span>#1C1C1C</span></li><li><i style="background:#6B1D2A"></i><b>BRG Burgundy</b><span>#6B1D2A</span></li><li><i style="background:#6B6F76"></i><b>GRY Grey</b><span>#6B6F76</span></li><li><i style="background:#C2B280"></i><b>KHK Khaki</b><span>#C2B280</span></li><li><i style="background:#FFFFFF"></i><b>WHT White</b><span>#FFFFFF</span></li><li><i style="background:#8DB8F0"></i><b>BLU Sky blue</b><span>#8DB8F0</span></li><li><i style="background:#1F4FA3"></i><b>RYL Royal blue</b><span>#1F4FA3</span></li><li><i style="background:#F2D94E"></i><b>YLW Yellow</b><span>#F2D94E</span></li><li><i style="background:#F4B6C8"></i><b>PNK Pink</b><span>#F4B6C8</span></li><li><i style="background:#1E6B3A"></i><b>GRN Green</b><span>#1E6B3A</span></li><li><i style="background:#0F4D33"></i><b>BTG Bottle green</b><span>#0F4D33</span></li><li><i style="background:#C8202B"></i><b>RED Red</b><span>#C8202B</span></li><li><i style="background:repeating-linear-gradient(90deg,#6B1D2A 0 5px,#1B2A4A 5px 7px,#6B1D2A 7px 12px)"></i><b>TRT Tartan</b><span>Pattern, China-made</span></li></ul><p style="margin-top:14px;font-size:.88rem;color:var(--mute)">Hex codes are screen references. Confirm against a fabric swatch before a bulk order.</p></div></section>
+<section class="band" id="prices" aria-labelledby="h-pr"><div class="wrap"><div class="sh"><h2 id="h-pr">Price list 2026</h2><p class="from">Updated Feb. 2026</p></div><div class="tw" tabindex="0" role="region" aria-label="Price list table, scrolls sideways on small screens"><table><thead><tr><th>Code</th><th>Item</th><th>Colours</th><th class="r">Wholesale (NGN)</th><th class="r">Collaboration (NGN)</th></tr></thead><tbody><tr><td>MS-BLZ-01</td><th scope="row">School blazer</th><td>NVY BLK BRG</td><td class="r">35,500</td><td class="r">33,500</td></tr><tr><td>MS-SHT-01</td><th scope="row">Short sleeve shirt</th><td>WHT BLU YLW PNK</td><td class="r">9,800</td><td class="r">9,000</td></tr><tr><td>MS-SHT-02</td><th scope="row">Long sleeve shirt</th><td>WHT BLU PNK</td><td class="r">10,800</td><td class="r">10,000</td></tr><tr><td>MS-BLS-01</td><th scope="row">Peter Pan blouse</th><td>WHT BLU YLW PNK</td><td class="r">9,800</td><td class="r">9,000</td></tr><tr><td>MS-BLS-02</td><th scope="row">Lace collar blouse</th><td>WHT BLU</td><td class="r">11,800</td><td class="r">11,000</td></tr><tr><td>MS-SHO-01</td><th scope="row">Boys elastic back waist short</th><td>NVY GRY KHK BRG TRT</td><td class="r">11,000</td><td class="r">10,000</td></tr><tr><td>MS-TRS-01</td><th scope="row">Boys elastic back waist trouser</th><td>NVY GRY KHK BRG</td><td class="r">14,500</td><td class="r">14,000</td></tr><tr><td>MS-TRS-02</td><th scope="row">Young men trouser</th><td>NVY GRY KHK BRG</td><td class="r">16,500</td><td class="r">16,000</td></tr><tr><td>MS-JOG-01</td><th scope="row">Joggers</th><td>NVY BLK</td><td class="r">15,500</td><td class="r">14,500</td></tr><tr><td>MS-PIN-01</td><th scope="row">Zip front pinafore, polyviscose</th><td>NVY GRY KHK BRG TRT</td><td class="r">16,500</td><td class="r">16,000</td></tr><tr><td>MS-PIN-02</td><th scope="row">Ribbon bow pleat pinafore</th><td>KHK RYL BLK</td><td class="r">16,500</td><td class="r">16,000</td></tr><tr><td>MS-PIN-03</td><th scope="row">Double buckle pinafore, polyester</th><td>KHK RYL BLK</td><td class="r">13,800</td><td class="r">12,000</td></tr><tr><td>MS-SKT-01</td><th scope="row">Senior girls box down pleat skirt</th><td>NVY GRY KHK BRG TRT</td><td class="r">15,500</td><td class="r">14,500</td></tr><tr><td>MS-SKT-02</td><th scope="row">Girls pleat skirt</th><td>NVY GRY KHK BRG</td><td class="r">12,500</td><td class="r">11,000</td></tr><tr><td>MS-SKT-03</td><th scope="row">Girls all round box pleat skirt</th><td>NVY GRY KHK BRG</td><td class="r">12,500</td><td class="r">11,000</td></tr><tr><td>MS-SKO-01</td><th scope="row">Two tab skort, polyester</th><td>NVY GRY KHK BRG RED</td><td class="r">12,000</td><td class="r">11,450</td></tr><tr><td>MS-SKT-04</td><th scope="row">Girls all long skirt</th><td>NVY GRY BLK BRG GRN</td><td class="r">21,000</td><td class="r">19,450</td></tr><tr><td>MS-KNT-01</td><th scope="row">Knitted cardigan</th><td>NVY GRY GRN BRG RED</td><td class="r">15,500</td><td class="r">14,500</td></tr><tr><td>MS-KNT-02</td><th scope="row">Knitted sleeveless cardigan</th><td>NVY GRY GRN BRG RED</td><td class="r">13,500</td><td class="r">12,500</td></tr><tr><td>MS-POL-01</td><th scope="row">Polo T-shirt</th><td>YLW RED RYL GRN WHT</td><td class="r">8,500</td><td class="r">7,500</td></tr><tr><td>MS-VAR-01</td><th scope="row">Varsity jacket</th><td>NVY GRY WHT BRG RED</td><td class="r">21,500</td><td class="r">19,500</td></tr><tr><td>MS-SPT-01</td><th scope="row">Sportswear</th><td>NVY RYL RED YLW GRN</td><td class="r">13,500</td><td class="r">12,500</td></tr><tr><td>MS-PES-01</td><th scope="row">PE short</th><td>NVY BLK KHK BRG BTG</td><td class="r">9,500</td><td class="r">9,000</td></tr><tr><td>MS-PES-02</td><th scope="row">Senior PE short</th><td>NVY BLK BRG</td><td class="r">10,500</td><td class="r">9,500</td></tr><tr><td>MS-TIE-01</td><th scope="row">Ties, plain and pattern</th><td>NVY BRG RED RYL GRN</td><td class="r">3,600</td><td class="r">3,600</td></tr><tr><td>MS-SCK-01</td><th scope="row">Customised socks</th><td>WHT BLK RYL</td><td class="r">2,500</td><td class="r">2,500</td></tr></tbody></table></div><p style="margin-top:12px;font-size:.88rem;color:var(--mute)">Collaboration price: when schools come together to produce over 1,000, 2,000 or 3,000 pcs. Prices include 7.5% VAT. Delivery and shipping are not included.</p></div></section>
+<section class="band" id="order" aria-labelledby="h-or"><div class="wrap"><div class="sh"><h2 id="h-or">Design your uniform</h2><p class="from">Four steps</p></div>
+<ol class="steps"><li><h3>Choose your items</h3><p>Pick from blazers to socks and note each product code, for example MS-BLZ-01.</p></li><li><h3>Choose your colours</h3><p>Use the colour key and quote the code, for example NVY. Ask for a swatch.</p></li><li><h3>Add your logo</h3><p>Send your crest and design. Polos, sportswear, socks and ties can carry your own logo and design.</p></li><li><h3>Request your quote</h3><p>Use the bulk order form or call us. We reply with a quote.</p></li></ol>
+<div class="cta" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px"><a class="btn dark" href="bulk-order.html">Bulk order form</a><a class="btn line" href="custom-order.html">Custom uniform request</a></div></div></section>
+<section class="band" id="terms" aria-labelledby="h-t"><div class="wrap"><div class="sh"><h2 id="h-t">Terms</h2></div><dl class="terms">
+<dt>Prices</dt><dd>All prices are in Naira and include 7.5% VAT. Delivery and shipping are not included.</dd>
+<dt>Minimum order</dt><dd>100 to 200 pcs for most items. Socks and ties: 200 pcs.</dd>
+<dt>Sizes</dt><dd>All uniforms are produced to standard size charts. See the <a href="size-guide.html">size guide</a>.</dd>
+<dt>Made in</dt><dd>Large-volume blazers and shirts, all ties and all tartan are produced in China. Production 35 to 60 days, shipment 8 to 10 weeks. Other items are produced in Nigeria.</dd>
+<dt>Collaboration price</dt><dd>Applies when schools produce together, over 1,000, 2,000 or 3,000 pcs.</dd>
+<dt>Shipping and returns</dt><dd>See <a href="shipping.html">shipping</a> and <a href="returns.html">returns</a>.</dd></dl></div></section>
+</main>
+<section class="contact" id="contact" aria-labelledby="h-c"><div class="wrap"><div><p class="eye" style="color:#3D3500">Contact us</p><h2 id="h-c">We are just a call away.</h2><p style="margin-top:12px;max-width:26em">Tell us the items, colours and quantity. We reply with a quote and a production date.</p></div>
+<dl><div><dt>BULK ORDERS</dt><dd><a href="tel:+2348073526290">+234 807 352 6290</a></dd></div><div><dt>OTHER LINES</dt><dd><a href="tel:+2348037865059">0803 786 5059</a> &middot; <a href="tel:+2348071145177">0807 114 5177</a></dd></div><div><dt>EMAIL</dt><dd style="font-size:1.1rem"><a href="mailto:msamuelsuniforms@gmail.com">msamuelsuniforms@gmail.com</a></dd></div><div><dt>FACTORY ADDRESS</dt><dd style="font-size:1.1rem">No 5, Zone B, Apo Resettlement, Apo, Abuja</dd></div></dl></div></section>
+<footer><div class="wrap">M. Samuels &middot; Super Smart Uniforms &middot; <a href="msamuels.html">Back to M. Samuels</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a></div></footer>
 </body>
 </html>
