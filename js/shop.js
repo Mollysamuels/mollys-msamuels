@@ -31,7 +31,7 @@ async function fetchRealProducts() {
         name: p.name, price: p.price_ngn, division: p.division,
         category: (p.categories && p.categories.slug) || "",
         img: p.main_image_url || fallbackImg,
-        linkOverride: `product.html?id=${p.id}`,
+        linkOverride: `product?id=${p.id}`,
       };
     });
   } catch (e) {
@@ -45,7 +45,7 @@ function renderShopCard(p, index) {
     item: `shop-${index}`,
     name: p.name, price: p.price, division: p.division, category: p.category, img1: p.img,
   });
-  const link = p.linkOverride || `product.html?${params.toString()}`;
+  const link = p.linkOverride || `product?${params.toString()}`;
   return `
     <div class="product-card" data-division="${p.division}" data-price="${p.price}">
       <div class="product-media">
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   function render(list) {
     if (!list.length && searchQuery) {
-      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;"><p style="color:var(--ink-soft);margin-bottom:16px;" id="noResultsMsg"></p><a href="shop.html" class="btn btn-gold">Browse all products</a></div>';
+      grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px 0;"><p style="color:var(--ink-soft);margin-bottom:16px;" id="noResultsMsg"></p><a href="shop" class="btn btn-gold">Browse all products</a></div>';
       document.getElementById("noResultsMsg").textContent = `No products found for “${rawQuery}”.`;
       document.getElementById("shopCount").textContent = "0 products";
       return;
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     wireCardImageToggle(grid);
   }
 
-  // Search mode: shop.html?q=term (optionally &division=msamuels|mollys)
+  // Search mode: shop?q=term (optionally &division=msamuels|mollys)
   const urlParams = new URLSearchParams(window.location.search);
   const rawQuery = (urlParams.get("q") || "").trim();
   const searchQuery = rawQuery.toLowerCase();

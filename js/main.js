@@ -131,7 +131,7 @@ function removeFromWishlist(productId) {
 // Reads a card the same way addToCartFromCard does, and toggles it in the
 // real wishlist — used by every heart/wish-btn site-wide.
 function toggleWishlistFromCard(card, btn) {
-  const link = card.querySelector("a[href*='product.html']");
+  const link = card.querySelector("a[href*='product']");
   const href = link ? link.getAttribute("href") : "";
   const cardParams = new URLSearchParams(href.split("?")[1] || "");
   const productId = cardParams.get("id") || cardParams.get("item") || (card.querySelector("h4")?.textContent || "product");
@@ -141,7 +141,7 @@ function toggleWishlistFromCard(card, btn) {
   const priceEl = card.querySelector(".product-price .now, .now");
   const price = Number(priceEl?.dataset.priceNgn) || parseInt((priceEl?.textContent || "").replace(/[^\d]/g, ""), 10) || 0;
   const img = card.querySelector(".product-media img.main, img.main")?.src || "";
-  const link_href = link ? link.getAttribute("href") : "product.html";
+  const link_href = link ? link.getAttribute("href") : "product";
   // Real division, not always "mollys" — checks the URL's own division= param
   // first (older-style links), then falls back to the image path itself,
   // which always contains "msamuels" or "mollys" as its folder name.
@@ -160,7 +160,7 @@ function wireCardImageToggle() {}
 // ---------- Login-aware prompts ----------
 // UI hint only (never used for security): shows "My Account" instead of
 // "Login / Register" when a saved session exists in this browser. The real
-// check still happens on account.html and in the database.
+// check still happens on account and in the database.
 function isLikelyLoggedIn() {
   try {
     for (let i = 0; i < localStorage.length; i++) {
@@ -176,11 +176,11 @@ function isLikelyLoggedIn() {
 function applyAuthAwareUI() {
   if (!isLikelyLoggedIn()) return;
   document.querySelectorAll(".ms-mega-auth").forEach((box) => {
-    box.innerHTML = '<a href="account.html" class="register">MY ACCOUNT</a>';
+    box.innerHTML = '<a href="account" class="register">MY ACCOUNT</a>';
   });
-  document.querySelectorAll('.ms-action-btn[href="login.html"]').forEach((link) => {
+  document.querySelectorAll('.ms-action-btn[href="login"]').forEach((link) => {
     const icon = link.querySelector("svg");
-    link.setAttribute("href", "account.html");
+    link.setAttribute("href", "account");
     link.innerHTML = (icon ? icon.outerHTML : "") + "MY<br>ACCOUNT";
   });
 }
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", applyAuthAwareUI);
 
 // ---------- Site search ----------
 // Opens a search box from any Search button; submitting sends the visitor
-// to shop.html?q=... which filters real products by name/category.
+// to shop?q=... which filters real products by name/category.
 function openSiteSearch(scopeDivision) {
   let overlay = document.getElementById("siteSearchOverlay");
   if (!overlay) {
@@ -218,7 +218,7 @@ function openSiteSearch(scopeDivision) {
       const q = overlay.querySelector("input").value.trim();
       if (!q) return;
       const scope = overlay.dataset.scope;
-      window.location.href = "shop.html?q=" + encodeURIComponent(q) + (scope ? "&division=" + scope : "");
+      window.location.href = "shop?q=" + encodeURIComponent(q) + (scope ? "&division=" + scope : "");
     });
   }
   overlay.dataset.scope = scopeDivision || "";
@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // products and static placeholder cards alike) and saves a real cart line.
 // Used by every "Quick add" button site-wide.
 function addToCartFromCard(card) {
-  const link = card.querySelector("a[href*='product.html']");
+  const link = card.querySelector("a[href*='product']");
   const href = link ? link.getAttribute("href") : "";
   const params = new URLSearchParams(href.split("?")[1] || "");
   const productId = params.get("id") || params.get("item") || (card.querySelector("h4")?.textContent || "product");
@@ -404,7 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleWishlistFromCard(card, btn);
         showToast(btn.classList.contains("active") ? "Saved to wishlist" : "Removed from wishlist");
       } else {
-        btn.classList.toggle("active"); // no card context (e.g. product.html) — visual only
+        btn.classList.toggle("active"); // no card context (e.g. product) — visual only
       }
     });
   });

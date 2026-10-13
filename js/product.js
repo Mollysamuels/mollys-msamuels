@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   /* ---------- Header logo: swap to the M. Samuels logo on M. Samuels products ---------- */
   const headerLogo = document.getElementById("prodHeaderLogo");
   if (headerLogo && PRODUCT.division === "msamuels") {
-    headerLogo.href = "msamuels.html";
+    headerLogo.href = "msamuels";
     headerLogo.classList.add("ms-section-logo");
     headerLogo.innerHTML = '<img src="assets/images/msamuels/logo.png" alt="M. Samuels">';
   }
@@ -84,12 +84,12 @@ document.addEventListener("DOMContentLoaded", async function () {
   const bcDivision = document.getElementById("prodBreadcrumbDivision");
   if (bcDivision) {
     bcDivision.textContent = PRODUCT.division === "msamuels" ? "M. Samuels" : "Mollys";
-    bcDivision.href = PRODUCT.division === "msamuels" ? "msamuels.html" : "mollys.html";
+    bcDivision.href = PRODUCT.division === "msamuels" ? "msamuels" : "mollys";
   }
   const bcCategory = document.getElementById("prodBreadcrumbCategory");
   if (bcCategory && PRODUCT.category) {
     bcCategory.textContent = PRODUCT.category.split("-").map((w) => w[0].toUpperCase() + w.slice(1)).join(" ");
-    bcCategory.href = `category.html?category=${PRODUCT.category}`;
+    bcCategory.href = `category?category=${PRODUCT.category}`;
   }
   const bcCurrent = document.getElementById("prodBreadcrumbCurrent");
   if (bcCurrent) bcCurrent.textContent = PRODUCT.name;
@@ -345,7 +345,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   document.getElementById("buyNowBtn")?.addEventListener("click", () => {
     addToCart(collectSelectionForCart());
-    window.location.href = "checkout.html";
+    window.location.href = "checkout";
   });
 
   // Everything above is now correctly filled in — safe to show the page.

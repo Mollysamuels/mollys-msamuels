@@ -25,7 +25,7 @@
   box.setAttribute("aria-label", "Cookies and storage notice");
   box.innerHTML =
     '<p>We only use essential cookies and browser storage, to keep your cart, wishlist, country and login working. ' +
-    'We don’t use advertising or tracking cookies. <a href="privacy.html#cookies">Read how we use them</a>.</p>' +
+    'We don’t use advertising or tracking cookies. <a href="privacy#cookies">Read how we use them</a>.</p>' +
     '<button type="button">OK, got it</button>';
   box.querySelector("button").addEventListener("click", function () {
     try { localStorage.setItem(KEY, "1"); } catch (e) {}

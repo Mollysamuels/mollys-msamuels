@@ -1,7 +1,7 @@
 // ============================================
 // card-sync.js
 // Connects the old, hand-typed product cards (links like
-// product.html?item=heels-1&name=...) to the REAL products in your database,
+// product?item=heels-1&name=...) to the REAL products in your database,
 // so they can be ordered and their price/name follow what you set in admin.
 //
 // - Matches by a hidden label (products.legacy_keys) first, then by name, so
@@ -15,7 +15,7 @@
   var SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU";
 
   var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  var OLD_LINK = 'a[href*="product.html?"]';
+  var OLD_LINK = 'a[href*="product?"]';
   var clientPromise = null;
   var productsPromise = null;
   var timer = null;
@@ -85,7 +85,7 @@
   }
 
   function hydrate(card, p) {
-    card.querySelectorAll(OLD_LINK).forEach(function (a) { a.setAttribute("href", "product.html?id=" + p.id); });
+    card.querySelectorAll(OLD_LINK).forEach(function (a) { a.setAttribute("href", "product?id=" + p.id); });
     var h4 = card.querySelector("h4");
     if (h4 && p.name) h4.textContent = p.name;
     var img = card.querySelector(".product-media img.main");
@@ -100,7 +100,7 @@
   function dedupe() {
     var seen = new Map();
     document.querySelectorAll(".product-card").forEach(function (card) {
-      var a = card.querySelector('a[href*="product.html?id="]');
+      var a = card.querySelector('a[href*="product?id="]');
       if (!a || !card.parentElement) return;
       var id = (a.getAttribute("href").split("id=")[1] || "").split("&")[0];
       var scope = seen.get(card.parentElement) || new Set();
@@ -131,7 +131,7 @@
   //    preview shows what will actually be charged.
   function healCart() {
     if (typeof getCart !== "function" || typeof saveCart !== "function") return;
-    var onCartPage = /(^|\/)(cart|checkout)\.html$/.test(location.pathname);
+    var onCartPage = /(^|\/)(cart|checkout)(\.html)?$/.test(location.pathname);
     var hasStale = getCart().some(function (i) { return !UUID.test(String(i.product_id)); });
     if (!hasStale && !onCartPage) return;
     if (!getCart().length) return;

@@ -6,7 +6,7 @@
 // ============================================
 
 function renderHomeCard(p) {
-  const link = `product.html?id=${p.id}`;
+  const link = `product?id=${p.id}`;
   const swatches = (p.product_colors || []).slice(0, 3)
     .map((c) => `<span style="background:${c.hex_code || '#ccc'}"></span>`).join("");
   const fallbackImg = p.division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";

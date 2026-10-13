@@ -1,6 +1,6 @@
 // ============================================
 // CATEGORY LISTING PAGE — reusable for every category
-// via category.html?category=<slug>
+// via category?category=<slug>
 // ============================================
 
 // M. Samuels categories, grouped by section — used both to detect division
@@ -61,7 +61,7 @@ function buildProductLink(product) {
     category: product.category,
     img1: product.img1,
   });
-  return `product.html?${params.toString()}`;
+  return `product?${params.toString()}`;
 }
 
 function renderProductCard(product) {
@@ -121,7 +121,7 @@ function renderGrid(products) {
 document.addEventListener("DOMContentLoaded", async function () {
   await loadExchangeRate();
   const grid = document.getElementById("catProductGrid");
-  if (!grid) return; // not on category.html
+  if (!grid) return; // not on category
 
   const params = new URLSearchParams(window.location.search);
   const slug = params.get("category") || "gowns";
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", async function () {
           name: p.name, price: p.price_ngn, division: p.division, category: slug,
           img1: p.main_image_url || fallbackImg,
           img2: p.alt_image_url || p.main_image_url || fallbackImg,
-          linkOverride: `product.html?id=${p.id}`,
+          linkOverride: `product?id=${p.id}`,
         };
       });
     }
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const breadcrumbDivision = document.getElementById("catBreadcrumbDivision");
   if (breadcrumbDivision) {
     breadcrumbDivision.textContent = division === "msamuels" ? "M. Samuels" : "Mollys";
-    breadcrumbDivision.href = division === "msamuels" ? "msamuels.html" : "mollys.html";
+    breadcrumbDivision.href = division === "msamuels" ? "msamuels" : "mollys";
   }
   const breadcrumbCurrent = document.getElementById("catBreadcrumbCurrent");
   if (breadcrumbCurrent) breadcrumbCurrent.textContent = name;
@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // stays as the standard "Molly Samuels" wordmark on Mollys categories.
   const headerLogo = document.getElementById("catHeaderLogo");
   if (headerLogo && division === "msamuels") {
-    headerLogo.href = "msamuels.html";
+    headerLogo.href = "msamuels";
     headerLogo.classList.add("ms-section-logo");
     headerLogo.innerHTML = '<img src="assets/images/msamuels/logo.png" alt="M. Samuels">';
   }

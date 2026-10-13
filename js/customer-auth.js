@@ -1,7 +1,7 @@
 // ============================================
 // CUSTOMER AUTH GUARD
 // Include on any page that requires a real logged-in customer.
-// Redirects to login.html if nobody's signed in.
+// Redirects to login if nobody's signed in.
 // ============================================
 
 (async function () {
@@ -9,7 +9,7 @@
     const { data: { session } } = await supabaseClient.auth.getSession();
 
     if (!session) {
-      window.location.href = "login.html";
+      window.location.href = "login";
       return;
     }
 
@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", async (e) => {
       e.preventDefault();
       await supabaseClient.auth.signOut();
-      window.location.href = "login.html";
+      window.location.href = "login";
     });
   });
 });

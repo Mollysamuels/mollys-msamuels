@@ -39,7 +39,7 @@
     var consent = document.createElement("p");
     consent.className = "newsletter-consent";
     consent.style.cssText = "font-size:0.78rem;opacity:0.8;margin:10px 0 0;line-height:1.5;";
-    consent.innerHTML = 'By subscribing you agree to get news and offers from Molly Samuels by email. Unsubscribe any time. <a href="privacy.html" style="text-decoration:underline;color:inherit;">Privacy Policy</a>';
+    consent.innerHTML = 'By subscribing you agree to get news and offers from Molly Samuels by email. Unsubscribe any time. <a href="privacy" style="text-decoration:underline;color:inherit;">Privacy Policy</a>';
     var msg = document.createElement("p");
     msg.className = "newsletter-msg"; msg.setAttribute("role", "status");
     msg.style.cssText = "font-size:0.88rem;font-weight:600;margin:10px 0 0;line-height:1.5;display:none;";

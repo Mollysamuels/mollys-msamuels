@@ -57,7 +57,7 @@ function renderCategoryGrids() {
     const panel = document.querySelector(`.ms-mega-panel[data-panel="${tabKey}"] .ms-cat-grid`);
     if (!panel) return;
     panel.innerHTML = CATEGORY_DATA[tabKey].map(([name, icon]) => `
-      <a class="ms-cat-item" href="category.html?category=${slugify(name)}">
+      <a class="ms-cat-item" href="category?category=${slugify(name)}">
         <svg viewBox="0 0 40 40">${ICONS[icon] || ICONS.generic}</svg>
         <span>${name}</span>
       </a>
@@ -80,7 +80,7 @@ const SECTION_LABELS = {
 function renderSingleSection(sectionKey, gridEl) {
   if (!CATEGORY_DATA[sectionKey] || !gridEl) return;
   gridEl.innerHTML = CATEGORY_DATA[sectionKey].map(([name, icon]) => `
-    <a class="ms-cat-item" href="category.html?category=${slugify(name)}">
+    <a class="ms-cat-item" href="category?category=${slugify(name)}">
       <svg viewBox="0 0 40 40">${ICONS[icon] || ICONS.generic}</svg>
       <span>${name}</span>
     </a>
@@ -123,11 +123,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const tabs = document.querySelectorAll(".ms-tab");
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      window.location.href = `uniform-section.html?section=${tab.dataset.tab}`;
+      window.location.href = `uniform-section?section=${tab.dataset.tab}`;
     });
   });
 
-  /* ---------- uniform-section.html specific: render the one section named in the URL ---------- */
+  /* ---------- uniform-section specific: render the one section named in the URL ---------- */
   const sectionGrid = document.getElementById("usCategoryGrid");
   if (sectionGrid) {
     const params = new URLSearchParams(window.location.search);

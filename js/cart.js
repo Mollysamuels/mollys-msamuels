@@ -4,7 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", async function () {
   const col = document.getElementById("cartItemsCol");
-  if (!col) return; // not on cart.html
+  if (!col) return; // not on cart
   await loadExchangeRate();
 
   const deliveryFee = 2500;
