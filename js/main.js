@@ -456,7 +456,7 @@ document.addEventListener("DOMContentLoaded", function () {
 //    ordered and follow admin prices);
 //  - newsletter.js: makes the "Stay updated" Subscribe box work.
 (function () {
-  ["js/card-sync.js", "js/newsletter.js"].forEach(function (src) {
+  ["js/card-sync.js", "js/newsletter.js", "js/motion.js"].forEach(function (src) {
     var s = document.createElement("script");
     s.src = src;
     document.head.appendChild(s);
