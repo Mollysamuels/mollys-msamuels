@@ -51,6 +51,7 @@
     if (!io || el.__mo) return;
     el.__mo = 1;
     var r = el.getBoundingClientRect();
+    if (el.closest(".category-strip,.mo-scroll-track,.category-item")) return; // side-scrolling rows: never pre-hide, items can sit off-screen sideways
     if (r.top < innerHeight * 0.9 && r.bottom > 0 && !kind) return; // already visible: leave alone
     el.setAttribute(kind === "mask" ? "data-mo-mask" : "data-mo-wait", "");
     if (delay) el.style.setProperty("--mo-d", delay + "ms");
@@ -62,7 +63,7 @@
       if (el.closest(".site-header,.mobile-menu,.ms-mega-overlay,.toast")) return;
       watch(el, "", 0);
     });
-    $$(".founder-photo-block,.cat-tile,.category-strip a,.about-division-card,.lookbook img", rootEl).forEach(function (el) { watch(el, "mask", 0); });
+    $$(".founder-photo-block,.cat-tile,.about-division-card,.lookbook img", rootEl).forEach(function (el) { watch(el, "mask", 0); });
     // staggered product grids
     $$(".product-grid,.mo-scroll-track,.products-grid,#productGrid,#newArrivalsGrid", rootEl).forEach(function (g) {
       $$(".product-card", g).forEach(function (c, i) { watch(c, "", Math.min(i % 8, 7) * 90); });
