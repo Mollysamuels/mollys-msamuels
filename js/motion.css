@@ -1,0 +1,69 @@
+/* motion.css - Molly Samuels animation layer. Loaded only by js/motion.js when motion is on. */
+html.mo-on{scroll-behavior:smooth}
+html.mo-on [data-mo-wait]{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--mo-d,0ms)}
+html.mo-on [data-mo-wait].mo-in{opacity:1;transform:none}
+/* image mask reveal */
+html.mo-on [data-mo-mask]{clip-path:inset(0 0 100% 0);transition:clip-path 1.1s cubic-bezier(.65,0,.2,1);transition-delay:var(--mo-d,0ms)}
+html.mo-on [data-mo-mask].mo-in{clip-path:inset(0 0 0 0)}
+html.mo-on [data-mo-mask] img{transform:scale(1.12);transition:transform 1.6s cubic-bezier(.2,.7,.2,1)}
+html.mo-on [data-mo-mask].mo-in img{transform:scale(1)}
+/* Ken Burns */
+@keyframes mo-kb{from{transform:scale(1)}to{transform:scale(1.09)}}
+html.mo-on .home-hero-bg.active,html.mo-on .ms-hero-bg.active,html.mo-on .division-slide.active{animation:mo-kb 12s ease-out forwards}
+/* hover lift on cards */
+html.mo-on .product-card .product-media{overflow:hidden}
+html.mo-on .product-card .product-media img{transition:opacity .6s ease,transform 1.2s cubic-bezier(.2,.7,.2,1)}
+html.mo-on .product-card:hover .product-media img{transform:scale(1.04)}
+html.mo-on .product-card.mo-peek .product-media img.main{opacity:0}
+html.mo-on .product-card.mo-peek .product-media img.alt{opacity:1}
+/* announcement ticker */
+.announce.mo-ticker{overflow:hidden;white-space:nowrap;padding-left:0;padding-right:0}
+.announce.mo-ticker .announce-text{display:none}
+.mo-ticker-track{display:inline-block;white-space:nowrap;animation:mo-tick var(--mo-tick,40s) linear infinite;will-change:transform}
+.announce.mo-ticker:hover .mo-ticker-track{animation-play-state:paused}
+.mo-ticker-track span{padding-right:4rem}
+@keyframes mo-tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+/* drag rails */
+html.mo-on .mo-scroll-track{cursor:grab;scroll-snap-type:none}
+html.mo-on .mo-scroll-track.mo-drag{cursor:grabbing;user-select:none}
+html.mo-on .mo-scroll-track.mo-drag a{pointer-events:none}
+/* cart badge bounce + fly dot */
+@keyframes mo-bounce{0%{transform:scale(1)}35%{transform:scale(1.5)}65%{transform:scale(.88)}100%{transform:scale(1)}}
+.mo-bounce{animation:mo-bounce .55s ease}
+.mo-fly{position:fixed;z-index:10000;width:56px;height:56px;border-radius:50%;background-size:cover;background-position:center;background-color:var(--gold,#F4D900);box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;transition:transform .8s cubic-bezier(.5,0,.75,.4),opacity .8s ease;will-change:transform}
+/* wishlist heart pop */
+@keyframes mo-pop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.wish-btn.mo-pop{animation:mo-pop .45s ease}
+/* sticky add-to-cart bar */
+.mo-sticky{position:fixed;left:0;right:0;bottom:0;z-index:150;display:flex;align-items:center;gap:12px;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:var(--cream,#FAF6EE);border-top:1px solid var(--line,#E6DCC6);box-shadow:0 -8px 24px rgba(33,26,18,.08);transform:translateY(110%);transition:transform .45s cubic-bezier(.2,.7,.2,1)}
+.mo-sticky.mo-show{transform:none}
+.mo-sticky-info{flex:1;min-width:0}
+.mo-sticky-name{font-family:'Fraunces',serif;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mo-sticky-price{font-size:.82rem;opacity:.75}
+.mo-sticky button{border:0;cursor:pointer;background:var(--ink,#211A12);color:var(--cream,#FAF6EE);padding:12px 22px;font:600 .85rem 'Work Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase}
+@media(min-width:900px){.mo-sticky{display:none}}
+/* WhatsApp order button */
+.mo-wa{display:block;margin-top:10px;text-align:center;padding:13px 16px;border:1px solid var(--line,#E6DCC6);color:var(--ink,#211A12);text-decoration:none;font:600 .82rem 'Work Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;transition:background .3s,border-color .3s}
+.mo-wa:hover{background:var(--cream-deep,#F1E9D8);border-color:var(--gold,#F4D900)}
+/* scroll progress + back to top */
+.mo-progress{position:fixed;top:0;left:0;height:2px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--gold,#F4D900);z-index:400;pointer-events:none}
+.mo-top{position:fixed;left:16px;bottom:20px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line,#E6DCC6);background:var(--cream,#FAF6EE);color:var(--ink,#211A12);cursor:pointer;z-index:140;opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .3s,transform .3s}
+.mo-top.mo-show{opacity:1;pointer-events:auto;transform:none}
+.mo-top svg{width:16px;height:16px}
+/* header hide on scroll down */
+html.mo-on .site-header{transition:transform .4s ease}
+html.mo-on .site-header.mo-hide{transform:translateY(-100%)}
+/* buttons / links */
+html.mo-on .btn{transition:transform .25s ease,background .3s,color .3s,border-color .3s}
+html.mo-on .btn:hover{transform:translateY(-2px)}
+html.mo-on .btn:active{transform:translateY(0) scale(.98)}
+/* skeleton shimmer for images still loading */
+html.mo-on .product-media img:not(.mo-loaded):not(.alt){background:linear-gradient(100deg,var(--cream-deep,#F1E9D8) 30%,#fff7 50%,var(--cream-deep,#F1E9D8) 70%);background-size:200% 100%;animation:mo-shim 1.4s linear infinite}
+@keyframes mo-shim{to{background-position:-200% 0}}
+/* respect reduced motion / data saver */
+@media(prefers-reduced-motion:reduce){
+html.mo-on{scroll-behavior:auto}
+html.mo-on [data-mo-wait],html.mo-on [data-mo-mask],html.mo-on [data-mo-mask] img{opacity:1!important;transform:none!important;clip-path:none!important;transition:none!important}
+.mo-ticker-track,.mo-bounce,.wish-btn.mo-pop{animation:none!important}
+html.mo-on .home-hero-bg.active,html.mo-on .ms-hero-bg.active,html.mo-on .division-slide.active{animation:none}
+}
