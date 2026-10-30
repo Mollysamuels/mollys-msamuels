@@ -1,5 +1,7 @@
 /* motion.css - Molly Samuels animation layer. Loaded only by js/motion.js when motion is on. */
 html.mo-on{scroll-behavior:smooth}
+html.mo-on body{overflow-x:clip}
+html.mo-on [data-mo-mask]{overflow:hidden}
 html.mo-on [data-mo-wait]{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);transition-delay:var(--mo-d,0ms)}
 html.mo-on [data-mo-wait].mo-in{opacity:1;transform:none}
 /* image mask reveal */
