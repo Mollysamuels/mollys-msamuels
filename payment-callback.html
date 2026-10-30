@@ -57,36 +57,46 @@
   );
 
   const reference = new URLSearchParams(window.location.search).get("reference");
+  const VERIFY_URL = "https://vdlwnflklclenavtpamp.supabase.co/functions/v1/verify-payment";
   let attempts = 0;
-  const maxAttempts = 10; // ~20 seconds of polling — the webhook is usually near-instant
+  const maxAttempts = 20; // about a minute — bank transfers can take a little longer than cards
 
+  // Asks verify-payment, which checks with Payaza directly. This page never
+  // decides on its own that an order is paid.
   async function checkOrderStatus() {
     if (!reference) { showFailed(); return; }
 
-    const { data: order } = await supabaseClient
-      .from("orders")
-      .select("order_number, status")
-      .eq("payment_reference", reference)
-      .single();
+    let result = null;
+    try {
+      const res = await fetch(VERIFY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference }),
+      });
+      result = await res.json();
+    } catch (e) { result = null; }
 
-    if (order && order.status === "paid") {
-      showSuccess(order.order_number);
-      return;
-    }
+    if (result && result.status === "paid") { showSuccess(result.order_number); return; }
+    if (result && (result.status === "failed" || result.status === "unknown")) { showFailed(); return; }
 
     attempts++;
-    if (attempts >= maxAttempts) {
-      showFailed();
-      return;
-    }
-    setTimeout(checkOrderStatus, 2000);
+    if (attempts >= maxAttempts) { showStillChecking(); return; }
+    setTimeout(checkOrderStatus, 3000);
+  }
+
+  function showStillChecking() {
+    document.getElementById("pcChecking").style.display = "none";
+    const f = document.getElementById("pcFailed");
+    f.querySelector("h1").textContent = "Still confirming your payment";
+    f.querySelector("p").textContent = "If you paid by bank transfer, it can take a few minutes. You'll get an email as soon as it's confirmed. Your cart is still saved.";
+    f.style.display = "block";
   }
 
   function showSuccess(orderNumber) {
     clearCart(); // only now — payment is genuinely confirmed by the database, not just by this page loading
     document.getElementById("pcChecking").style.display = "none";
     document.getElementById("pcSuccess").style.display = "block";
-    document.getElementById("pcContinueBtn").href = `order-success.html?order=${orderNumber}`;
+    document.getElementById("pcContinueBtn").href = `order-success.html?order=${encodeURIComponent(orderNumber)}`;
   }
 
   function showFailed() {
