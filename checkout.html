@@ -122,7 +122,7 @@
         <h3>Payment</h3>
         <div class="payment-option">
           <svg class="pay-icon" viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.4"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.4"/></svg>
-          <div><strong>Pay securely with Paystack</strong><div style="font-size:0.82rem;color:var(--ink-soft);">Card, bank transfer or USSD — connected at the payments phase. For now, "Place Order" records your order without processing real payment.</div></div>
+          <div><strong>Pay securely with Payaza</strong><div style="font-size:0.82rem;color:var(--ink-soft);">Card or bank transfer. A secure payment window opens when you place your order. All payments are charged in Naira (₦).</div></div>
         </div>
       </div>
     </div>
@@ -280,7 +280,7 @@
     }
 
     btn.disabled = true;
-    btn.textContent = "Redirecting to payment...";
+    btn.textContent = "Opening secure payment...";
 
     // Note: the price/total shown here is only a preview for you to review —
     // it is never what actually gets charged. The real amount is computed
@@ -297,8 +297,8 @@
         cart,
         address, city,
         state: document.getElementById("coState").value.trim(),
-        fullName: currentCustomer.full_name,
-        phone: currentCustomer.phone,
+        fullName: document.getElementById("coName").value.trim() || currentCustomer.full_name,
+        phone: document.getElementById("coPhone").value.trim() || currentCustomer.phone,
       }),
     });
 
@@ -312,10 +312,60 @@
       return;
     }
 
-    // The cart stays as-is until payment-callback.html confirms the order
-    // is genuinely paid — if the customer abandons Paystack's page, their
-    // cart is still there when they come back.
-    window.location.href = result.authorization_url;
+    // Open the Payaza payment window for the server-computed amount.
+    // The cart stays as-is until payment-callback confirms the order is
+    // genuinely paid — if the customer closes the window, their cart is kept.
+    try {
+      await loadPayaza();
+      const goConfirm = () => {
+        window.location.href = `payment-callback.html?reference=${encodeURIComponent(result.reference)}`;
+      };
+      const opts = Object.assign({}, result.payaza);
+      const checkout = PayazaCheckout.setup(opts);
+      checkout.setCallback(function (resp) {
+        // Whatever the window says, the callback page asks Payaza directly.
+        if (resp && resp.type === "error") {
+          errorEl.textContent = (resp.data && resp.data.message) || "Payment could not be completed. Please try again.";
+          errorEl.style.display = "block";
+          btn.disabled = false;
+          btn.textContent = "Place Order";
+          return;
+        }
+        goConfirm();
+      });
+      checkout.setOnClose(function () {
+        // Closed without finishing. If they paid by bank transfer and closed the
+        // window, offer a link that checks with Payaza.
+        btn.disabled = false;
+        btn.textContent = "Place Order";
+        errorEl.textContent = "Payment window closed. Your cart is saved. If you already paid by bank transfer, ";
+        const a = document.createElement("a");
+        a.href = `payment-callback.html?reference=${encodeURIComponent(result.reference)}`;
+        a.textContent = "check your payment here";
+        a.style.textDecoration = "underline";
+        errorEl.appendChild(a);
+        errorEl.appendChild(document.createTextNode("."));
+        errorEl.style.display = "block";
+      });
+      checkout.showPopup();
+    } catch (e) {
+      errorEl.textContent = "Couldn't open the payment window. Please check your connection and try again.";
+      errorEl.style.display = "block";
+      btn.disabled = false;
+      btn.textContent = "Place Order";
+    }
+  }
+
+  // Payaza's official checkout script, loaded only when it's needed.
+  function loadPayaza() {
+    return new Promise((resolve, reject) => {
+      if (window.PayazaCheckout) return resolve();
+      const s = document.createElement("script");
+      s.src = "https://checkout-v2.payaza.africa/js/v1/bundle.js";
+      s.onload = () => (window.PayazaCheckout ? resolve() : reject(new Error("Payaza not available")));
+      s.onerror = () => reject(new Error("Payaza script failed to load"));
+      document.head.appendChild(s);
+    });
   }
 </script>
 <script src="js/cookie-notice.js"></script>
