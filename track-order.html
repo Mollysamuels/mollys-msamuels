@@ -86,6 +86,9 @@
 <div class="wrap">
   <div class="page-hero" style="text-align:center;"><h1>Track Your Order</h1><p style="margin:8px auto 0;">Enter your order number and phone number to see its status.</p></div>
   <div class="track-form">
+    <div id="trackSignedIn" style="display:none;background:var(--cream-deep);border:1px solid var(--line);border-radius:8px;padding:14px 16px;margin-bottom:18px;font-size:0.9rem;text-align:center;">
+      You're signed in. <a href="account#orders" style="color:var(--umber-deep);text-decoration:underline;font-weight:600;">See all your orders and their progress →</a>
+    </div>
     <form id="trackForm">
       <div class="auth-field" style="text-align:left;"><label>Order number</label><input type="text" id="trackOrderNumber" placeholder="MS-20260921-0142" required></div>
       <div class="auth-field" style="text-align:left;"><label>Phone number</label><input type="text" id="trackContact" required></div>
@@ -175,7 +178,12 @@
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
   );
 
-  // "paid" is set automatically once Paystack confirms the payment.
+  // Signed-in customers get a direct link to their own orders.
+  supabaseClient.auth.getSession().then(({ data }) => {
+    if (data && data.session) document.getElementById("trackSignedIn").style.display = "block";
+  });
+
+  // "paid" is set automatically once Payaza confirms the payment.
   const STATUS_STEPS = ["new", "paid", "processing", "preparing", "shipped", "delivered"];
   const STEP_LABELS = { new: "Order placed", paid: "Payment confirmed", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered" };
 

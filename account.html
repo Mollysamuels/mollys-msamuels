@@ -19,6 +19,21 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#000000">
+<style>
+  .acct-order { border-bottom: 1px solid var(--line); }
+  .acct-order > summary { list-style: none; cursor: pointer; border-bottom: 0; gap: 10px; }
+  .acct-order > summary::-webkit-details-marker { display: none; }
+  .acct-order > summary .acct-ord-no { font-weight: 600; }
+  .acct-order > summary::after { content: "+"; font-size: 1.1rem; color: var(--ink-soft); margin-left: 6px; }
+  .acct-order[open] > summary::after { content: "–"; }
+  .acct-order-body { padding: 0 0 20px; }
+  .acct-meta { font-size: 0.85rem; color: var(--ink-soft); margin: 6px 0; }
+  .acct-strong { color: var(--ink); font-weight: 600; }
+  .acct-timeline { margin: 18px 0 14px; }
+  .acct-timeline .track-step { font-size: 0.72rem; }
+  .acct-items { margin: 10px 0 0 18px; font-size: 0.85rem; color: var(--ink-soft); }
+  @media (max-width: 520px) { .acct-timeline .track-step span:last-child { font-size: 0.62rem; } }
+</style>
 </head>
 <body style="visibility:hidden;">
 <div class="announce">Trusted by 500+ schools &nbsp;|&nbsp; Easy 14-day returns &nbsp;|&nbsp; Bulk uniform orders available</div>
@@ -91,7 +106,7 @@
     <nav class="account-nav">
       <a href="/">Home</a>
       <a href="#profile" class="active" data-tab="profile">Profile</a>
-      <a href="#orders" data-tab="orders">Orders</a>
+      <a href="#orders" data-tab="orders">My Orders</a>
       <a href="wishlist">Wishlist</a>
       <a href="admin-dashboard.html" id="acctAdminLink" style="display:none;">Admin Dashboard</a>
       <a href="#" class="customer-logout">Log Out</a>
@@ -109,7 +124,8 @@
       </div>
 
       <div id="acctTabOrders" style="display:none;">
-        <h2>Order History</h2>
+        <h2>My Orders &amp; Tracking</h2>
+        <p style="color:var(--ink-soft);font-size:0.88rem;margin:-6px 0 14px;">Tap an order to see where it is.</p>
         <div id="acctOrdersList"><p style="color:var(--ink-soft);font-size:0.9rem;">Loading your orders…</p></div>
       </div>
 
@@ -199,7 +215,7 @@
       });
     });
 
-    // Real order history
+    // Real order history, with tracking built in (only this customer's own orders).
     const { data: orders } = await supabaseClient
       .from("orders")
       .select("*")
@@ -207,8 +223,15 @@
       .order("created_at", { ascending: false });
 
     const list = document.getElementById("acctOrdersList");
+    list.textContent = "";
     if (!orders || !orders.length) {
-      list.innerHTML = `<p style="color:var(--ink-soft);font-size:0.9rem;">You haven't placed any orders yet. <a href="shop" style="color:var(--umber-deep);text-decoration:underline;">Start shopping →</a></p>`;
+      const p = document.createElement("p");
+      p.style.cssText = "color:var(--ink-soft);font-size:0.9rem;";
+      p.append("You haven't placed any orders yet. ");
+      const a = document.createElement("a");
+      a.href = "shop"; a.textContent = "Start shopping →";
+      a.style.cssText = "color:var(--umber-deep);text-decoration:underline;";
+      p.append(a); list.append(p);
     } else {
       const STATUS_COLORS = {
         delivered: "background:#E8F5EA;color:#2D6B3B;",
@@ -219,12 +242,74 @@
         processing: "background:#E9EEF6;color:#3A5A8C;",
         new: "background:var(--cream-deep);color:var(--ink-soft);",
       };
-      list.innerHTML = orders.map((o) => `
-        <div class="account-order-row">
-          <span>${o.order_number}</span>
-          <span data-price-ngn="${o.total}">${formatPrice(o.total)}</span>
-          <span class="status" style="${STATUS_COLORS[o.status] || STATUS_COLORS.new}">${o.status.charAt(0).toUpperCase() + o.status.slice(1)}</span>
-        </div>`).join("");
+      const STATUS_TEXT = { new: "Awaiting payment", paid: "Paid", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered", cancelled: "Cancelled" };
+      const STEPS = ["paid", "processing", "preparing", "shipped", "delivered"];
+      const STEP_LABELS = { paid: "Payment confirmed", processing: "Processing", preparing: "Ready", shipped: "Shipped", delivered: "Delivered" };
+      const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; };
+
+      // Items (if your database lets customers read their own order items).
+      let itemsByOrder = {};
+      try {
+        const ids = orders.map((o) => o.id);
+        const { data: items, error: itemsErr } = await supabaseClient
+          .from("order_items")
+          .select("order_id, quantity, size_label, color_name, products(name)")
+          .in("order_id", ids);
+        if (!itemsErr && items) items.forEach((it) => { (itemsByOrder[it.order_id] = itemsByOrder[it.order_id] || []).push(it); });
+      } catch (_) { itemsByOrder = {}; }
+
+      orders.forEach((o, idx) => {
+        const status = String(o.status || "new");
+        const box = el("details", "acct-order");
+        if (idx === 0) box.open = true;
+        const sum = el("summary", "account-order-row");
+        sum.append(el("span", "acct-ord-no", o.order_number));
+        const price = el("span", null, formatPrice(o.total)); price.setAttribute("data-price-ngn", o.total);
+        sum.append(price);
+        const st = el("span", "status", STATUS_TEXT[status] || status);
+        st.style.cssText = STATUS_COLORS[status] || STATUS_COLORS.new;
+        sum.append(st);
+        box.append(sum);
+
+        const body = el("div", "acct-order-body");
+        if (o.created_at) body.append(el("p", "acct-meta", "Placed " + new Date(o.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })));
+
+        if (status === "cancelled") {
+          body.append(el("p", "acct-meta", "This order was cancelled. If you were charged, please contact us."));
+        } else if (status === "new") {
+          body.append(el("p", "acct-meta", "We haven't received payment for this order yet. If you didn't finish paying, you can place the order again from your cart."));
+        } else {
+          const tl = el("div", "track-timeline acct-timeline");
+          const cur = STEPS.indexOf(status);
+          STEPS.forEach((step, i) => {
+            const s = el("div", "track-step" + (i < cur ? " done" : i === cur ? " active" : ""));
+            s.append(el("span", "dot"));
+            s.append(el("span", null, STEP_LABELS[step]));
+            tl.append(s);
+          });
+          body.append(tl);
+        }
+        if (o.tracking_number) body.append(el("p", "acct-meta acct-strong", "Tracking number: " + o.tracking_number));
+        if (o.delivery_address) body.append(el("p", "acct-meta", "Delivering to: " + o.delivery_address));
+
+        const its = itemsByOrder[o.id];
+        if (its && its.length) {
+          const ul = el("ul", "acct-items");
+          its.forEach((it) => {
+            const extra = [it.size_label, it.color_name].filter(Boolean).join(", ");
+            ul.append(el("li", null, `${(it.products && it.products.name) || "Item"}${extra ? " (" + extra + ")" : ""} × ${it.quantity}`));
+          });
+          body.append(ul);
+        }
+        box.append(body);
+        list.append(box);
+      });
+    }
+
+    // Open the orders tab straight away when the link ends in #orders.
+    if (location.hash === "#orders") {
+      const t = document.querySelector('.account-nav a[data-tab="orders"]');
+      if (t) t.click();
     }
   });
 </script>
