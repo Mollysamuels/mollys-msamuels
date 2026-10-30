@@ -45,7 +45,13 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add("mo-in"); io.unobserve(en.target); }
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    }, { threshold: 0, rootMargin: "0px 0px -6% 0px" }); // 0 = works for very tall blocks too
+    // Safety net: anything already scrolled past is always shown.
+    setInterval(function () {
+      $$("[data-mo-wait]:not(.mo-in),[data-mo-mask]:not(.mo-in)").forEach(function (el) {
+        if (el.getBoundingClientRect().top < innerHeight) { el.classList.add("mo-in"); io.unobserve(el); }
+      });
+    }, 700);
   }
   function watch(el, kind, delay) {
     if (!io || el.__mo) return;
@@ -59,7 +65,7 @@
   }
   function scan(rootEl) {
     rootEl = rootEl || document;
-    $$("h1,h2,.section-title,.eyebrow,.founder-story-body,.about-section > *,.promo-band", rootEl).forEach(function (el) {
+    $$("h1,h2,.section-title,.eyebrow,.promo-band", rootEl).forEach(function (el) {
       if (el.closest(".site-header,.mobile-menu,.ms-mega-overlay,.toast")) return;
       watch(el, "", 0);
     });
