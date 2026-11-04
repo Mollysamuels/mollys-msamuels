@@ -1,0 +1,12 @@
+CHECKOUT SIGN-UP FIX - upload to GitHub (keep folders)
+
+MAIN FOLDER (same place as index.html) - replace:
+  checkout.html   new visitors see "Create Account" first; returning browsers see "Log In" first;
+                  a cart saved at sign-up is put back automatically
+  register.html   saves a copy of the cart with the new account
+  login.html      puts the saved cart back after logging in (keeps Show password)
+
+js FOLDER - NEW:
+  js/cart-carry.js
+
+No Supabase changes needed.
