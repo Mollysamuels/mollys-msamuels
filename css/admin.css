@@ -99,3 +99,6 @@ body.admin-body { background: var(--cream); }
   .admin-shell { flex-direction: column; }
   .admin-sidebar { width: 100%; height: auto; position: static; }
 }
+
+/* Sidebar links are text-only: hide icon SVGs on pages that put them straight inside the link. */
+.admin-sidebar a.admin-nav > svg { display: none; }
