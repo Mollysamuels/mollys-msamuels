@@ -18,6 +18,51 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#000000">
+<style>
+  .ao-row { cursor: pointer; }
+  .ao-row:hover td { background: var(--cream-deep); }
+  .ao-row.open td { background: var(--cream-deep); border-bottom-color: transparent; }
+  .ao-view { background: none; border: 1px solid var(--line); border-radius: 6px; padding: 5px 10px; font-size: 0.78rem; cursor: pointer; white-space: nowrap; }
+  .ao-detail td { background: #fff; padding: 0 !important; }
+  .ao-detail-inner { padding: 20px 22px 24px; border-left: 3px solid var(--gold); }
+  .ao-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px 28px; margin-bottom: 20px; }
+  .ao-grid h4, .ao-items-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); margin: 0 0 6px; font-weight: 600; }
+  .ao-grid p { margin: 0 0 3px; font-size: 0.88rem; word-break: break-word; }
+  .ao-grid a { color: var(--umber-deep); text-decoration: underline; }
+  .ao-item { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); }
+  .ao-item img { width: 64px; height: 80px; object-fit: cover; border-radius: 4px; background: var(--cream-deep); }
+  .ao-item-name { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+  .ao-item-name a { color: inherit; }
+  .ao-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .ao-chip { font-size: 0.75rem; padding: 3px 9px; border-radius: 20px; background: var(--cream-deep); }
+  .ao-chip b { font-weight: 600; }
+  .ao-line { text-align: right; font-size: 0.86rem; white-space: nowrap; }
+  .ao-line small { display: block; color: var(--ink-soft); }
+  .ao-totals { margin-top: 6px; border-top: 1px solid var(--line); padding-top: 10px; max-width: 320px; margin-left: auto; font-size: 0.88rem; }
+  .ao-totals div { display: flex; justify-content: space-between; padding: 3px 0; }
+  .ao-totals .grand { font-weight: 700; font-size: 0.95rem; }
+  .ao-actions { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+  .ao-actions button, .ao-actions a { font-size: 0.8rem; padding: 8px 14px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; color: var(--ink); text-decoration: none; }
+  @media (max-width: 760px) { .ao-grid { grid-template-columns: 1fr; } .ao-item { grid-template-columns: 52px 1fr; } .ao-item img { width: 52px; height: 65px; } .ao-line { grid-column: 2; text-align: left; } }
+  /* Phones: each order becomes a card instead of a wide table row. */
+  @media (max-width: 760px) {
+    .admin-table tr:has(th) { display: none; }
+    .admin-table tbody, .admin-table tr.ao-row, .admin-table tr.ao-detail { display: block; }
+    .admin-table tr.ao-row { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 14px 4px; border-bottom: 1px solid var(--line); }
+    .admin-table tr.ao-row td { display: block; padding: 0 !important; border: 0; }
+    .admin-table tr.ao-row td:nth-child(2)::before { content: "Items: "; color: var(--ink-soft); }
+    .admin-table tr.ao-row td:last-child { grid-column: 1 / -1; }
+    .admin-table tr.ao-row .ao-view { width: 100%; padding: 9px; }
+    .admin-table tr.ao-detail td { display: block; }
+    .ao-detail-inner { padding: 16px 12px 20px; }
+  }
+  @media print {
+    body.ao-printing .admin-sidebar, body.ao-printing .admin-topbar, body.ao-printing .admin-search-row,
+    body.ao-printing .admin-table tr:not(.ao-print-me), body.ao-printing .ao-actions { display: none !important; }
+    body.ao-printing .admin-main { margin: 0 !important; padding: 0 !important; }
+    body.ao-printing .ao-print-me { display: table-row !important; }
+  }
+</style>
 </head>
 <body class="admin-body" style="visibility:hidden;">
 <!-- Supabase client — replace the two placeholder values below with your own
@@ -64,7 +109,7 @@
   <div class="admin-panel">
     <div class="admin-panel-head"><h2>All Orders</h2></div>
     <div class="admin-search-row">
-      <input type="text" id="aoSearch" placeholder="Search by order number...">
+      <input type="text" id="aoSearch" placeholder="Search by order number, customer name or phone...">
       <select id="aoStatusFilter"><option value="">All Statuses</option><option value="new">New</option><option value="processing">Processing</option><option value="paid">Paid</option><option value="preparing">Preparing</option><option value="shipped">Shipped</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option></select>
     </div>
     <table class="admin-table">
@@ -93,17 +138,46 @@
   async function loadOrders() {
     const { data, error } = await supabaseClient
       .from("orders")
-      .select("*, order_items(id)")
+      .select("*, customers(full_name, phone), order_items(id, product_id, quantity, size_label, color_name, unit_price, products(id, name, main_image_url, division))")
       .order("created_at", { ascending: false });
+    let rows = data;
     if (error) {
+      // Fallback: load the pieces separately and join them here, so the page
+      // still works even if the database doesn't link the tables the way the
+      // one-step query expects.
+      console.warn("Detailed order query failed, using fallback:", error);
+      rows = await loadOrdersFallback();
+    }
+    if (!rows) {
       document.getElementById("aoRows").innerHTML = `<tr><td colspan="7" style="text-align:center;color:#B23A3A;padding:30px;">Couldn't load orders.</td></tr>`;
-      console.error(error);
       return;
     }
-    allOrders = data || [];
+    allOrders = rows;
     renderOrders();
   }
 
+
+  async function loadOrdersFallback() {
+    const { data: orders, error } = await supabaseClient.from("orders").select("*").order("created_at", { ascending: false });
+    if (error) { console.error(error); return null; }
+    const ids = (orders || []).map((o) => o.id);
+    const custIds = [...new Set((orders || []).map((o) => o.customer_id).filter(Boolean))];
+    const [{ data: items }, { data: custs }] = await Promise.all([
+      ids.length ? supabaseClient.from("order_items").select("*").in("order_id", ids) : Promise.resolve({ data: [] }),
+      custIds.length ? supabaseClient.from("customers").select("id, full_name, phone").in("id", custIds) : Promise.resolve({ data: [] }),
+    ]);
+    const prodIds = [...new Set((items || []).map((i) => i.product_id).filter(Boolean))];
+    const { data: prods } = prodIds.length
+      ? await supabaseClient.from("products").select("id, name, main_image_url, division").in("id", prodIds)
+      : { data: [] };
+    const P = Object.fromEntries((prods || []).map((p) => [p.id, p]));
+    const C = Object.fromEntries((custs || []).map((c) => [c.id, c]));
+    return (orders || []).map((o) => ({
+      ...o,
+      customers: C[o.customer_id] || null,
+      order_items: (items || []).filter((i) => i.order_id === o.id).map((i) => ({ ...i, products: P[i.product_id] || null })),
+    }));
+  }
 
   // Asks whether to email the customer, then asks the secure sender to do it. The status has
   // already been saved by this point, so declining just means no email.
@@ -128,12 +202,147 @@
     } catch (e) { alert("Couldn't reach the email sender. The order status was still saved."); }
   }
 
+
+  // ---------- Order details: what was ordered, by whom, delivered where ----------
+  function itemCount(o) {
+    return (o.order_items || []).reduce((n, i) => n + (Number(i.quantity) || 0), 0);
+  }
+  function naira(n) { return "₦" + Number(n || 0).toLocaleString(); }
+  function smallImg(url) {
+    if (!url) return "";
+    return /\/storage\/v1\/object\/public\/product-images\/.+-lg\.(webp|jpg)/.test(url) ? url.replace(/-lg\.(webp|jpg)/, "-sm.$1") : url;
+  }
+  function el(tag, cls, text) {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function block(title, lines) {
+    const d = el("div");
+    d.append(el("h4", null, title));
+    lines.forEach((l) => { if (l) d.append(l instanceof Node ? l : el("p", null, l)); });
+    return d;
+  }
+  function link(href, text, newTab) {
+    const p = el("p"), a = el("a", null, text);
+    a.href = href; if (newTab) { a.target = "_blank"; a.rel = "noopener"; }
+    p.append(a); return p;
+  }
+  // Nigerian numbers 080... become 234 80... for WhatsApp links.
+  function waNumber(phone) {
+    let d = String(phone || "").replace(/\D/g, "");
+    if (d.startsWith("0") && d.length === 11) d = "234" + d.slice(1);
+    return d.length >= 10 ? d : "";
+  }
+
+  async function toggleDetail(row) {
+    const next = row.nextElementSibling;
+    if (next && next.classList.contains("ao-detail")) {
+      next.remove(); row.classList.remove("open");
+      const b = row.querySelector(".ao-view"); if (b) b.textContent = "View items";
+      return;
+    }
+    const o = allOrders.find((x) => x.id === row.dataset.id);
+    if (!o) return;
+    row.classList.add("open");
+    const b = row.querySelector(".ao-view"); if (b) b.textContent = "Hide";
+
+    const tr = el("tr", "ao-detail");
+    const td = el("td"); td.colSpan = 7;
+    const box = el("div", "ao-detail-inner");
+    td.append(box); tr.append(td); row.after(tr);
+
+    // Customer / delivery / payment
+    const c = o.customers || {};
+    const emailLine = el("p", null, "Loading email…");
+    const phoneLines = [];
+    if (c.phone) {
+      phoneLines.push(link("tel:" + String(c.phone).replace(/[^\d+]/g, ""), c.phone));
+      const wa = waNumber(c.phone);
+      if (wa) phoneLines.push(link("https://wa.me/" + wa + "?text=" + encodeURIComponent("Hello " + (c.full_name || "") + ", this is Molly Samuels about your order " + o.order_number + "."), "Message on WhatsApp", true));
+    }
+    const grid = el("div", "ao-grid");
+    grid.append(
+      block("Customer", [c.full_name || "Name not given", emailLine].concat(phoneLines.length ? phoneLines : ["No phone number"])),
+      block("Deliver to", [o.delivery_address || "No address given"]),
+      block("Payment", [
+        "Status: " + (o.status || ""),
+        o.paid_at ? "Paid: " + new Date(o.paid_at).toLocaleString() : (o.status === "new" ? "Not paid yet" : null),
+        o.payment_reference ? "Reference: " + o.payment_reference : null,
+        "Placed: " + new Date(o.created_at).toLocaleString(),
+      ])
+    );
+    box.append(grid);
+
+    // Items
+    const items = o.order_items || [];
+    box.append(el("div", "ao-items-head", `Items ordered (${itemCount(o)})`));
+    if (!items.length) box.append(el("p", null, "No items were saved with this order."));
+    items.forEach((it) => {
+      const p = it.products || {};
+      const line = el("div", "ao-item");
+      const img = el("img"); img.alt = p.name || "Product"; img.loading = "lazy";
+      img.src = smallImg(p.main_image_url) || (p.division === "mollys" ? "assets/images/category/mollys-product.jpg" : "assets/images/category/msamuels-product.jpg");
+      const info = el("div");
+      const name = el("div", "ao-item-name");
+      if (p.id) { const a = el("a", null, p.name || "Product"); a.href = "product?id=" + encodeURIComponent(p.id); a.target = "_blank"; a.rel = "noopener"; name.append(a); }
+      else name.textContent = "Product no longer in the shop";
+      const chips = el("div", "ao-chips");
+      const chip = (label, val) => { if (!val) return; const s = el("span", "ao-chip"); s.append(el("b", null, label + ": "), document.createTextNode(val)); chips.append(s); };
+      chip("Size", it.size_label);
+      chip("Colour", it.color_name);
+      chip("Qty", String(it.quantity));
+      info.append(name, chips);
+      const price = el("div", "ao-line");
+      price.append(document.createTextNode(naira(Number(it.unit_price) * Number(it.quantity))));
+      if (Number(it.quantity) > 1) price.append(el("small", null, `${it.quantity} × ${naira(it.unit_price)}`));
+      line.append(img, info, price);
+      box.append(line);
+    });
+
+    const totals = el("div", "ao-totals");
+    const tl = (label, val, cls) => { const d = el("div", cls); d.append(el("span", null, label), el("span", null, val)); totals.append(d); };
+    tl("Subtotal", naira(o.subtotal));
+    tl("Delivery", naira(o.delivery_fee));
+    tl("Total", naira(o.total), "grand");
+    box.append(totals);
+
+    // Print a packing slip for just this order
+    const actions = el("div", "ao-actions");
+    const print = el("button", null, "Print packing slip"); print.type = "button";
+    print.addEventListener("click", () => {
+      document.querySelectorAll(".ao-print-me").forEach((r) => r.classList.remove("ao-print-me"));
+      row.classList.add("ao-print-me"); tr.classList.add("ao-print-me");
+      document.body.classList.add("ao-printing");
+      window.print();
+      setTimeout(() => document.body.classList.remove("ao-printing"), 500);
+    });
+    actions.append(print);
+    box.append(actions);
+
+    // Email comes from the login system, through an admin-only database function.
+    try {
+      if (!o.customer_id) throw new Error("no customer");
+      const { data, error } = await supabaseClient.rpc("admin_customer_email", { p_customer: o.customer_id });
+      if (error || !data) throw error || new Error("none");
+      emailLine.textContent = "";
+      const a = el("a", null, data); a.href = "mailto:" + data; emailLine.append(a);
+    } catch (e) {
+      emailLine.textContent = "Email: not available";
+    }
+  }
+
   function renderOrders() {
     const search = document.getElementById("aoSearch").value.toLowerCase();
     const status = document.getElementById("aoStatusFilter").value;
     const filtered = allOrders.filter((o) => {
       if (status && o.status !== status) return false;
-      if (search && !String(o.order_number).toLowerCase().includes(search)) return false;
+      if (search) {
+        const hay = [o.order_number, o.customers && o.customers.full_name, o.customers && o.customers.phone, o.payment_reference]
+          .map((v) => String(v || "").toLowerCase()).join(" ");
+        if (!hay.includes(search)) return false;
+      }
       return true;
     });
 
@@ -144,9 +353,9 @@
     }
 
     tbody.innerHTML = filtered.map((o) => `
-      <tr>
-        <td>${esc(o.order_number)}</td>
-        <td>${(o.order_items || []).length}</td>
+      <tr class="ao-row" data-id="${esc(o.id)}">
+        <td><strong>${esc(o.order_number)}</strong><br><span style="font-size:0.78rem;color:var(--ink-soft);">${esc((o.customers && o.customers.full_name) || "")}</span></td>
+        <td>${itemCount(o)}</td>
         <td>₦${Number(o.total).toLocaleString()}</td>
         <td>
           <select class="ao-status-select" data-id="${esc(o.id)}" style="padding:4px 8px;border-radius:20px;border:1px solid var(--line);font-size:0.78rem;">
@@ -157,9 +366,16 @@
           <input type="text" class="ao-tracking-input" data-id="${esc(o.id)}" value="${esc(o.tracking_number || "")}" placeholder="Add tracking #" style="padding:5px 8px;border:1px solid var(--line);border-radius:6px;font-size:0.78rem;width:110px;">
         </td>
         <td>${new Date(o.created_at).toLocaleDateString()}</td>
-        <td class="admin-table-actions"></td>
+        <td class="admin-table-actions"><button type="button" class="ao-view" data-id="${esc(o.id)}">View items</button></td>
       </tr>`).join("");
 
+    // Open an order's details by clicking its row (but not its status / tracking boxes).
+    tbody.querySelectorAll(".ao-row").forEach((row) => {
+      row.addEventListener("click", (e) => {
+        if (e.target.closest("select, input")) return;
+        toggleDetail(row);
+      });
+    });
     tbody.querySelectorAll(".ao-status-select").forEach((sel) => {
       sel.addEventListener("change", async () => {
         const { error } = await supabaseClient.from("orders").update({ status: sel.value }).eq("id", sel.dataset.id);
