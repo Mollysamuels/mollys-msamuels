@@ -30,7 +30,8 @@ async function fetchRealProducts() {
       return {
         name: p.name, price: p.price_ngn, division: p.division,
         category: (p.categories && p.categories.slug) || "",
-        img: p.main_image_url || fallbackImg,
+        img: cardImg(p.main_image_url) || fallbackImg,
+        altImg: cardImg(p.alt_image_url) || null,
         linkOverride: `product?id=${p.id}`,
       };
     });
@@ -50,7 +51,7 @@ function renderShopCard(p, index) {
     <div class="product-card" data-division="${p.division}" data-price="${p.price}">
       <div class="product-media">
         <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
-        <a href="${link}"><img class="main" src="${p.img}" alt="${p.name}"><img class="alt" src="${p.img}" alt=""></a>
+        <a href="${link}"><img class="main" src="${p.img}" alt="${p.name}" loading="lazy" decoding="async">${altImgTag(p.altImg, p.img, "")}</a>
         <button class="quick-add">Quick add</button>
       </div>
       <div class="product-info">

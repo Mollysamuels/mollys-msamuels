@@ -455,6 +455,61 @@ document.addEventListener("DOMContentLoaded", function () {
 //  - card-sync.js: connects the old hand-typed product cards to real products (so they can be
 //    ordered and follow admin prices);
 //  - newsletter.js: makes the "Stay updated" Subscribe box work.
+/* ---------- Product photos uploaded from admin ----------
+   Photos uploaded in Admin are stored in two sizes: "-lg" (product page) and
+   "-sm" (shop cards). cardImg() picks the small one for cards, which keeps
+   pages fast and saves data. Older photos in the website files are unchanged. */
+function cardImg(url) {
+  if (typeof url !== "string") return url;
+  return /\/storage\/v1\/object\/public\/product-images\/.+-lg\.(webp|jpg)(\?.*)?$/.test(url)
+    ? url.replace(/-lg\.(webp|jpg)/, "-sm.$1")
+    : url;
+}
+
+/* The hover photo on cards is only downloaded when it's actually needed:
+   on a computer when the mouse goes over the card, on a phone when the card
+   is in the middle of the screen. Cards mark it with data-src instead of src. */
+(function () {
+  function loadAlt(card) {
+    var a = card && card.querySelector("img.alt[data-src]");
+    if (a && !a.getAttribute("src")) { a.src = a.getAttribute("data-src"); a.removeAttribute("data-src"); }
+  }
+  var canHover = window.matchMedia && matchMedia("(hover: hover)").matches;
+  if (canHover || !("IntersectionObserver" in window)) {
+    document.addEventListener("pointerover", function (e) {
+      var c = e.target.closest && e.target.closest(".product-card");
+      if (c) loadAlt(c);
+    }, { passive: true });
+    document.addEventListener("focusin", function (e) {
+      var c = e.target.closest && e.target.closest(".product-card");
+      if (c) loadAlt(c);
+    });
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting && en.intersectionRatio >= 0.6) { loadAlt(en.target); io.unobserve(en.target); }
+    });
+  }, { threshold: [0.6] });
+  function watch(root) {
+    (root.querySelectorAll ? root : document).querySelectorAll(".product-card").forEach(function (c) {
+      if (!c.__altWatch && c.querySelector("img.alt[data-src]")) { c.__altWatch = 1; io.observe(c); }
+    });
+  }
+  function start() {
+    watch(document);
+    new MutationObserver(function () { watch(document); }).observe(document.body, { childList: true, subtree: true });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start); else start();
+})();
+
+/* Builds a card's hover <img>: deferred (data-src) when it's a different photo,
+   or simply the main photo again when there isn't a separate hover photo. */
+function altImgTag(altSrc, mainSrc, altText) {
+  if (altSrc && altSrc !== mainSrc) return `<img class="alt" data-src="${altSrc}" alt="${altText || ""}" decoding="async">`;
+  return `<img class="alt" src="${mainSrc}" alt="${altText || ""}" decoding="async">`;
+}
+
 (function () {
   ["js/card-sync.js", "js/newsletter.js", "js/motion.js"].forEach(function (src) {
     var s = document.createElement("script");

@@ -12,7 +12,7 @@ const SIZE_SETS = {
 };
 
 const params = new URLSearchParams(window.location.search);
-const editingId = params.get("id");
+let editingId = params.get("id");
 
 let categoriesCache = [];
 
@@ -27,6 +27,7 @@ document.addEventListener("adminReady", async (e) => {
     });
   }
 
+  ApfPhotos.mount(document.getElementById("apfPhotos"));
   await loadCategories();
   wireDivisionChange();
   wireSizeTypeChange();
@@ -137,6 +138,7 @@ async function loadExistingProduct(id) {
 
   (data.product_colors || []).forEach((c) => window._apfAddColorRow(c.color_name, c.hex_code));
   renderSizeGrid(data.product_sizes || []);
+  ApfPhotos.setExisting(data.main_image_url, data.alt_image_url);
 }
 
 async function saveProduct() {
@@ -199,7 +201,46 @@ async function saveProduct() {
   }));
   if (sizeRows.length) await supabaseClient.from("product_sizes").insert(sizeRows);
 
+  // Photos: uploaded only after the product itself is safely saved.
+  if (ApfPhotos.hasChanges()) {
+    const ok = await savePhotos(productId, btn);
+    if (!ok) return;
+  }
+
   window.location.href = "admin-products.html";
+}
+
+async function savePhotos(productId, btn) {
+  const errorEl = document.getElementById("apfSaveError");
+  let result = null;
+  try {
+    result = await ApfPhotos.upload(supabaseClient, productId, (t) => { btn.textContent = t; });
+    btn.textContent = "Saving photos…";
+    const { error } = await supabaseClient.from("products").update(result.fields).eq("id", productId);
+    if (error) throw error;
+    await ApfPhotos.removeFiles(supabaseClient, result.oldFiles); // old photos no longer used
+    return true;
+  } catch (err) {
+    console.error("Photo upload failed:", err);
+    if (result) await ApfPhotos.removeFiles(supabaseClient, result.newFiles);
+    // The product WAS saved. Switch this page to "edit" so trying again
+    // updates the same product instead of creating a second one.
+    if (!editingId) {
+      editingId = productId;
+      history.replaceState(null, "", `admin-product-form.html?id=${encodeURIComponent(productId)}`);
+      document.getElementById("apfFormTitle").textContent = "Edit Product";
+    }
+    const msg = String((err && err.message) || "");
+    errorEl.textContent = /row-level security|not authorized|403|Unauthorized/i.test(msg)
+      ? "The product was saved, but the photo wasn't: this account isn't allowed to upload photos. (Has the photo storage SQL been run in Supabase?)"
+      : /bucket not found/i.test(msg)
+        ? "The product was saved, but the photo wasn't: the photo storage hasn't been set up yet. Run 01-product-photos-storage.sql in Supabase, then save again."
+        : "The product was saved, but the photo didn't upload. Check your connection and press Save Changes to try again.";
+    errorEl.style.display = "block";
+    btn.disabled = false;
+    btn.textContent = "Save Changes";
+    return false;
+  }
 }
 
 function handleSaveError(error, btn) {

@@ -73,8 +73,8 @@ function renderProductCard(product) {
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
         <a href="${link}">
-          <img class="main" src="${product.img1}" alt="${product.name}">
-          <img class="alt" src="${product.img2}" alt="${product.name}, alternate view">
+          <img class="main" src="${product.img1}" alt="${product.name}" loading="lazy" decoding="async">
+          ${altImgTag(product.img2, product.img1, `${product.name}, alternate view`)}
         </a>
         <button class="quick-add">Quick add</button>
       </div>
@@ -147,8 +147,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const fallbackImg = division === "msamuels" ? "assets/images/category/msamuels-product.jpg" : "assets/images/category/mollys-product.jpg";
         return {
           name: p.name, price: p.price_ngn, division: p.division, category: slug,
-          img1: p.main_image_url || fallbackImg,
-          img2: p.alt_image_url || p.main_image_url || fallbackImg,
+          img1: cardImg(p.main_image_url) || fallbackImg,
+          img2: cardImg(p.alt_image_url) || cardImg(p.main_image_url) || fallbackImg,
           linkOverride: `product?id=${p.id}`,
         };
       });
