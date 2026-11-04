@@ -88,11 +88,11 @@
   <div class="breadcrumb"><a href="/">Home</a><span>/</span> <a href="cart">Cart</a><span>/</span> Checkout</div>
   <div class="page-hero"><h1>Checkout</h1></div>
 
-  <div class="login-gate" id="loginGate">
-    <p><strong>Almost there — please log in to complete your order.</strong>An account is required to check out on Molly Samuels. You can browse and add to cart freely, but purchasing requires you to be signed in.</p>
-    <div class="actions">
-      <a href="login?redirect=checkout" class="btn btn-gold">Log In</a>
-      <a href="register?redirect=checkout" class="btn btn-outline" style="border-color:var(--line); color:var(--umber-deep);">Create Account</a>
+  <div class="login-gate" id="loginGate" style="display:none;">
+    <p id="gateText"><strong>Create an account to complete your order.</strong>It takes a minute, and your cart stays exactly as it is. Your account lets you track your orders and check out faster next time.</p>
+    <div class="actions" id="gateActions">
+      <a href="register?redirect=checkout" class="btn btn-gold" id="gateRegister">Create Account</a>
+      <a href="login?redirect=checkout" class="btn btn-outline" id="gateLogin" style="border-color:var(--line); color:var(--umber-deep);">I already have an account</a>
     </div>
   </div>
 
@@ -174,6 +174,7 @@
   const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 </script>
 <script src="js/main.js"></script>
+<script src="js/cart-carry.js"></script>
 <script>
   // Reads the real, actual cart — same cart shown on cart, built by
   // js/main.js's getCart(). Whatever's really in the cart is what checks out.
@@ -209,9 +210,13 @@
       return;
     }
 
-    itemsEl.innerHTML = cart.map((item) =>
-      `<div class="summary-row"><span>${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}</span><span>${formatPrice(item.price * item.qty)}</span></div>`
-    ).join("");
+    itemsEl.textContent = "";
+    cart.forEach((item) => {
+      const row = document.createElement("div"); row.className = "summary-row";
+      const a = document.createElement("span"); a.textContent = `${item.name}${item.qty > 1 ? ` × ${item.qty}` : ""}`;
+      const b = document.createElement("span"); b.textContent = formatPrice(item.price * item.qty);
+      row.append(a, b); itemsEl.append(row);
+    });
 
     currentDeliveryFee = await calculateDeliveryFee(cart);
     document.getElementById("coDeliveryFee").textContent = formatPrice(currentDeliveryFee);
@@ -221,10 +226,28 @@
 
   document.addEventListener("DOMContentLoaded", async () => {
     await loadExchangeRate();
+    const { data: { session } } = await supabaseClient.auth.getSession();
+
+    // Signed in? Bring back a cart saved at sign-up (e.g. they confirmed their
+    // email in a different browser, where this browser's cart doesn't exist).
+    if (session) { CartCarry.markKnown(); await CartCarry.restore(supabaseClient); }
+
     await renderSummary();
     document.addEventListener("currencyChanged", renderSummary);
 
-    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (!session) {
+      // Not signed in: new visitors are offered "Create Account" first.
+      // Browsers that have signed in before are offered "Log In" first.
+      const gate = document.getElementById("loginGate");
+      if (CartCarry.isKnown()) {
+        document.getElementById("gateText").innerHTML = "<strong>Welcome back. Log in to complete your order.</strong>Your cart is saved and will be right here.";
+        const reg = document.getElementById("gateRegister"), log = document.getElementById("gateLogin");
+        log.textContent = "Log In"; log.className = "btn btn-gold"; log.removeAttribute("style");
+        reg.textContent = "Create Account"; reg.className = "btn btn-outline"; reg.style.cssText = "border-color:var(--line); color:var(--umber-deep);";
+        document.getElementById("gateActions").prepend(log);
+      }
+      gate.style.display = "";
+    }
 
     if (session) {
       let { data: profile } = await supabaseClient.from("customers").select("*").eq("id", session.user.id).single();

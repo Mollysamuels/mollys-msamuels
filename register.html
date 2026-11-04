@@ -105,7 +105,9 @@
     const { data, error } = await supabaseClient.auth.signUp({
       email, password,
       options: {
-        data: { full_name: name, phone: phone },
+        // A copy of the cart goes with the new account, so it isn't lost if the
+        // confirmation email opens in a different browser (see js/cart-carry.js).
+        data: { full_name: name, phone: phone, cart: (window.CartCarry && CartCarry.snapshot().length) ? CartCarry.snapshot() : null },
         // Send them back to wherever they actually came from (e.g. checkout)
         // once they click the confirmation link in their email — not just
         // the generic homepage.
@@ -136,14 +138,19 @@
       document.querySelector(".auth-switch").style.display = "none";
       errorEl.style.color = "#2D6B3B";
       errorEl.style.fontSize = "1rem";
-      errorEl.textContent = "Account created! Please check your email and click the confirmation link before logging in.";
+      if (window.CartCarry) CartCarry.markKnown();
+      errorEl.textContent = (window.CartCarry && CartCarry.snapshot().length)
+        ? "Account created! Please check your email and click the confirmation link. Your cart has been saved to your account, so it will be waiting for you at checkout."
+        : "Account created! Please check your email and click the confirmation link before logging in.";
       errorEl.style.display = "block";
       return;
     }
 
+    if (window.CartCarry) { CartCarry.markKnown(); await CartCarry.restore(supabaseClient); }
     window.location.href = safeRedirect || "/";
   });
 </script>
+<script src="js/cart-carry.js"></script>
 <script src="js/cookie-notice.js"></script>
 </body>
 </html>

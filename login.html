@@ -91,6 +91,9 @@
       btn.disabled = false;
       return;
     }
+    // Bring back a cart saved at sign-up, if this browser's cart is empty.
+    if (window.CartCarry) { CartCarry.markKnown(); await CartCarry.restore(supabaseClient); }
+
     // A redirect is only honoured if it's a plain page name like "checkout" —
     // never a full web address or script, so a crafted link can't send people elsewhere.
     const rawRedirect = new URLSearchParams(window.location.search).get("redirect");
@@ -110,6 +113,7 @@
   });
 </script>
 <script src="js/cookie-notice.js"></script>
+<script src="js/cart-carry.js"></script>
 <script src="js/show-password.js"></script>
 </body>
 </html>
