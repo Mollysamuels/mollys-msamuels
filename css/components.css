@@ -419,3 +419,7 @@
 }
 .toast.show { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
 .toast svg { width: 16px; height: 16px; color: var(--gold); }
+
+/* Hover photo not downloaded yet: keep showing the main photo until it arrives. */
+.product-media img.alt:not([src]) { visibility: hidden; }
+.product-media:has(img.alt:not([src])) img.main { opacity: 1 !important; }

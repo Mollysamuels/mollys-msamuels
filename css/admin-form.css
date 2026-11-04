@@ -12,3 +12,22 @@
 .apf-size-chip input { width: auto; margin: 0; }
 .apf-size-chip.sold-out { opacity: 0.5; text-decoration: line-through; }
 @media (max-width: 640px) { .apf-size-grid { grid-template-columns: repeat(3, 1fr); } }
+
+/* ---------- Product photos ---------- */
+.apf-photo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.apf-photo-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 8px; }
+.apf-photo-frame { position: relative; width: 100%; max-width: 260px; aspect-ratio: 4 / 5; overflow: hidden; background: var(--cream-deep); border: 1px dashed var(--line); border-radius: 6px; touch-action: none; user-select: none; }
+.apf-photo-frame.editable { cursor: grab; border-style: solid; border-color: var(--gold); }
+.apf-photo-frame.dragging { cursor: grabbing; }
+.apf-photo-frame:focus-visible { outline: 2px solid #1B2A4A; outline-offset: 2px; }
+.apf-photo-img { pointer-events: none; }
+.apf-photo-empty { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; font-size: 0.82rem; color: var(--ink-soft); }
+.apf-photo-zoom { display: flex; align-items: center; gap: 10px; max-width: 260px; margin-top: 10px; font-size: 0.8rem; color: var(--ink-soft); }
+.apf-photo-zoom input { flex: 1; }
+.apf-photo-actions { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+.apf-photo-pick { border-color: var(--line); color: var(--umber-deep); padding: 8px 16px; font-size: 0.82rem; }
+.apf-photo-remove { background: none; border: none; color: #B23A3A; font-size: 0.8rem; text-decoration: underline; cursor: pointer; }
+.apf-photo-msg { font-size: 0.8rem; margin: 8px 0 0; max-width: 260px; }
+.apf-photo-hint { font-size: 0.78rem; color: var(--ink-soft); margin: 6px 0 0; max-width: 260px; }
+.apf-photo-guide { font-size: 0.82rem; color: var(--ink-soft); margin: -4px 0 18px; }
+@media (max-width: 560px) { .apf-photo-grid { grid-template-columns: 1fr; } }
