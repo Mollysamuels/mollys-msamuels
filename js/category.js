@@ -124,7 +124,11 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (!grid) return; // not on category
 
   const params = new URLSearchParams(window.location.search);
-  const slug = params.get("category") || "gowns";
+  let slug = params.get("category") || "gowns";
+  // Heels, Sandals and Crocs are now one "Shoes" page; old links still work.
+  const aliases = window.CATEGORY_ALIASES || {};
+  if (aliases[slug]) slug = aliases[slug];
+  const slugGroup = (window.CATEGORY_GROUPS && window.CATEGORY_GROUPS[slug]) || [slug];
   const division = MSAMUELS_SLUGS.has(slug) ? "msamuels" : "mollys";
   const name = titleCaseFromSlug(slug);
 
@@ -139,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const { data, error } = await supabaseClient
       .from("products")
       .select("*, categories!inner(slug)")
-      .eq("categories.slug", slug)
+      .in("categories.slug", slugGroup)
       .neq("status", "discontinued");
 
     if (!error && data && data.length > 0) {
@@ -155,6 +159,17 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
   } catch (e) {
     console.error("Supabase category fetch failed, using placeholders:", e);
+  }
+  // Photos uploaded to GitHub (assets/images/mollys/<name>-<n>-main.jpg) —
+  // shown after any real products; only photos that exist appear.
+  let slotCards = [];
+  try {
+    if (window.SHOW_UNSYNCED_PHOTOS && window.findPhotoSlots) slotCards = await window.findPhotoSlots(slug);
+  } catch (e) { console.error("Photo check failed:", e); }
+  if (slotCards.length) {
+    const have = new Set((currentProducts || []).map((p) => p.img1));
+    slotCards = slotCards.filter((c) => !have.has(c.img1));
+    currentProducts = (currentProducts || []).concat(slotCards);
   }
   if (!currentProducts) {
     currentProducts = generatePlaceholderProducts(slug, name, division, 6);
@@ -183,6 +198,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   const bannerImg = document.getElementById("catBannerImg");
   if (bannerImg) {
+    // New categories have no banner photo yet — use a matching one until it is added.
+    bannerImg.onerror = function () {
+      this.onerror = null;
+      this.src = "assets/images/category/mollys-" + (slug === "shoes" ? "heels" : "gowns") + "-banner.jpg";
+    };
     bannerImg.src = division === "msamuels"
       ? `assets/images/category/msamuels-${getMsamuelsSection(slug)}-banner.jpg`
       : `assets/images/category/mollys-${slug}-banner.jpg`;

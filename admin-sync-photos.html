@@ -73,15 +73,12 @@
   </div>
 
   <div class="admin-panel" id="asResultPanel" style="display:none;">
-    <div class="admin-panel-head"><h2>2. Set a price and create the products</h2></div>
+    <div class="admin-panel-head"><h2>2. Set each product's price, then create</h2></div>
     <p style="color:var(--ink-soft);font-size:0.9rem;margin-bottom:14px;">
-      Each row becomes real products that customers can buy. Prices are in naira. You can rename any product, change its price,
-      sizes, colours and stock afterwards in <b>Products</b>.
+      Every photo gets its own row: type its own <b>name</b>, <b>price (&#8358;)</b> and <b>stock</b>. To fill a whole group quickly,
+      type one price in the group's box and press <b>Apply to all</b>, then change the ones that differ. Everything can still be edited later in <b>Products</b>.
     </p>
-    <table class="admin-table">
-      <tr><th>Group</th><th>Photos found</th><th>Price (&#8358;)</th><th>Stock each</th></tr>
-      <tbody id="asRows"></tbody>
-    </table>
+    <div id="asGroups"></div>
     <p id="asError" style="display:none;color:#B23A3A;font-size:0.85rem;margin:12px 0;"></p>
     <button type="button" class="btn btn-gold" id="asCreateBtn" style="padding:9px 18px;font-size:0.85rem;margin-top:14px;">Create products</button>
     <p id="asDone" style="display:none;font-size:0.92rem;margin-top:14px;"></p>

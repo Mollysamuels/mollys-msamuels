@@ -506,7 +506,7 @@ function cardImg(url) {
 /* Builds a card's hover <img>: deferred (data-src) when it's a different photo,
    or simply the main photo again when there isn't a separate hover photo. */
 function altImgTag(altSrc, mainSrc, altText) {
-  if (altSrc && altSrc !== mainSrc) return `<img class="alt" data-src="${altSrc}" alt="${altText || ""}" decoding="async">`;
+  if (altSrc && altSrc !== mainSrc) return `<img class="alt" data-src="${altSrc}" alt="${altText || ""}" decoding="async" onerror="this.onerror=null;this.style.display='none'">`;
   return `<img class="alt" src="${mainSrc}" alt="${altText || ""}" decoding="async">`;
 }
 
