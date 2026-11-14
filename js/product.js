@@ -73,6 +73,47 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   /* ---------- Title, price, breadcrumb, division tag, page <title> ---------- */
   document.title = `${PRODUCT.name} — Molly Samuels`;
+
+  /* ---------- Search-engine data (Google product info) + link-preview tags ---------- */
+  if (isLiveProduct && PRODUCT.id) {
+    try {
+      const SITE = "https://mollysamuels.com/";
+      const abs = (u) => /^https?:/i.test(u || "") ? u : SITE + String(u || "").replace(/^\/+/, "");
+      const url = SITE + "product?id=" + encodeURIComponent(PRODUCT.id);
+      const desc = (PRODUCT.description || `${PRODUCT.name} from ${PRODUCT.division === "msamuels" ? "M. Samuels" : "Mollys"} by Molly Samuels.`).replace(/\s+/g, " ").trim().slice(0, 300);
+      const imgs = [PRODUCT.mainImage, PRODUCT.altImage].filter((v, i, a) => v && a.indexOf(v) === i).map(abs);
+      const setMeta = (attr, key, val) => {
+        let m = document.head.querySelector(`meta[${attr}="${key}"]`);
+        if (!m) { m = document.createElement("meta"); m.setAttribute(attr, key); document.head.appendChild(m); }
+        m.setAttribute("content", val);
+      };
+      setMeta("name", "description", desc);
+      setMeta("property", "og:type", "product");
+      setMeta("property", "og:site_name", "Molly Samuels");
+      setMeta("property", "og:title", PRODUCT.name);
+      setMeta("property", "og:description", desc);
+      setMeta("property", "og:url", url);
+      setMeta("property", "og:image", imgs[0]);
+      setMeta("name", "twitter:card", "summary_large_image");
+      setMeta("name", "twitter:title", PRODUCT.name);
+      setMeta("name", "twitter:image", imgs[0]);
+      const canon = document.head.querySelector('link[rel="canonical"]');
+      if (canon) canon.href = url;
+      const ld = {
+        "@context": "https://schema.org/", "@type": "Product",
+        name: PRODUCT.name, description: desc, image: imgs, sku: String(PRODUCT.id),
+        brand: { "@type": "Brand", name: PRODUCT.division === "msamuels" ? "M. Samuels" : "Mollys" },
+        offers: {
+          "@type": "Offer", url, priceCurrency: "NGN", price: String(PRODUCT.price),
+          availability: PRODUCT.soldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          itemCondition: "https://schema.org/NewCondition",
+        },
+      };
+      const tag = document.createElement("script");
+      tag.type = "application/ld+json"; tag.id = "productLd"; tag.textContent = JSON.stringify(ld);
+      document.head.appendChild(tag);
+    } catch (e) { console.warn("Product data tags skipped:", e); }
+  }
   const titleEl = document.getElementById("prodTitle");
   if (titleEl) titleEl.textContent = PRODUCT.name;
   const priceEl = document.getElementById("prodPrice");
