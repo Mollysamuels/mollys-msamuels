@@ -49,9 +49,10 @@ function render() {
   }
 
   tbody.innerHTML = filtered.map((p) => {
-    const statusPill = p.status === "discontinued"
+    const statusPill = (p.status === "discontinued"
       ? `<span class="admin-status-pill low">Discontinued</span>`
-      : `<span class="admin-status-pill active">Active</span>`;
+      : `<span class="admin-status-pill active">Active</span>`)
+      + (p.is_sold_out === true ? ` <span class="admin-status-pill low">Sold out</span>` : "");
     const divisionLabel = p.division === "msamuels" ? "M. Samuels" : "Mollys";
     return `
       <tr>
@@ -62,6 +63,7 @@ function render() {
         <td>${statusPill}</td>
         <td class="admin-table-actions">
           <a href="admin-product-form.html?id=${encodeURIComponent(p.id)}" aria-label="Edit"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z" stroke="currentColor" stroke-width="1.5"/></svg></a>
+          <button class="ap-toggle-soldout" data-id="${esc(p.id)}" data-sold="${p.is_sold_out === true ? "1" : "0"}" title="${p.is_sold_out === true ? "Switch sold out OFF" : "Mark as sold out"}" style="font-size:0.72rem;border:1px solid currentColor;border-radius:12px;padding:2px 8px;background:${p.is_sold_out === true ? "#B23A3A;color:#fff" : "transparent"};cursor:pointer;">${p.is_sold_out === true ? "Sold out: ON" : "Sold out: off"}</button>
           <button class="ap-toggle-status" data-id="${esc(p.id)}" data-status="${esc(p.status || 'active')}" aria-label="${p.status === 'discontinued' ? 'Reactivate' : 'Discontinue'}">
             ${p.status === "discontinued"
               ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 12l5 5L20 6" stroke="currentColor" stroke-width="1.5"/></svg>`
@@ -70,6 +72,15 @@ function render() {
         </td>
       </tr>`;
   }).join("");
+
+  document.querySelectorAll(".ap-toggle-soldout").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const makeSold = btn.dataset.sold !== "1";
+      const { error } = await supabaseClient.from("products").update({ is_sold_out: makeSold }).eq("id", btn.dataset.id);
+      if (error) { alert("Could not change this. Did you run the sold-out SQL first? (" + error.message + ")"); console.error(error); return; }
+      await loadProducts();
+    });
+  });
 
   document.querySelectorAll(".ap-toggle-status").forEach((btn) => {
     btn.addEventListener("click", async () => {

@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       liveSizes = (data.product_sizes || []).map((s) => ({ label: s.size_label, inStock: s.in_stock }));
 
       PRODUCT = {
+        id: data.id, soldOut: isSoldOutProduct(data),
         name: data.name, division: data.division, category: (data.categories && data.categories.slug) || "",
         price: data.price_ngn, currency: "₦",
         description: data.description, sizeType: data.size_type,
@@ -93,6 +94,19 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
   const bcCurrent = document.getElementById("prodBreadcrumbCurrent");
   if (bcCurrent) bcCurrent.textContent = PRODUCT.name;
+
+  /* ---------- Sold out: badge + purchase buttons switched off (admin toggles this per product) ---------- */
+  if (PRODUCT.soldOut) {
+    const cartBtn = document.getElementById("addToCartBtn");
+    const buyBtn = document.getElementById("buyNowBtn");
+    if (cartBtn) { cartBtn.disabled = true; cartBtn.textContent = "Sold out"; }
+    if (buyBtn) buyBtn.style.display = "none";
+    if (titleEl && !document.getElementById("soldOutNote")) {
+      const note = document.createElement("span");
+      note.id = "soldOutNote"; note.className = "sold-out-note"; note.textContent = "Sold out";
+      titleEl.insertAdjacentElement("afterend", note);
+    }
+  }
 
   /* ---------- Colour swatches — pure order-instructions, never affect the photo ---------- */
   const colorRow = document.getElementById("colorSwatchesRow");
@@ -334,6 +348,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   }
 
   document.getElementById("addToCartBtn")?.addEventListener("click", () => {
+    if (PRODUCT.soldOut) return;
     addToCart(collectSelectionForCart());
     const toast = document.querySelector(".toast");
     if (toast) {
@@ -344,8 +359,19 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   document.getElementById("buyNowBtn")?.addEventListener("click", () => {
+    if (PRODUCT.soldOut) return;
     addToCart(collectSelectionForCart());
     window.location.href = "checkout";
+  });
+
+  // Real suggestions ("You may also like") and "Recently viewed" — both come from real products.
+  whenExtras((x) => {
+    const myId = PRODUCT.id || supabaseId || params.get("item") || "";
+    if (isLiveProduct && PRODUCT.id) {
+      x.trackRecent({ id: PRODUCT.id, name: PRODUCT.name, price: PRODUCT.price, img: PRODUCT.mainImage, division: PRODUCT.division, link: "product?id=" + encodeURIComponent(PRODUCT.id) });
+    }
+    x.loadSuggestions({ id: myId, division: PRODUCT.division, category: PRODUCT.category });
+    x.showRecent(myId);
   });
 
   // Everything above is now correctly filled in — safe to show the page.

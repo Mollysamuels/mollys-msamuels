@@ -1,0 +1,56 @@
+/* ============================================
+   extras.css — sold-out badge, loading skeletons,
+   category filters, suggestion + recently-viewed rows
+   ============================================ */
+
+/* ---------- Sold out ---------- */
+.sold-badge {
+  position: absolute; top: 10px; left: 10px; z-index: 3;
+  background: #111; color: #fff; font-size: 0.72rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 10px; border-radius: 3px;
+}
+.product-card.is-sold-out .product-media img { opacity: 0.55; }
+.product-card.is-sold-out .quick-add { display: none !important; }
+.sold-out-note {
+  display: inline-block; background: #111; color: #fff; font-size: 0.74rem; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border-radius: 3px; margin: 8px 0 4px;
+}
+#addToCartBtn[disabled], #buyNowBtn[disabled] { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+
+/* ---------- Skeletons (grey shimmer placeholders) ---------- */
+@keyframes skelShimmer { 0% { background-position: 120% 0; } 100% { background-position: -120% 0; } }
+.skel-block, .skel-line {
+  background: linear-gradient(100deg, #ece7dc 30%, #f6f2e9 50%, #ece7dc 70%);
+  background-size: 220% 100%; animation: skelShimmer 1.4s linear infinite; border-radius: 6px;
+}
+.skel-card .product-media { aspect-ratio: 4 / 5; }
+.skel-card .product-info { padding-top: 12px; }
+.skel-line { height: 14px; margin: 0 0 12px; }
+.skel-line.lg { height: 28px; }
+#prodSkeleton {
+  visibility: visible !important; position: fixed; inset: 0; z-index: 9999; background: #faf6ee;
+  transition: opacity .35s ease; overflow: hidden;
+}
+#prodSkeleton.ps-out { opacity: 0; pointer-events: none; }
+#prodSkeleton .ps-bar { height: 64px; background: #ece7dc; margin-bottom: 28px; }
+#prodSkeleton .ps-wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+#prodSkeleton .ps-img { aspect-ratio: 4 / 5; width: 100%; }
+@media (max-width: 760px) { #prodSkeleton .ps-wrap { grid-template-columns: 1fr; gap: 20px; } }
+@media (prefers-reduced-motion: reduce) { .skel-block, .skel-line { animation: none; } }
+
+/* ---------- Category filters ---------- */
+.cat-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 22px; }
+.cat-filters select {
+  padding: 9px 12px; border: 1px solid var(--line, #ddd5c4); border-radius: 6px; background: #fff;
+  font: inherit; font-size: 0.86rem; color: inherit; max-width: 100%;
+}
+.cat-filters .flt-check { display: inline-flex; align-items: center; gap: 6px; font-size: 0.86rem; }
+.cat-filters .flt-clear {
+  background: none; border: 0; text-decoration: underline; cursor: pointer; font: inherit; font-size: 0.84rem; color: inherit; padding: 4px;
+}
+
+/* ---------- Suggestion + recently viewed rows ---------- */
+.related-section .product-grid, .recent-section .product-grid { margin-top: 18px; }
+.recent-section { max-width: 1180px; margin: 0 auto; padding: 10px 20px 50px; }
+.recent-section h2 { font-family: var(--font-display, inherit); font-weight: 500; font-size: 1.35rem; margin: 0; }
+.recent-section p { margin: 4px 0 0; color: var(--ink-soft, #7a7060); font-size: 0.9rem; }

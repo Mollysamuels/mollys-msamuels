@@ -22,7 +22,7 @@ async function fetchRealProducts() {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("*, categories(slug)")
+      .select("*, categories(slug), product_sizes(in_stock)")
       .neq("status", "discontinued");
     if (error || !data) return [];
     return data.map((p) => {
@@ -33,6 +33,7 @@ async function fetchRealProducts() {
         img: cardImg(p.main_image_url) || fallbackImg,
         altImg: cardImg(p.alt_image_url) || null,
         linkOverride: `product?id=${p.id}`,
+        soldOut: isSoldOutProduct(p),
       };
     });
   } catch (e) {
@@ -48,11 +49,12 @@ function renderShopCard(p, index) {
   });
   const link = p.linkOverride || `product?${params.toString()}`;
   return `
-    <div class="product-card" data-division="${p.division}" data-price="${p.price}">
+    <div class="product-card${p.soldOut ? " is-sold-out" : ""}" data-division="${p.division}" data-price="${p.price}">
       <div class="product-media">
+        ${p.soldOut ? '<span class="sold-badge">Sold out</span>' : ""}
         <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
         <a href="${link}"><img class="main" src="${p.img}" alt="${p.name}" loading="lazy" decoding="async">${altImgTag(p.altImg, p.img, "")}</a>
-        <button class="quick-add">Quick add</button>
+        ${p.soldOut ? "" : '<button class="quick-add">Quick add</button>'}
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
@@ -66,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   const grid = document.getElementById("shopGrid");
   if (!grid) return;
 
+  grid.innerHTML = skeletonCardsHTML(8); // grey placeholders while products load
   const realProducts = await fetchRealProducts();
   const ALL_PRODUCTS = [...realProducts, ...SHOP_PRODUCTS]; // real products shown first
 

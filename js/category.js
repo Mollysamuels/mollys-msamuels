@@ -66,9 +66,11 @@ function buildProductLink(product) {
 
 function renderProductCard(product) {
   const link = buildProductLink(product);
+  const sold = !!product.soldOut;
   return `
-    <div class="product-card">
+    <div class="product-card${sold ? " is-sold-out" : ""}">
       <div class="product-media">
+        ${sold ? '<span class="sold-badge">Sold out</span>' : ""}
         <button class="wish-btn" aria-label="Add to wishlist">
           <svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg>
         </button>
@@ -76,7 +78,7 @@ function renderProductCard(product) {
           <img class="main" src="${product.img1}" alt="${product.name}" loading="lazy" decoding="async">
           ${altImgTag(product.img2, product.img1, `${product.name}, alternate view`)}
         </a>
-        <button class="quick-add">Quick add</button>
+        ${sold ? "" : '<button class="quick-add">Quick add</button>'}
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${product.name}</h4></a>
@@ -122,6 +124,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   await loadExchangeRate();
   const grid = document.getElementById("catProductGrid");
   if (!grid) return; // not on category
+  grid.innerHTML = skeletonCardsHTML(8); // grey placeholders while products load
 
   const params = new URLSearchParams(window.location.search);
   let slug = params.get("category") || "gowns";
@@ -142,7 +145,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("*, categories!inner(slug)")
+      .select("*, categories!inner(slug), product_sizes(size_label, in_stock), product_colors(color_name)")
       .in("categories.slug", slugGroup)
       .neq("status", "discontinued");
 
@@ -154,6 +157,10 @@ document.addEventListener("DOMContentLoaded", async function () {
           img1: cardImg(p.main_image_url) || fallbackImg,
           img2: cardImg(p.alt_image_url) || cardImg(p.main_image_url) || fallbackImg,
           linkOverride: `product?id=${p.id}`,
+          soldOut: isSoldOutProduct(p),
+          sizes: (p.product_sizes || []).filter((x) => x.in_stock !== false).map((x) => x.size_label),
+          colors: (p.product_colors || []).map((x) => x.color_name),
+          created: p.created_at || "",
         };
       });
     }
@@ -224,13 +231,72 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (countEl) countEl.textContent = `${currentProducts.length} products`;
   renderGrid(currentProducts);
 
+  // ---------- Filters (price, size, colour, availability) + sort ----------
   const sortSelect = document.getElementById("catSort");
-  if (sortSelect) {
-    sortSelect.addEventListener("change", () => {
-      let sorted = [...currentProducts];
-      if (sortSelect.value === "price-low") sorted.sort((a, b) => a.price - b.price);
-      else if (sortSelect.value === "price-high") sorted.sort((a, b) => b.price - a.price);
-      renderGrid(sorted);
+  const total = currentProducts.length;
+  const baseProducts = currentProducts.slice();
+
+  if (sortSelect && !sortSelect.querySelector('option[value="newest"]')) {
+    const o = document.createElement("option");
+    o.value = "newest"; o.textContent = "Newest first";
+    sortSelect.appendChild(o);
+  }
+
+  const PRICE_BUCKETS = [
+    { v: "0-10000", label: "Under " + formatPrice(10000), test: (n) => n < 10000 },
+    { v: "10000-20000", label: formatPrice(10000) + " – " + formatPrice(20000), test: (n) => n >= 10000 && n < 20000 },
+    { v: "20000-40000", label: formatPrice(20000) + " – " + formatPrice(40000), test: (n) => n >= 20000 && n < 40000 },
+    { v: "40000-up", label: formatPrice(40000) + " and over", test: (n) => n >= 40000 },
+  ];
+  const allSizes = [...new Set(baseProducts.flatMap((p) => p.sizes || []))];
+  const allColors = [...new Set(baseProducts.flatMap((p) => p.colors || []))];
+  const toolbar = document.querySelector(".cat-toolbar");
+  const filterState = { price: "", size: "", color: "", avail: false };
+
+  if (toolbar && total >= 2) {
+    const bar = document.createElement("div");
+    bar.className = "cat-filters"; bar.id = "catFilters";
+    const sel = (id, first, opts) => `<select id="${id}" aria-label="${first}"><option value="">${first}</option>${opts.map((o) => `<option value="${String(o.v).replace(/"/g, "&quot;")}">${o.label}</option>`).join("")}</select>`;
+    bar.innerHTML =
+      sel("fltPrice", "Price: any", PRICE_BUCKETS.map((b) => ({ v: b.v, label: b.label }))) +
+      (allSizes.length ? sel("fltSize", "Size: any", allSizes.map((x) => ({ v: x, label: x }))) : "") +
+      (allColors.length ? sel("fltColor", "Colour: any", allColors.map((x) => ({ v: x, label: x }))) : "") +
+      '<label class="flt-check"><input type="checkbox" id="fltAvail"> Available only</label>' +
+      '<button type="button" class="flt-clear" id="fltClear">Clear filters</button>';
+    toolbar.insertAdjacentElement("afterend", bar);
+    bar.addEventListener("change", () => {
+      filterState.price = document.getElementById("fltPrice").value;
+      filterState.size = document.getElementById("fltSize") ? document.getElementById("fltSize").value : "";
+      filterState.color = document.getElementById("fltColor") ? document.getElementById("fltColor").value : "";
+      filterState.avail = document.getElementById("fltAvail").checked;
+      applyView();
+    });
+    document.getElementById("fltClear").addEventListener("click", () => {
+      bar.querySelectorAll("select").forEach((x) => { x.value = ""; });
+      document.getElementById("fltAvail").checked = false;
+      filterState.price = filterState.size = filterState.color = ""; filterState.avail = false;
+      applyView();
     });
   }
+
+  function applyView() {
+    let list = baseProducts.filter((p) => {
+      if (filterState.price) {
+        const b = PRICE_BUCKETS.find((x) => x.v === filterState.price);
+        if (b && !b.test(p.price)) return false;
+      }
+      if (filterState.size && !(p.sizes || []).includes(filterState.size)) return false;
+      if (filterState.color && !(p.colors || []).includes(filterState.color)) return false;
+      if (filterState.avail && p.soldOut) return false;
+      return true;
+    });
+    const mode = sortSelect ? sortSelect.value : "featured";
+    if (mode === "price-low") list.sort((a, b) => a.price - b.price);
+    else if (mode === "price-high") list.sort((a, b) => b.price - a.price);
+    else if (mode === "newest") list.sort((a, b) => String(b.created || "").localeCompare(String(a.created || "")));
+    currentProducts = list;
+    if (countEl) countEl.textContent = list.length === total ? `${total} products` : `${list.length} of ${total} products`;
+    renderGrid(list);
+  }
+  if (sortSelect) sortSelect.addEventListener("change", applyView);
 });

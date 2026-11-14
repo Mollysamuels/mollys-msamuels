@@ -134,6 +134,7 @@ async function loadExistingProduct(id) {
   document.getElementById("apfStockQty").value = data.stock_qty;
   document.getElementById("apfFeatured").checked = data.is_featured;
   document.getElementById("apfNew").checked = data.is_new;
+  document.getElementById("apfSoldOut").checked = data.is_sold_out === true;
   document.getElementById("apfSizeType").value = data.size_type;
 
   (data.product_colors || []).forEach((c) => window._apfAddColorRow(c.color_name, c.hex_code));
@@ -159,6 +160,7 @@ async function saveProduct() {
     stock_qty: parseInt(document.getElementById("apfStockQty").value, 10) || 0,
     is_featured: document.getElementById("apfFeatured").checked,
     is_new: document.getElementById("apfNew").checked,
+    is_sold_out: document.getElementById("apfSoldOut").checked,
     size_type: document.getElementById("apfSizeType").value,
   };
 

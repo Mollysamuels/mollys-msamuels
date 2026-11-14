@@ -14,12 +14,12 @@ function renderHomeCard(p) {
   const altImg = cardImg(p.alt_image_url) || img;
 
   return `
-    <div class="product-card">
+    <div class="product-card${isSoldOutProduct(p) ? " is-sold-out" : ""}">
       <div class="product-media">
-        <span class="product-tag">New</span>
+        ${isSoldOutProduct(p) ? '<span class="sold-badge">Sold out</span>' : '<span class="product-tag">New</span>'}
         <button class="wish-btn" aria-label="Add to wishlist"><svg viewBox="0 0 24 24" fill="none"><path d="M12 20s-7.5-4.7-9.6-9.1C1 7.6 2.7 4.5 6 4c2-.3 3.6.7 6 3 2.4-2.3 4-3.3 6-3 3.3.5 5 3.6 3.6 6.9C19.5 15.3 12 20 12 20z" stroke="currentColor" stroke-width="1.5"/></svg></button>
         <a href="${link}"><img class="main" src="${img}" alt="${p.name}" loading="lazy" decoding="async">${altImgTag(altImg, img, "")}</a>
-        <button class="quick-add">Quick add</button>
+        ${isSoldOutProduct(p) ? "" : '<button class="quick-add">Quick add</button>'}
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
@@ -37,7 +37,7 @@ async function fetchAndPrepend(gridId, filterFn) {
   try {
     const { data, error } = await supabaseClient
       .from("products")
-      .select("*, product_colors(*)")
+      .select("*, product_colors(*), product_sizes(in_stock)")
       .neq("status", "discontinued");
 
     if (error || !data) return;

@@ -510,8 +510,54 @@ function altImgTag(altSrc, mainSrc, altText) {
   return `<img class="alt" src="${mainSrc}" alt="${altText || ""}" decoding="async">`;
 }
 
+/* ---------- Sold-out + loading-skeleton helpers (shared by every public page) ---------- */
+// A product counts as sold out when the admin switched "Mark as sold out" on,
+// or when every size has been unticked in stock.
+function isSoldOutProduct(p) {
+  if (!p) return false;
+  if (p.is_sold_out === true) return true;
+  var sizes = p.product_sizes;
+  return Array.isArray(sizes) && sizes.length > 0 && sizes.every(function (x) { return x.in_stock === false; });
+}
+function skeletonCardsHTML(n) {
+  var one = '<div class="product-card skel-card" aria-hidden="true"><div class="product-media skel-block"></div>' +
+            '<div class="product-info"><div class="skel-line" style="width:70%"></div><div class="skel-line" style="width:35%"></div></div></div>';
+  return new Array((n || 8) + 1).join(one);
+}
+// Runs a function once js/extras.js (suggestions, recently viewed) has loaded.
+function whenExtras(cb) {
+  if (window.__extras) cb(window.__extras);
+  else document.addEventListener("extrasReady", function () { cb(window.__extras); }, { once: true });
+}
+// Shared stylesheet for badges, filters, skeletons and suggestion rows.
 (function () {
-  ["js/card-sync.js", "js/newsletter.js", "js/motion.js"].forEach(function (src) {
+  var l = document.createElement("link");
+  l.rel = "stylesheet"; l.href = "css/extras.css";
+  document.head.appendChild(l);
+})();
+// Product page: show a loading skeleton instead of a blank page while the product loads.
+(function () {
+  if (!document.getElementById("prodTitle") || !document.body) return;
+  var o = document.createElement("div");
+  o.id = "prodSkeleton";
+  o.setAttribute("aria-hidden", "true");
+  o.innerHTML =
+    '<div class="ps-bar"></div><div class="ps-wrap">' +
+    '<div class="ps-img skel-block"></div>' +
+    '<div class="ps-info"><div class="skel-line" style="width:30%"></div><div class="skel-line lg" style="width:80%"></div>' +
+    '<div class="skel-line" style="width:25%"></div><div class="skel-line" style="width:45%;margin-top:26px"></div>' +
+    '<div class="skel-line" style="width:100%;height:44px;margin-top:20px"></div><div class="skel-line" style="width:100%;height:44px"></div>' +
+    '<div class="skel-line" style="width:90%;margin-top:26px"></div><div class="skel-line" style="width:75%"></div></div></div>';
+  document.body.appendChild(o);
+  function done() { if (o.parentNode) { o.classList.add("ps-out"); setTimeout(function () { o.remove(); }, 400); } }
+  new MutationObserver(function () { if (document.body.style.visibility === "visible") done(); })
+    .observe(document.body, { attributes: true, attributeFilter: ["style"] });
+  // If something goes wrong and the page never finishes loading, don't leave the skeleton up forever.
+  setTimeout(function () { document.body.style.visibility = "visible"; done(); }, 12000);
+})();
+
+(function () {
+  ["js/card-sync.js", "js/newsletter.js", "js/motion.js", "js/extras.js"].forEach(function (src) {
     var s = document.createElement("script");
     s.src = src;
     document.head.appendChild(s);
