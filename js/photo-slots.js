@@ -12,22 +12,22 @@
 // edit the lines below. (name = what the card says, price = naira.)
 // ============================================
 window.PHOTO_SLOTS = {
-  "gowns":       [ { prefix: "gown", newFrom: 6,      from: 1, to: 55, name: "Gown",      price: 25000 } ],
-  "tops":        [ { prefix: "top", newFrom: 6,       from: 1, to: 55, name: "Top",       price: 12000 } ],
-  "bridal":      [ { prefix: "bridal", newFrom: 1,    from: 1, to: 20, name: "Bridal",    price: 85000 } ],
-  "two-piece":   [ { prefix: "two-piece", newFrom: 1, from: 1, to: 20, name: "Two Piece", price: 22000 } ],
-  "shoes":       [ { prefix: "heel", newFrom: 6,      from: 1, to: 5,  name: "Heel",      price: 17800 },
-                   { prefix: "croc", newFrom: 4,      from: 1, to: 8,  name: "Croc",      price: 11800 },
-                   { prefix: "sandal", newFrom: 1,    from: 1, to: 3,  name: "Sandal",    price: 13200 },
-                   { prefix: "shoe", newFrom: 1,      from: 1, to: 50, name: "Shoe",      price: 15000 } ],
-  "bags":        [ { prefix: "bag", newFrom: 6,       from: 1, to: 35, name: "Bag",       price: 19500 } ],
-  "jewellery":   [ { prefix: "jewellery", newFrom: 6, from: 1, to: 85, name: "Jewellery", price: 8000 } ],
-  "accessories": [ { prefix: "accessory", newFrom: 6, from: 1, to: 5,  name: "Accessory", price: 9500 },
-                   { prefix: "purse", newFrom: 1,     from: 1, to: 20, name: "Purse",     price: 14000 },
-                   { prefix: "brooch", newFrom: 1,    from: 1, to: 15, name: "Brooch",    price: 4500 },
-                   { prefix: "belt", newFrom: 1,      from: 1, to: 5,  name: "Belt",      price: 7000 } ],
-  "polo":        [ { prefix: "polo", newFrom: 1,      from: 1, to: 10, name: "Polo",      price: 9500 } ],
-  "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 10, name: "Jeans",     price: 15000 } ]
+  "gowns":       [ { prefix: "gown", newFrom: 6,      from: 1, to: 100, name: "Gown",      price: 25000 } ],
+  "tops":        [ { prefix: "top", newFrom: 6,       from: 1, to: 100, name: "Top",       price: 12000 } ],
+  "bridal":      [ { prefix: "bridal", newFrom: 1,    from: 1, to: 100, name: "Bridal",    price: 85000 } ],
+  "two-piece":   [ { prefix: "two-piece", newFrom: 1, from: 1, to: 100, name: "Two Piece", price: 22000 } ],
+  "shoes":       [ { prefix: "heel", newFrom: 6,      from: 1, to: 100,  name: "Heel",      price: 17800 },
+                   { prefix: "croc", newFrom: 4,      from: 1, to: 100,  name: "Croc",      price: 11800 },
+                   { prefix: "sandal", newFrom: 1,    from: 1, to: 100,  name: "Sandal",    price: 13200 },
+                   { prefix: "shoe", newFrom: 1,      from: 1, to: 100, name: "Shoe",      price: 15000 } ],
+  "bags":        [ { prefix: "bag", newFrom: 6,       from: 1, to: 100, name: "Bag",       price: 19500 } ],
+  "jewellery":   [ { prefix: "jewellery", newFrom: 6, from: 1, to: 100, name: "Jewellery", price: 8000 } ],
+  "accessories": [ { prefix: "accessory", newFrom: 6, from: 1, to: 100,  name: "Accessory", price: 9500 },
+                   { prefix: "purse", newFrom: 1,     from: 1, to: 100, name: "Purse",     price: 14000 },
+                   { prefix: "brooch", newFrom: 1,    from: 1, to: 100, name: "Brooch",    price: 4500 },
+                   { prefix: "belt", newFrom: 1,      from: 1, to: 100,  name: "Belt",      price: 7000 } ],
+  "polo":        [ { prefix: "polo", newFrom: 1,      from: 1, to: 100, name: "Polo",      price: 9500 } ],
+  "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 100, name: "Jeans",     price: 15000 } ]
 };
 
 // Photos that are on GitHub but not yet created as products stay HIDDEN from
