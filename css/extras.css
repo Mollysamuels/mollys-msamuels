@@ -54,3 +54,7 @@
 .recent-section { max-width: 1180px; margin: 0 auto; padding: 10px 20px 50px; }
 .recent-section h2 { font-family: var(--font-display, inherit); font-weight: 500; font-size: 1.35rem; margin: 0; }
 .recent-section p { margin: 4px 0 0; color: var(--ink-soft, #7a7060); font-size: 0.9rem; }
+
+/* Category tiles that show a real product photo: the whole item stays visible (not cropped). */
+.category-item .circle.fit { background: #f6f1e7; }
+.category-item .circle.fit img { object-fit: contain; object-position: center; padding: 12%; box-sizing: border-box; }
