@@ -231,6 +231,14 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (countEl) countEl.textContent = `${currentProducts.length} products`;
   renderGrid(currentProducts);
 
+  // Bridal gets its own big, photo-first look (other categories are untouched).
+  if (slug === "bridal") {
+    const bs = document.createElement("script");
+    bs.src = "js/bridal.js";
+    bs.onload = () => { try { window.__bridal.category(); } catch (e) { console.warn(e); } };
+    document.body.appendChild(bs);
+  }
+
   // ---------- Filters (price, size, colour, availability) + sort ----------
   const sortSelect = document.getElementById("catSort");
   const total = currentProducts.length;

@@ -30,6 +30,12 @@ window.PHOTO_SLOTS = {
   "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 100, name: "Jeans",     price: 15000 } ]
 };
 
+// ---- Bridal page extras ----
+// Paste the YouTube link of the bridal collection film between the quotes ("" = no film shown).
+window.BRIDAL_VIDEO_URL = "";
+// WhatsApp number for the "Ask about this gown" button (country code, no + sign).
+window.BRIDAL_WHATSAPP = "2348037865059";
+
 // Photos that are on GitHub but not yet created as products stay HIDDEN from
 // customers (they could not be bought). Turn this on only for previewing.
 window.SHOW_UNSYNCED_PHOTOS = false;

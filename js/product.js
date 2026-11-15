@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       liveSizes = (data.product_sizes || []).map((s) => ({ label: s.size_label, inStock: s.in_stock }));
 
       PRODUCT = {
-        id: data.id, soldOut: isSoldOutProduct(data),
+        id: data.id, soldOut: isSoldOutProduct(data), videoUrl: data.video_url || "",
         name: data.name, division: data.division, category: (data.categories && data.categories.slug) || "",
         price: data.price_ngn, currency: "₦",
         description: data.description, sizeType: data.size_type,
@@ -414,6 +414,25 @@ document.addEventListener("DOMContentLoaded", async function () {
     x.loadSuggestions({ id: myId, division: PRODUCT.division, category: PRODUCT.category });
     x.showRecent(myId);
   });
+
+  // Bridal gowns get the big gallery, video and WhatsApp button (other categories are untouched).
+  if (isLiveProduct && PRODUCT.id && PRODUCT.category === "bridal") {
+    const gc = document.querySelector(".gallery-col");
+    if (gc) gc.style.visibility = "hidden";
+    const bs = document.createElement("script");
+    bs.src = "js/bridal.js";
+    bs.onload = async () => { try { await window.__bridal.product(PRODUCT); } catch (e) { console.warn(e); } if (gc) gc.style.visibility = ""; };
+    bs.onerror = () => { if (gc) gc.style.visibility = ""; };
+    document.body.appendChild(bs);
+  }
+
+  // Reviews (approved only) + "Notify me when back" on sold-out items.
+  if (isLiveProduct && PRODUCT.id) {
+    const rs = document.createElement("script");
+    rs.src = "js/reviews.js";
+    rs.onload = () => { try { window.__reviews.init(PRODUCT); } catch (e) { console.warn(e); } };
+    document.body.appendChild(rs);
+  }
 
   // Everything above is now correctly filled in — safe to show the page.
   document.body.style.visibility = "visible";

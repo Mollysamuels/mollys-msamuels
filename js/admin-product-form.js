@@ -135,6 +135,9 @@ async function loadExistingProduct(id) {
   document.getElementById("apfFeatured").checked = data.is_featured;
   document.getElementById("apfNew").checked = data.is_new;
   document.getElementById("apfSoldOut").checked = data.is_sold_out === true;
+  window._apfWasSoldOut = data.is_sold_out === true;
+  window._apfHasVideoCol = Object.prototype.hasOwnProperty.call(data, "video_url");
+  document.getElementById("apfVideo").value = data.video_url || "";
   document.getElementById("apfSizeType").value = data.size_type;
 
   (data.product_colors || []).forEach((c) => window._apfAddColorRow(c.color_name, c.hex_code));
@@ -163,6 +166,11 @@ async function saveProduct() {
     is_sold_out: document.getElementById("apfSoldOut").checked,
     size_type: document.getElementById("apfSizeType").value,
   };
+
+  // Only touch video_url when it is used (so saving still works before the zip's SQL has been run).
+  const videoVal = document.getElementById("apfVideo").value.trim();
+  if (videoVal) productData.video_url = videoVal;
+  else if (window._apfHasVideoCol) productData.video_url = null;
 
   if (!productData.name) {
     errorEl.textContent = "Product name is required.";
@@ -208,6 +216,8 @@ async function saveProduct() {
     const ok = await savePhotos(productId, btn);
     if (!ok) return;
   }
+
+  if (editingId && window._apfWasSoldOut && !productData.is_sold_out && window.notifyBackInStock) await window.notifyBackInStock(productId);
 
   window.location.href = "admin-products.html";
 }
