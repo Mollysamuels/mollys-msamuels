@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   if (aliases[slug]) slug = aliases[slug];
   const slugGroup = (window.CATEGORY_GROUPS && window.CATEGORY_GROUPS[slug]) || [slug];
   const division = MSAMUELS_SLUGS.has(slug) ? "msamuels" : "mollys";
-  const name = titleCaseFromSlug(slug);
+  const name = (window.CATEGORY_LABELS && window.CATEGORY_LABELS[slug]) || titleCaseFromSlug(slug);
 
   // Try real Supabase products for this category first. Only fall back to
   // the placeholder generator if this category has no real products yet —

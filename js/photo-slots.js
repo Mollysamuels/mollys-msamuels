@@ -30,6 +30,9 @@ window.PHOTO_SLOTS = {
   "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 100, name: "Jeans",     price: 15000 } ]
 };
 
+// What customers SEE as the category name (the web address stays the same).
+window.CATEGORY_LABELS = { "gowns": "Dresses" };
+
 // ---- Bridal page extras ----
 // Paste the YouTube link of the bridal collection film between the quotes ("" = no film shown).
 window.BRIDAL_VIDEO_URL = "";
