@@ -56,5 +56,9 @@
 .recent-section p { margin: 4px 0 0; color: var(--ink-soft, #7a7060); font-size: 0.9rem; }
 
 /* Category tiles that show a real product photo: the whole item stays visible (not cropped). */
-.category-item .circle.fit { background: #f6f1e7; }
-.category-item .circle.fit img { object-fit: contain; object-position: center; padding: 12%; box-sizing: border-box; }
+/* All category tiles share one tall arch shape so they line up (and suit bridal). */
+.category-strip { align-items: flex-start; }
+.category-strip .category-item .circle { width: 84px; height: 108px; border-radius: 42px 42px 10px 10px; }
+/* Photo tiles use a tall arch so the whole garment fits (a circle crops standing figures). */
+.category-item .circle.fit { background: #f6f1e7; width: 84px; height: 108px; border-radius: 42px 42px 10px 10px; }
+.category-item .circle.fit img { object-fit: contain; object-position: center; padding: 3%; box-sizing: border-box; }
