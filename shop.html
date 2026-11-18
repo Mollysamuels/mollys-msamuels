@@ -20,14 +20,11 @@
 <link rel="manifest" href="site.webmanifest">
 <meta name="theme-color" content="#000000">
 <style>
-.explore-mollys{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;background:#000;color:#fff;border-radius:14px;padding:22px 28px;margin:0 0 28px}
-.explore-mollys[hidden]{display:none}
-.explore-mollys .em-eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#F4D900}
-.explore-mollys h2{font-family:var(--font-display,Georgia,serif);font-style:italic;font-weight:500;font-size:1.6rem;margin:4px 0 4px;color:#fff}
-.explore-mollys p{margin:0;font-size:.92rem;color:#E8E2C8;max-width:46em}
-.explore-mollys .em-btn{display:inline-flex;align-items:center;min-height:46px;padding:0 24px;border-radius:8px;background:#F4D900;color:#000;font-weight:600;text-decoration:none;border:0;cursor:pointer;font-size:.95rem}
-.explore-mollys .em-btn:hover{background:#fff}
-.explore-mollys .em-btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.em-mini{display:inline-flex;align-items:center;min-height:36px;padding:0 14px;border-radius:8px;background:#F4D900;color:#000;font-weight:600;font-size:.82rem;text-decoration:none;white-space:nowrap}
+.em-mini[hidden]{display:none}
+.em-mini:hover{background:#000;color:#F4D900}
+.em-mini:focus-visible{outline:3px solid #000;outline-offset:3px}
+.shop-intro{margin:10px 0 0;max-width:46em;color:var(--ink-soft);font-size:.95rem;line-height:1.55}
 </style>
 </head>
 <body>
@@ -95,13 +92,14 @@
 </header>
 <div class="wrap">
   <div class="breadcrumb"><a href="/">Home</a><span>/</span> Shop</div>
-  <div class="shop-header"><h1>Shop All</h1></div>
+  <div class="shop-header"><h1>Shop All</h1><p class="shop-intro">A curated mix of pieces from across our whole store, put together for you to shop in one place. Browse everything here, and scroll down to see our entire collection.</p></div>
 
   <div class="shop-filters">
     <div class="shop-filter-group">
       <button class="shop-filter-btn active" data-division="mollys">Mollys</button>
       <button class="shop-filter-btn" data-division="msamuels">M. Samuels</button>
     </div>
+    <a href="explore-collection" class="em-mini" id="exploreMollys">Explore the Mollys Collection</a>
     <div class="shop-sort-group">
       <span class="shop-count" id="shopCount">0 products</span>
       <label for="shopSort">Sort by</label>
@@ -113,15 +111,6 @@
     </div>
   </div>
 
-
-  <div class="explore-mollys" id="exploreMollys" role="region" aria-label="Explore the Mollys Collection">
-    <div>
-      <span class="em-eyebrow">Mollys</span>
-      <h2>Explore the Mollys Collection</h2>
-      <p>A dedicated fashion archive, from current collections to past designs and photoshoot highlights.</p>
-    </div>
-    <a href="explore-collection" class="em-btn">Explore the collection</a>
-  </div>
 
   <div class="product-grid" id="shopGrid"></div>
 </div>
@@ -203,7 +192,7 @@
 </script>
 <script src="js/shop.js"></script>
 <script>
-  /* Show the "Explore the Mollys Collection" card only while the Mollys tab is selected. */
+  /* Show the "Explore the Mollys Collection" button only while the Mollys tab is selected. */
   (function () {
     var box = document.getElementById("exploreMollys");
     var group = document.querySelector(".shop-filter-group");
