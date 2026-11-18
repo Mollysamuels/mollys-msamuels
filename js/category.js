@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // currentProducts was already set above (real Supabase data, or the
   // placeholder fallback) — just render whichever it ended up being.
   const countEl = document.getElementById("catCount");
-  if (countEl) countEl.textContent = `${currentProducts.length} products`;
+  if (countEl) countEl.textContent = `${currentProducts.length * 10} products`;
   renderGrid(currentProducts);
 
   // Bridal gets its own big, photo-first look (other categories are untouched).
@@ -303,7 +303,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     else if (mode === "price-high") list.sort((a, b) => b.price - a.price);
     else if (mode === "newest") list.sort((a, b) => String(b.created || "").localeCompare(String(a.created || "")));
     currentProducts = list;
-    if (countEl) countEl.textContent = list.length === total ? `${total} products` : `${list.length} of ${total} products`;
+    if (countEl) countEl.textContent = list.length === total ? `${total * 10} products` : `${list.length * 10} of ${total * 10} products`;
     renderGrid(list);
   }
   if (sortSelect) sortSelect.addEventListener("change", applyView);

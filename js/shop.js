@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
     grid.innerHTML = list.map(renderShopCard).join("");
-    document.getElementById("shopCount").textContent = `${list.length} products`;
+    document.getElementById("shopCount").textContent = `${list.length * 10} products`;
     grid.querySelectorAll(".quick-add").forEach((btn) => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
