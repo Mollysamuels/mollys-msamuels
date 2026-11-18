@@ -1,6 +1,5 @@
 /* ===== Bridal: banner, collection film and product page (cards use the standard grid) ===== */
 /* Category page */
-body.bridal-page { background: #fffdf9; }
 body.bridal-page .cat-banner { min-height: 46vh; }
 body.bridal-page .cat-banner::before { background: rgba(20,14,8,.5); z-index: 1; }
 body.bridal-page .cat-banner-content h1 { font-size: clamp(2.4rem, 6vw, 4rem); letter-spacing: .02em; }
