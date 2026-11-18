@@ -23,7 +23,7 @@ function renderHomeCard(p) {
       </div>
       <div class="product-info">
         <a href="${link}" style="color:inherit;"><h4>${p.name}</h4></a>
-        <div class="product-price"><span class="now">${formatPrice(p.price_ngn)}</span></div>
+        <div class="product-price"><span class="now" data-price-ngn="${p.price_ngn}">${formatPrice(p.price_ngn)}</span></div>
         ${swatches ? `<div class="swatches">${swatches}</div>` : ""}
       </div>
     </div>`;
