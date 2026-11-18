@@ -35,7 +35,7 @@ window.CATEGORY_LABELS = { "gowns": "Dresses" };
 
 // Pin a tile to one photo number. Only the Dresses tile is pinned (gown-12); every other tile picks its first photo automatically.
 // Change a number to change the tile. If that photo is not on GitHub, the tile uses the next one it finds.
-window.TILE_PICKS = { "gown": 12, "bag": 32 };
+window.TILE_PICKS = { "gown": 12, "bag": 30 };
 
 // ---- Bridal page extras ----
 // Paste the YouTube link of the bridal collection film between the quotes ("" = no film shown).
