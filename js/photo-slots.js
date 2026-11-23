@@ -12,22 +12,22 @@
 // edit the lines below. (name = what the card says, price = naira.)
 // ============================================
 window.PHOTO_SLOTS = {
-  "gowns":       [ { prefix: "gown", newFrom: 6,      from: 1, to: 100, name: "Gown",      price: 25000 } ],
-  "tops":        [ { prefix: "top", newFrom: 6,       from: 1, to: 100, name: "Top",       price: 12000 } ],
-  "bridal":      [ { prefix: "bridal", newFrom: 1,    from: 1, to: 100, name: "Bridal",    price: 85000 } ],
-  "two-piece":   [ { prefix: "two-piece", newFrom: 1, from: 1, to: 100, name: "Two Piece", price: 22000 } ],
-  "shoes":       [ { prefix: "heel", newFrom: 6,      from: 1, to: 100,  name: "Heel",      price: 17800 },
+  "gowns":       [ { prefix: "gown", newFrom: 6,      from: 1, to: 200, name: "Gown",      price: 25000 } ],
+  "tops":        [ { prefix: "top", newFrom: 6,       from: 1, to: 200, name: "Top",       price: 12000 } ],
+  "bridal":      [ { prefix: "bridal", newFrom: 1,    from: 1, to: 200, name: "Bridal",    price: 85000 } ],
+  "two-piece":   [ { prefix: "two-piece", newFrom: 1, from: 1, to: 200, name: "Two Piece", price: 22000 } ],
+  "shoes":       [ { prefix: "heel", newFrom: 6,      from: 1, to: 200,  name: "Heel",      price: 17800 },
                    { prefix: "croc", newFrom: 4,      from: 1, to: 100,  name: "Croc",      price: 11800 },
                    { prefix: "sandal", newFrom: 1,    from: 1, to: 100,  name: "Sandal",    price: 13200 },
                    { prefix: "shoe", newFrom: 1,      from: 1, to: 100, name: "Shoe",      price: 15000 } ],
-  "bags":        [ { prefix: "bag", newFrom: 6,       from: 1, to: 100, name: "Bag",       price: 19500 } ],
-  "jewellery":   [ { prefix: "jewellery", newFrom: 6, from: 1, to: 100, name: "Jewellery", price: 8000 } ],
-  "accessories": [ { prefix: "accessory", newFrom: 6, from: 1, to: 100,  name: "Accessory", price: 9500 },
+  "bags":        [ { prefix: "bag", newFrom: 6,       from: 1, to: 200, name: "Bag",       price: 19500 } ],
+  "jewellery":   [ { prefix: "jewellery", newFrom: 6, from: 1, to: 200, name: "Jewellery", price: 8000 } ],
+  "accessories": [ { prefix: "accessory", newFrom: 6, from: 1, to: 200,  name: "Accessory", price: 9500 },
                    { prefix: "purse", newFrom: 1,     from: 1, to: 100, name: "Purse",     price: 14000 },
                    { prefix: "brooch", newFrom: 1,    from: 1, to: 100, name: "Brooch",    price: 4500 },
                    { prefix: "belt", newFrom: 1,      from: 1, to: 100,  name: "Belt",      price: 7000 } ],
-  "polo":        [ { prefix: "polo", newFrom: 1,      from: 1, to: 100, name: "Polo",      price: 9500 } ],
-  "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 100, name: "Jeans",     price: 15000 } ]
+  "polo":        [ { prefix: "polo", newFrom: 1,      from: 1, to: 200, name: "Polo",      price: 9500 } ],
+  "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 200, name: "Jeans",     price: 15000 } ]
 };
 
 // What customers SEE as the category name (the web address stays the same).
