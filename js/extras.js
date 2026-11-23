@@ -12,15 +12,13 @@
   // it only ever suggests other M. Samuels products.
   var RELATED = {
     gowns: ["shoes", "bags", "jewellery"],
-    bridal: ["jewellery", "shoes", "accessories", "bags"],
-    tops: ["jeans", "polo", "shoes", "bags"],
+    bridal: ["jewellery", "shoes", "bags"],
+    tops: ["jeans", "shoes", "bags"],
     "two-piece": ["shoes", "bags", "jewellery"],
     shoes: ["bags", "jewellery", "gowns", "tops"],
-    bags: ["shoes", "accessories", "jewellery"],
-    jewellery: ["gowns", "accessories", "tops"],
-    accessories: ["gowns", "tops", "bags"],
-    polo: ["jeans", "tops", "shoes"],
-    jeans: ["polo", "tops", "shoes"]
+    bags: ["shoes", "jewellery"],
+    jewellery: ["gowns", "tops"],
+    jeans: ["tops", "shoes"]
   };
   function group(slug) { return ({ heels: "shoes", sandals: "shoes", crocs: "shoes" })[slug] || slug || ""; }
   function shuffle(a) {

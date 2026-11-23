@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   // Bridal gets its own big, photo-first look (other categories are untouched).
   if (slug === "bridal") {
     const bs = document.createElement("script");
-    bs.src = "js/bridal.js?v=17";
+    bs.src = "js/bridal.js?v=18";
     bs.onload = () => { try { window.__bridal.category(); } catch (e) { console.warn(e); } };
     document.body.appendChild(bs);
   }

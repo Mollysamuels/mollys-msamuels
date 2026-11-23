@@ -10,7 +10,7 @@
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function css() {
     if (document.getElementById("bridalCss")) return;
-    var l = document.createElement("link"); l.id = "bridalCss"; l.rel = "stylesheet"; l.href = "css/bridal.css"; document.head.appendChild(l);
+    var l = document.createElement("link"); l.id = "bridalCss"; l.rel = "stylesheet"; l.href = "css/bridal.css?v=18"; document.head.appendChild(l);
   }
   function ytId(u) {
     var m = String(u || "").match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/))([A-Za-z0-9_-]{11})/);

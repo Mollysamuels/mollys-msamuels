@@ -22,11 +22,6 @@ window.PHOTO_SLOTS = {
                    { prefix: "shoe", newFrom: 1,      from: 1, to: 100, name: "Shoe",      price: 15000 } ],
   "bags":        [ { prefix: "bag", newFrom: 6,       from: 1, to: 200, name: "Bag",       price: 19500 } ],
   "jewellery":   [ { prefix: "jewellery", newFrom: 6, from: 1, to: 200, name: "Jewellery", price: 8000 } ],
-  "accessories": [ { prefix: "accessory", newFrom: 6, from: 1, to: 200,  name: "Accessory", price: 9500 },
-                   { prefix: "purse", newFrom: 1,     from: 1, to: 100, name: "Purse",     price: 14000 },
-                   { prefix: "brooch", newFrom: 1,    from: 1, to: 100, name: "Brooch",    price: 4500 },
-                   { prefix: "belt", newFrom: 1,      from: 1, to: 100,  name: "Belt",      price: 7000 } ],
-  "polo":        [ { prefix: "polo", newFrom: 1,      from: 1, to: 200, name: "Polo",      price: 9500 } ],
   "jeans":       [ { prefix: "jean", newFrom: 1,      from: 1, to: 200, name: "Jeans",     price: 15000 } ]
 };
 
