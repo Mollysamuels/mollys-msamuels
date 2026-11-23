@@ -228,13 +228,13 @@ document.addEventListener("DOMContentLoaded", async function () {
   // currentProducts was already set above (real Supabase data, or the
   // placeholder fallback) — just render whichever it ended up being.
   const countEl = document.getElementById("catCount");
-  if (countEl) countEl.textContent = `${currentProducts.length * 10} products`;
+  if (countEl) countEl.textContent = `${currentProducts.length} products`;
   renderGrid(currentProducts);
 
   // Bridal gets its own big, photo-first look (other categories are untouched).
   if (slug === "bridal") {
     const bs = document.createElement("script");
-    bs.src = "js/bridal.js";
+    bs.src = "js/bridal.js?v=17";
     bs.onload = () => { try { window.__bridal.category(); } catch (e) { console.warn(e); } };
     document.body.appendChild(bs);
   }
@@ -302,8 +302,13 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (mode === "price-low") list.sort((a, b) => a.price - b.price);
     else if (mode === "price-high") list.sort((a, b) => b.price - a.price);
     else if (mode === "newest") list.sort((a, b) => String(b.created || "").localeCompare(String(a.created || "")));
+    else if (slug === "jewellery") {
+      // Jewellery "Featured": earrings first (everything else keeps its order below them).
+      const isEar = (p) => /earring/i.test(p.name || "");
+      list = list.map((p, i) => ({ p, i })).sort((x, y) => (isEar(y.p) - isEar(x.p)) || (x.i - y.i)).map((o) => o.p);
+    }
     currentProducts = list;
-    if (countEl) countEl.textContent = list.length === total ? `${total * 10} products` : `${list.length * 10} of ${total * 10} products`;
+    if (countEl) countEl.textContent = list.length === total ? `${total} products` : `${list.length} of ${total} products`;
     renderGrid(list);
   }
   if (sortSelect) sortSelect.addEventListener("change", applyView);
