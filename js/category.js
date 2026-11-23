@@ -182,6 +182,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     currentProducts = generatePlaceholderProducts(slug, name, division, 6);
   }
 
+  // Jewellery: earrings come first (everything else keeps its order below them).
+  if (slug === "jewellery") {
+    const isEar = (p) => /earring/i.test(p.name || "");
+    currentProducts = currentProducts.map((p, i) => ({ p, i })).sort((x, y) => (isEar(y.p) - isEar(x.p)) || (x.i - y.i)).map((o) => o.p);
+  }
+
   // Page title / breadcrumb / banner
   document.title = `${name} — Molly Samuels`;
   const titleEl = document.getElementById("catTitle");
@@ -302,11 +308,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     if (mode === "price-low") list.sort((a, b) => a.price - b.price);
     else if (mode === "price-high") list.sort((a, b) => b.price - a.price);
     else if (mode === "newest") list.sort((a, b) => String(b.created || "").localeCompare(String(a.created || "")));
-    else if (slug === "jewellery") {
-      // Jewellery "Featured": earrings first (everything else keeps its order below them).
-      const isEar = (p) => /earring/i.test(p.name || "");
-      list = list.map((p, i) => ({ p, i })).sort((x, y) => (isEar(y.p) - isEar(x.p)) || (x.i - y.i)).map((o) => o.p);
-    }
     currentProducts = list;
     if (countEl) countEl.textContent = list.length === total ? `${total} products` : `${list.length} of ${total} products`;
     renderGrid(list);
