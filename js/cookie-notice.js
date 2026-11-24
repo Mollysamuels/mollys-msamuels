@@ -1,3 +1,13 @@
+/* Bridal Challenge pop-up and icon: loaded here so every store page gets it without editing each page.
+   The loaded script decides by itself whether to show anything (admin switch, dates, page type). */
+(function () {
+  try {
+    if (document.getElementById("msChLoader")) return;
+    var s = document.createElement("script"); s.id = "msChLoader"; s.src = "js/challenge-widget.js"; s.async = true;
+    document.head.appendChild(s);
+  } catch (e) {}
+})();
+
 /* Molly Samuels — storage notice.
    The site only keeps what it needs to work (your cart, wishlist, chosen country/currency and login).
    There are no advertising or tracking cookies, so nothing here needs a yes/no consent. This banner tells

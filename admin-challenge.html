@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bridal Challenge — Admin — Molly Samuels</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .skip-link { position:absolute; left:-9999px; top:8px; background:#000; color:#fff; padding:10px 16px; border-radius:6px; z-index:1000; }
+  .skip-link:focus { left:8px; }
+  .adm-msg { font-size:0.85rem; margin:0 0 10px; }
+  .adm-msg.ok { color:#2D6B3B; } .adm-msg.err { color:#B23A3A; }
+  .adm-hint { display:block; font-size:0.78rem; color:#58493A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"] { border-color:#B23A3A; }
+  :focus-visible { outline:2px solid #1B2A4A; outline-offset:2px; }
+.auth-field textarea{width:100%;box-sizing:border-box;min-height:90px;font:inherit;padding:10px 12px;border:1px solid var(--line,#ddd);border-radius:8px}
+</style>
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<a href="#main" class="skip-link">Skip to main content</a>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" aria-label="Admin" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-sync-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 17l5-4 3 3 3-2 5 4" stroke="currentColor" stroke-width="1.3"/></svg>Add from photos</a>
+    <a href="admin-match-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 12h2" stroke="currentColor" stroke-width="1.5"/></svg>Match hover photos</a>
+    <a href="admin-sitemap.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="currentColor" stroke-width="1.3"/></svg>Sitemap &amp; link previews</a>
+    <a href="admin-challenge.html" class="admin-nav active" aria-current="page"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Bridal Challenge</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main" id="main">
+<div class="admin-topbar">
+  <h1>Bridal Challenge</h1>
+  <div class="admin-topbar-user"><a href="bridal-challenge" target="_blank" rel="noopener" class="btn btn-outline" style="padding:7px 14px;font-size:.82rem;border-color:var(--line);margin-right:12px;">View live page</a><div class="admin-avatar" aria-hidden="true">A</div> Admin</div>
+</div>
+<div class="admin-content" style="max-width:1000px;">
+
+  <div class="admin-panel" id="pStatus">
+    <div class="admin-panel-head"><h2>Campaign status</h2></div>
+    <p style="font-size:.9rem;margin-bottom:14px;">Right now the campaign is in this stage: <b id="curPhase">loading…</b></p>
+    <div class="ch-a-checks">
+      <label><input type="checkbox" id="fEnabled"> Challenge is switched on (turn off to hide the page, pop-up and icon everywhere)</label>
+      <label><input type="checkbox" id="fPopup"> Show the pop-up (needs a pop-up picture below)</label>
+      <label><input type="checkbox" id="fIcon"> Show the floating Bridal Challenge icon</label>
+    </div>
+    <div class="auth-field" style="max-width:420px;margin-top:12px;"><label for="fOverride">Stage</label>
+      <select id="fOverride"><option value="">Automatic, follow the dates below</option></select>
+      <span class="adm-hint">Leave on Automatic. Pick a stage only to force it, for example to test.</span></div>
+    <p id="mStatus" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bStatus" style="padding:9px 18px;font-size:.85rem;">Save</button>
+  </div>
+
+  <div class="admin-panel" id="pDates">
+    <div class="admin-panel-head"><h2>Dates and times (Nigeria time)</h2></div>
+    <div class="checkout-grid-2">
+      <div class="auth-field"><label for="dRegOpen">Registration opens</label><input type="datetime-local" id="dRegOpen"></div>
+      <div class="auth-field"><label for="dRegClose">Registration closes</label><input type="datetime-local" id="dRegClose"></div>
+      <div class="auth-field"><label for="dIntStart">Interviews begin</label><input type="datetime-local" id="dIntStart"></div>
+      <div class="auth-field"><label for="dIntEnd">Interviews end</label><input type="datetime-local" id="dIntEnd"></div>
+      <div class="auth-field"><label for="dVoteOpen">Voting opens</label><input type="datetime-local" id="dVoteOpen"></div>
+      <div class="auth-field"><label for="dVoteClose">Voting closes</label><input type="datetime-local" id="dVoteClose"></div>
+      <div class="auth-field"><label for="dWinner">Winner announced</label><input type="datetime-local" id="dWinner"></div>
+      <div class="auth-field"><label for="dPrizeStart">Prize presentation begins</label><input type="datetime-local" id="dPrizeStart"></div>
+      <div class="auth-field"><label for="dPrizeEnd">Prize presentation ends</label><input type="datetime-local" id="dPrizeEnd"></div>
+      <div class="auth-field"><label for="dEnd">Campaign switches off at</label><input type="datetime-local" id="dEnd"><span class="adm-hint">After this the pop-up, icon and page switch off by themselves.</span></div>
+    </div>
+    <p id="mDates" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bDates" style="padding:9px 18px;font-size:.85rem;">Save dates</button>
+  </div>
+
+  <div class="admin-panel" id="pPics">
+    <div class="admin-panel-head"><h2>Campaign photos</h2></div>
+    <p style="font-size:.84rem;color:var(--ink-soft);margin-bottom:14px;">Use real campaign photographs (JPG, PNG or WebP, up to 4 MB). Pictures go live as soon as they are uploaded. The pop-up stays hidden until a pop-up photo is uploaded.</p>
+    <div class="ch-a-imgs" id="imgBoxes"></div>
+  </div>
+
+  <div class="admin-panel" id="pFounder">
+    <div class="admin-panel-head"><h2>Founder's video</h2></div>
+    <div class="ch-a-checks"><label><input type="checkbox" id="vPublished"> Show the founder's video on the page (publish)</label></div>
+    <div class="auth-field"><label for="vHeading">Heading</label><input type="text" id="vHeading" maxlength="120"></div>
+    <div class="auth-field"><label for="vText">Supporting text</label><textarea id="vText" rows="2" maxlength="300"></textarea></div>
+    <div class="auth-field"><label for="vUrl">Video link</label><input type="url" id="vUrl" maxlength="500" placeholder="https://www.youtube.com/watch?v=…">
+      <span class="adm-hint">Best: paste a YouTube or Vimeo link. This protects your free storage and keeps the page fast. You can also upload an MP4 or WebM file (up to 50 MB) below.</span></div>
+    <div class="auth-field"><label for="vFile">Or upload a video file</label><input type="file" id="vFile" accept="video/mp4,video/webm"></div>
+    <div class="auth-field" style="max-width:300px;"><label for="vRatio">Video shape</label><select id="vRatio"><option value="16:9">Landscape (16:9)</option><option value="9:16">Portrait (9:16)</option></select></div>
+    <p style="font-size:.84rem;margin:6px 0;">Thumbnail picture (optional for YouTube, which supplies its own):</p>
+    <div class="ch-a-imgs" id="thumbBox"></div>
+    <div id="vPreview" class="ch-a-prev"></div>
+    <p id="mFounder" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bFounder" style="padding:9px 18px;font-size:.85rem;">Save founder's video</button>
+  </div>
+
+  <div class="admin-panel" id="pMsgs">
+    <div class="admin-panel-head"><h2>Pop-up and banner messages</h2></div>
+    <p style="font-size:.84rem;color:var(--ink-soft);margin-bottom:12px;">The message changes by itself with the stage. Leave a box empty to use the standard wording. You can use these in your text and they fill in the real date: <code>{reg_open}</code> <code>{reg_close_day}</code> <code>{interviews_range}</code> <code>{voting_open_day}</code> <code>{voting_close_day}</code> <code>{winner_day}</code> <code>{prize_range}</code></p>
+    <div class="auth-field" style="max-width:420px;"><label for="mPhase">Edit the message for stage</label><select id="mPhase"></select></div>
+    <div class="auth-field"><label for="mTitle">Headline</label><input type="text" id="mTitle" maxlength="120"></div>
+    <div class="auth-field"><label for="mBody">Message</label><textarea id="mBody" rows="3" maxlength="300"></textarea></div>
+    <div class="auth-field" style="max-width:320px;"><label for="mBtn">Button text</label><input type="text" id="mBtn" maxlength="40"></div>
+    <div class="ch-a-prev" id="popPrev"></div>
+    <p id="mMsgs" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bMsgs" style="padding:9px 18px;font-size:.85rem;">Save messages</button>
+  </div>
+
+  <div class="admin-panel" id="pText">
+    <div class="admin-panel-head"><h2>Page wording</h2></div>
+    <div class="auth-field"><label for="tHeroH">Main headline</label><input type="text" id="tHeroH" maxlength="120"></div>
+    <div class="auth-field"><label for="tHeroS">Line under the headline</label><input type="text" id="tHeroS" maxlength="160"></div>
+    <div class="auth-field"><label for="tAbout">About the challenge</label><textarea id="tAbout" rows="3" maxlength="800"></textarea></div>
+    <div class="auth-field"><label for="tPrize">Prize details</label><textarea id="tPrize" rows="3" maxlength="800" placeholder="Leave empty for: A bridal package worth up to ₦2 million…"></textarea></div>
+    <div class="auth-field"><label for="tElig">Who can enter</label><textarea id="tElig" rows="3" maxlength="800"></textarea></div>
+    <div class="auth-field"><label for="tRules">Rules (one rule per line)</label><textarea id="tRules" rows="8" maxlength="3000" placeholder="Leave empty to use the standard rules, which follow your dates."></textarea></div>
+    <p id="mText" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bText" style="padding:9px 18px;font-size:.85rem;">Save wording</button>
+  </div>
+
+  <div class="admin-panel" id="pRegs">
+    <div class="admin-panel-head"><h2>Registrations <span id="regCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2>
+      <button type="button" class="btn btn-outline" id="bCsv" style="padding:7px 14px;font-size:.8rem;border-color:var(--line);">Download CSV</button></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+      <input type="search" id="rSearch" placeholder="Search name, email, city…" aria-label="Search registrations" style="flex:1 1 220px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;">
+      <select id="rFilter" aria-label="Filter by status" style="padding:9px 12px;border:1px solid var(--line);border-radius:8px;"><option value="">All</option><option value="new">New</option><option value="shortlisted">Shortlisted</option><option value="reserve">Reserve</option><option value="declined">Declined</option></select>
+    </div>
+    <div style="overflow-x:auto;"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Couples who registered</caption>
+      <thead><tr><th scope="col">Date</th><th scope="col">Couple</th><th scope="col">Contact</th><th scope="col">City</th><th scope="col">Status</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="regRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
+    </table></div>
+  </div>
+
+</div>
+</main>
+</div>
+<style>
+.ch-a-checks{display:grid;gap:8px}.ch-a-checks label{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}.ch-a-checks input{margin-top:3px}
+.ch-a-imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.ch-a-img{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}.ch-a-img h3{font-size:.92rem;margin:0 0 8px}
+.ch-a-img .pv{aspect-ratio:4/3;background:#f3f1e6;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:#888;font-size:.8rem;margin-bottom:8px}
+.ch-a-img .pv img{width:100%;height:100%;object-fit:cover;object-position:top}
+.ch-a-img input[type=file]{font-size:.8rem;width:100%}.ch-a-img button{margin-top:6px;font-size:.78rem;background:none;border:0;color:#9b1c1c;text-decoration:underline;cursor:pointer;padding:0}
+.ch-a-prev{margin:12px 0;border:1px dashed var(--line);border-radius:12px;padding:12px;background:#faf8ee;font-size:.88rem}.ch-a-prev:empty{display:none}
+.ch-a-prev .mock{display:grid;grid-template-columns:55% 45%;background:#0b0b0b;color:#fff;border-radius:12px;overflow:hidden;border:2px solid #F4D900}
+.ch-a-prev .mock .i{min-height:170px;background:#222 center top/cover}.ch-a-prev .mock .t{padding:16px}.ch-a-prev .mock b{display:block;font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:6px}
+.ch-a-prev .mock span.b{display:inline-block;margin-top:8px;background:#F4D900;color:#000;border-radius:99px;padding:6px 14px;font-weight:700;font-size:.8rem}
+.ch-a-prev video,.ch-a-prev iframe,.ch-a-prev img.vt{max-width:100%;border-radius:10px}
+.reg-det td{background:#faf8ee;font-size:.88rem;line-height:1.55}.reg-det textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:8px}
+.reg-st{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:.82rem}
+</style>
+<script src="js/challenge-core.js"></script>
+<script src="js/admin-challenge.js"></script>
+</body>
+</html>

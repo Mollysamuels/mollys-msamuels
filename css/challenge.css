@@ -1,0 +1,82 @@
+/* Bridal Challenge landing page. Black, gold and white. */
+.ch{--g:#F4D900;--k:#0b0b0b;--cream:#FBF6DC;color:#1a1a1a;font-family:'Work Sans',Arial,sans-serif;overflow-x:hidden}
+.ch *{box-sizing:border-box}
+.ch-wrap{width:min(1180px,100% - 40px);margin:0 auto}.ch-narrow{width:min(820px,100% - 40px)}.ch-center{text-align:center}
+.ch h1,.ch h2,.ch h3{font-family:'Fraunces',Georgia,serif;font-weight:600;margin:0}
+.ch-sec{padding:72px 0}.ch-cream{background:var(--cream)}.ch-dark{background:var(--k);color:#fff}
+.ch-sec h2{font-size:clamp(1.8rem,4vw,2.6rem);line-height:1.1;margin-bottom:12px;text-align:center}
+.ch-sec h2::after{content:"";display:block;width:64px;height:4px;background:var(--g);margin:14px auto 0;border-radius:2px}
+.ch-sub{text-align:center;max-width:640px;margin:0 auto 34px;font-size:1.05rem;line-height:1.6;color:#4a4a4a}
+.ch-dark .ch-sub,.ch-sub.light{color:#e8e2c8}.ch-h1{font-size:clamp(1.8rem,4vw,2.6rem);margin-bottom:12px}
+.ch-h3{font-size:1.3rem;margin:30px 0 12px}
+.ch-btn{display:inline-block;background:var(--g);color:#000;border:2px solid var(--g);border-radius:999px;padding:14px 30px;font:700 15px 'Work Sans',Arial,sans-serif;text-decoration:none;cursor:pointer;transition:background .2s,color .2s}
+.ch-btn:hover{background:#fff;border-color:#fff}.ch-btn:disabled{opacity:.6;cursor:wait}
+.ch-btn:focus-visible,.ch a:focus-visible,.ch button:focus-visible,.ch input:focus-visible,.ch select:focus-visible,.ch textarea:focus-visible{outline:3px solid #000;outline-offset:3px;box-shadow:0 0 0 6px var(--g)}
+.ch-btn-line{background:transparent;color:inherit;border-color:currentColor}.ch-dark .ch-btn-line{color:#fff}.ch-btn-line:hover{background:#000;color:var(--g);border-color:#000}
+.ch-dark .ch-btn-line:hover{background:var(--g);color:#000;border-color:var(--g)}
+/* hero */
+.ch-hero{position:relative;background:var(--k);color:#fff;min-height:min(78vh,720px);display:flex;align-items:center;overflow:hidden}
+.ch-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 78% 20%,rgba(244,217,0,.16),transparent 52%)}
+.ch-hero-bg{position:absolute;inset:0}.ch-hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.ch-hero.has-img::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.55) 48%,rgba(0,0,0,.12) 100%)}
+.ch-hero-in{position:relative;z-index:2;padding:70px 0}
+.ch-eye{font:600 13px 'Work Sans',Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--g);margin:0 0 14px}
+.ch-hero h1{font-size:clamp(2.1rem,6vw,4rem);line-height:1.05;max-width:760px;margin-bottom:14px}
+.ch-lead{font-size:clamp(1rem,2vw,1.25rem);max-width:600px;color:#e8e2c8;margin:0 0 14px}
+.ch-phase{display:inline-block;border:1px solid var(--g);color:var(--g);border-radius:999px;padding:6px 16px;font:600 13px 'Work Sans',Arial,sans-serif;margin:0 0 22px}
+.ch-count{margin:0 0 26px}.ch-count-l{margin:0 0 8px;font-size:.92rem;color:#e8e2c8}
+.ch-count-b{display:flex;gap:10px;flex-wrap:wrap}.ch-count-b div{background:rgba(0,0,0,.55);border:1px solid rgba(244,217,0,.55);border-radius:12px;min-width:76px;padding:10px 8px;text-align:center}
+.ch-count-b b{display:block;font:600 1.9rem/1 'Fraunces',Georgia,serif;color:var(--g)}.ch-count-b span{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#cfc9ad}
+/* founder video */
+.ch-video{margin:0 auto;border-radius:18px;overflow:hidden;background:#000;box-shadow:0 18px 50px rgba(0,0,0,.25);border:2px solid var(--g)}
+.ch-video.is-wide{aspect-ratio:16/9;width:100%}.ch-video.is-portrait{aspect-ratio:9/16;width:min(360px,100%)}
+.ch-video iframe,.ch-video video{width:100%;height:100%;border:0;display:block;background:#000}
+.ch-play{position:relative;width:100%;height:100%;border:0;padding:0;margin:0;background:#111;cursor:pointer;display:block}
+.ch-play img{width:100%;height:100%;object-fit:cover;display:block}
+.ch-play-ico{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;border-radius:50%;background:var(--g);color:#000;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(0,0,0,.4);transition:transform .2s}
+.ch-play:hover .ch-play-ico{transform:scale(1.07)}.ch-play-ico svg{width:38px;height:38px;margin-left:4px}
+/* cards */
+.ch-cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}.ch-cards2{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:30px}
+.ch-card{background:#fff;border:1px solid #eadf9a;border-radius:18px;padding:26px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+.ch-card h3{font-size:1.35rem;margin-bottom:10px}.ch-card p{margin:0 0 14px;line-height:1.6;color:#444}
+.ch-brand{text-align:center;padding:38px 26px;background:var(--k);color:#fff;border-color:var(--k)}.ch-brand p{color:#e8e2c8}.ch-brand h3{color:var(--g);font-size:1.8rem}
+.ch-steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:12px}
+.ch-steps li{counter-increment:s;position:relative;padding-left:40px;line-height:1.35}
+.ch-steps li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;background:var(--g);color:#000;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.ch-steps b{display:block}.ch-steps span{font-size:.9rem;color:#555}
+/* brides */
+.ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.ch-bride{background:#fff;border-radius:20px;overflow:hidden;border:1px solid #eadf9a;box-shadow:0 8px 24px rgba(0,0,0,.06);transition:transform .25s,box-shadow .25s}
+.ch-bride:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.12)}
+.ch-bride-img{position:relative;aspect-ratio:4/5;background:#eee}.ch-bride-img img{width:100%;height:100%;object-fit:cover;object-position:top center;display:block}
+.ch-num{position:absolute;left:12px;top:12px;background:var(--k);color:var(--g);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.85rem}
+.ch-bride-b{padding:20px}.ch-bride-b h3{font-size:1.35rem;margin-bottom:8px}.ch-bride-b p{margin:0 0 12px;line-height:1.55;color:#444;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.ch-bride-p{width:100%;border-radius:12px;margin:0 0 12px;aspect-ratio:3/2;object-fit:cover}
+.ch-link{font-weight:600;color:#000;text-decoration:underline;text-decoration-color:var(--g);text-decoration-thickness:3px;text-underline-offset:3px}
+.ch-note{background:#fff;border:1px dashed #cfc27a;border-radius:14px;padding:18px 20px;text-align:center;color:#333;margin:0 0 20px;line-height:1.55}
+.ch-dark .ch-note{background:rgba(255,255,255,.06);border-color:rgba(244,217,0,.5);color:#fff}
+.ch-grid .ch-note{grid-column:1/-1}
+.ch-howto{margin:0;padding-left:22px;line-height:1.8;color:#333}
+/* share */
+.ch-share{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+/* rules */
+.ch-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}
+.ch-table th,.ch-table td{padding:12px 16px;border-bottom:1px solid #eee;text-align:left;font-size:.95rem}.ch-table th{width:42%;font-weight:600}
+.ch-rules{margin:0;padding-left:22px;display:grid;gap:10px;line-height:1.6}
+/* form */
+.ch-form{display:grid;gap:16px;text-align:left}.ch-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ch-f label{display:block;font-weight:600;font-size:.92rem;margin-bottom:6px}.ch-f small{font-weight:400;color:#bdb79b}
+.ch-f input[type=text],.ch-f input[type=email],.ch-f input[type=tel],.ch-f input[type=date],.ch-f select,.ch-f textarea,.ch-f input[type=file]{width:100%;background:#fff;color:#111;border:1px solid #d7ceb0;border-radius:10px;padding:12px 14px;font:400 16px 'Work Sans',Arial,sans-serif}
+.ch-f textarea{resize:vertical;min-height:130px}.ch-count-c{display:block;text-align:right;font-size:.8rem;color:#bdb79b;margin-top:4px}
+.ch-check{display:flex;gap:12px;align-items:flex-start;font-size:.9rem;line-height:1.5;color:#e8e2c8}.ch-check input{width:22px;height:22px;margin-top:2px;flex:none;accent-color:var(--g)}.ch-check a{color:var(--g)}
+.ch-err{background:#fff0f0;color:#9b1c1c;border:1px solid #e9b4b4;border-radius:10px;padding:12px 14px;margin:0;font-weight:600}
+.ch-hp{position:absolute!important;left:-9999px;width:1px;height:1px;overflow:hidden}
+.ch-done{background:rgba(244,217,0,.1);border:2px solid var(--g);border-radius:16px;padding:28px;text-align:center}.ch-done h3{color:var(--g);font-size:1.6rem;margin-bottom:10px}.ch-done p{margin:0;line-height:1.6;color:#fff}
+@media(max-width:900px){.ch-cards3,.ch-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:640px){.ch-sec{padding:52px 0}.ch-cards3,.ch-grid,.ch-cards2,.ch-row{grid-template-columns:1fr}.ch-hero{min-height:0}.ch-hero-in{padding:48px 0}.ch-count-b div{min-width:70px}.ch-play-ico{width:68px;height:68px;margin:-34px 0 0 -34px}.ch-table th{width:46%}
+.ch-hero.has-img::after{background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,.85))}}
+@media(prefers-reduced-motion:reduce){.ch *{transition:none!important}}
+/* heading colours must beat the site's global h1/h2 colour */
+.ch .ch-hero h1,.ch .ch-dark h1,.ch .ch-dark h2,.ch .ch-dark h3{color:#fff}
+.ch .ch-cream h2,.ch .ch-sec:not(.ch-dark) h2,.ch .ch-card h3,.ch .ch-bride-b h3{color:#111}
+.ch .ch-brand h3{color:var(--g)}
