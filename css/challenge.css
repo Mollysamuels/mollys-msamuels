@@ -80,3 +80,30 @@
 .ch .ch-hero h1,.ch .ch-dark h1,.ch .ch-dark h2,.ch .ch-dark h3{color:#fff}
 .ch .ch-cream h2,.ch .ch-sec:not(.ch-dark) h2,.ch .ch-card h3,.ch .ch-bride-b h3{color:#111}
 .ch .ch-brand h3{color:var(--g)}
+
+/* ---------- Phase 2: voting ---------- */
+.ch-city{font-size:.88rem;color:#7a6a3a;margin:-4px 0 8px;font-weight:600}
+.ch-live{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin:6px 0 12px;padding:10px 14px;background:#0b0b0b;color:#fff;border-radius:12px}
+.ch-live[hidden]{display:none}
+.ch-live-n{font:600 1.7rem/1 'Fraunces',Georgia,serif;color:var(--g);transition:transform .25s}.ch-live span{font-size:.9rem;color:#e8e2c8}
+.ch-rank{margin-left:auto;font-style:normal;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;border:1px solid rgba(244,217,0,.55);color:var(--g);border-radius:999px;padding:3px 10px}.ch-rank.top{background:var(--g);color:#000;border-color:var(--g)}
+.ch-vote{display:block;width:100%;background:var(--g);color:#000;border:2px solid var(--g);border-radius:999px;padding:14px 18px;font:700 15px 'Work Sans',Arial,sans-serif;letter-spacing:.03em;cursor:pointer;margin:6px 0 10px;transition:background .2s}
+.ch-vote:hover:not(:disabled){background:#fff;border-color:#000}.ch-vote:disabled{opacity:.7;cursor:default}.ch-vote.is-mine{background:#0b0b0b;color:var(--g);border-color:#0b0b0b;opacity:1}
+.ch-bshare{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:.85rem}.ch-bshare span{color:#777}.ch-bshare a{color:#000;font-weight:600;text-decoration:underline;text-decoration-color:var(--g);text-decoration-thickness:2px;text-underline-offset:3px}
+#chVM{position:fixed;inset:0;z-index:10001;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(0,0,0,.72)}#chVM[hidden]{display:none}
+.chvm-box{position:relative;width:min(460px,100%);max-height:calc(100vh - 28px);overflow:auto;background:#0b0b0b;color:#fff;border:2px solid #F4D900;border-radius:18px;padding:30px 26px 26px;box-shadow:0 24px 70px rgba(0,0,0,.55);font-family:'Work Sans',Arial,sans-serif}
+.chvm-x{position:absolute;top:10px;right:10px;width:38px;height:38px;border-radius:50%;border:2px solid #F4D900;background:#000;color:#F4D900;font:400 24px/1 Arial,sans-serif;cursor:pointer}
+.chvm-eye{margin:0 0 6px;font:600 12px 'Work Sans',Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#F4D900}
+.chvm-box h2{margin:0 0 10px;font:600 1.6rem/1.15 'Fraunces',Georgia,serif;color:#fff}
+.chvm-note{margin:0 0 14px;color:#e8e2c8;font-size:.95rem;line-height:1.55}.chvm-small{margin:14px 0 0;font-size:.85rem;color:#bdb79b}
+.chvm-f{margin:0 0 12px}.chvm-f label{display:block;font-weight:600;font-size:.88rem;margin-bottom:5px;color:#fff}
+.chvm-f input{width:100%;box-sizing:border-box;background:#fff;color:#111;border:1px solid #d7ceb0;border-radius:10px;padding:12px 14px;font:400 16px 'Work Sans',Arial,sans-serif}
+.chvm-ck{display:flex;gap:10px;align-items:flex-start;font-size:.85rem;color:#e8e2c8;margin:2px 0 14px;line-height:1.4}.chvm-ck input{margin-top:3px;flex:none}
+.chvm-err{margin:0 0 12px;color:#ffb4b4;font-size:.9rem;line-height:1.45}.chvm-err[hidden]{display:none}
+.chvm-go,.chvm-g{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;box-sizing:border-box;border-radius:999px;padding:14px 18px;font:700 15px 'Work Sans',Arial,sans-serif;text-decoration:none;cursor:pointer;border:2px solid #F4D900}
+.chvm-go{background:#F4D900;color:#000}.chvm-go:hover:not(:disabled){background:#fff;border-color:#fff}.chvm-go:disabled,.chvm-g:disabled{opacity:.6;cursor:wait}
+.chvm-g{background:#fff;color:#111;border-color:#fff}.chvm-g svg{width:20px;height:20px}
+.chvm-or{display:flex;align-items:center;gap:12px;margin:12px 0;color:#bdb79b;font-size:.8rem}.chvm-or::before,.chvm-or::after{content:"";flex:1;height:1px;background:rgba(244,217,0,.3)}
+.chvm-link{background:none;border:0;color:#F4D900;text-decoration:underline;cursor:pointer;font:500 .85rem 'Work Sans',Arial,sans-serif;padding:0}.chvm-link:disabled{color:#8d886f;cursor:default;text-decoration:none}
+.chvm-box button:focus-visible,.chvm-box input:focus-visible,.chvm-box a:focus-visible{outline:3px solid #fff;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.ch-live-n{transition:none}}

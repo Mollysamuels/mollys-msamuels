@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Challenge Votes — Admin — Molly Samuels</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .skip-link { position:absolute; left:-9999px; top:8px; background:#000; color:#fff; padding:10px 16px; border-radius:6px; z-index:1000; }
+  .skip-link:focus { left:8px; }
+  .adm-msg { font-size:0.85rem; margin:0 0 10px; }
+  .adm-msg.ok { color:#2D6B3B; } .adm-msg.err { color:#B23A3A; }
+  .adm-hint { display:block; font-size:0.78rem; color:#58493A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"] { border-color:#B23A3A; }
+  :focus-visible { outline:2px solid #1B2A4A; outline-offset:2px; }
+.auth-field textarea{width:100%;box-sizing:border-box;min-height:90px;font:inherit;padding:10px 12px;border:1px solid var(--line,#ddd);border-radius:8px}
+</style>
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<a href="#main" class="skip-link">Skip to main content</a>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" aria-label="Admin" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-sync-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 17l5-4 3 3 3-2 5 4" stroke="currentColor" stroke-width="1.3"/></svg>Add from photos</a>
+    <a href="admin-match-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 12h2" stroke="currentColor" stroke-width="1.5"/></svg>Match hover photos</a>
+    <a href="admin-sitemap.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="currentColor" stroke-width="1.3"/></svg>Sitemap &amp; link previews</a>
+    <a href="admin-challenge.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Bridal Challenge</a>
+    <a href="admin-challenge-votes.html" class="admin-nav active" aria-current="page"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Challenge Votes</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main" id="main">
+<div class="admin-topbar">
+  <h1>Challenge Votes</h1>
+  <div class="admin-topbar-user"><a href="admin-challenge.html" class="btn btn-outline" style="padding:7px 14px;font-size:.82rem;border-color:var(--line);margin-right:8px;">Campaign setup</a><a href="bridal-challenge" target="_blank" rel="noopener" class="btn btn-outline" style="padding:7px 14px;font-size:.82rem;border-color:var(--line);margin-right:12px;">View live page</a><div class="admin-avatar" aria-hidden="true">A</div> Admin</div>
+</div>
+<div class="admin-content" style="max-width:1100px;">
+
+  <div class="admin-panel" id="pCtl">
+    <div class="admin-panel-head"><h2>Voting controls</h2></div>
+    <p id="frozenBanner" class="adm-msg err" hidden><b>Results are frozen.</b> No new votes can be cast and nothing can be changed until you unfreeze.</p>
+    <div class="ch-a-checks">
+      <label><input type="checkbox" id="cShow"> Show live vote counts on the website</label>
+      <label><input type="checkbox" id="cFreeze"> Freeze the results (stops new votes and all changes below, for example after voting closes)</label>
+    </div>
+    <p id="mCtl" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bCtl" style="padding:9px 18px;font-size:.85rem;">Save</button>
+    <hr style="border:0;border-top:1px solid var(--line);margin:18px 0">
+    <p class="adm-hint" style="margin-top:0">Testing before launch? You can clear every website vote. This cannot be undone and does not touch social votes.</p>
+    <button type="button" class="btn btn-outline" id="bReset" style="padding:7px 14px;font-size:.8rem;border-color:#e6b4b4;color:#9b1c1c">Delete all website votes…</button>
+  </div>
+
+  <div class="admin-panel" id="pRes">
+    <div class="admin-panel-head"><h2>Results</h2><button type="button" class="btn btn-outline" id="bRefresh" style="padding:7px 14px;font-size:.8rem;border-color:var(--line);">Refresh</button></div>
+    <p class="adm-hint" style="margin-top:0">Total = website votes (removed votes excluded) + approved social votes. Updated <span id="resAt">…</span></p>
+    <div style="overflow-x:auto"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Votes per couple</caption>
+      <thead><tr><th scope="col">No.</th><th scope="col">Couple</th><th scope="col">Website</th><th scope="col">Social (approved)</th><th scope="col">Total</th><th scope="col" style="min-width:160px">&nbsp;</th><th scope="col">Waiting for approval</th></tr></thead>
+      <tbody id="resRows"><tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:20px">Loading…</td></tr></tbody>
+    </table></div>
+    <p id="resSum" style="font-size:.88rem;margin:12px 0 0"></p>
+  </div>
+
+  <div class="admin-panel" id="pHour">
+    <div class="admin-panel-head"><h2>Votes over time (last 4 days, Nigeria time)</h2></div>
+    <div id="hourChart" class="ch-bars" aria-label="Website votes per hour"></div>
+    <p class="adm-hint" id="hourNote"></p>
+  </div>
+
+  <div class="admin-panel" id="pFlag">
+    <div class="admin-panel-head"><h2>Worth checking</h2></div>
+    <p class="adm-hint" style="margin-top:0">These are only warnings. Shared Wi-Fi at a church or office, or a mobile network, can look the same as cheating. Look at the voters before removing anything.</p>
+    <div id="flags">Loading…</div>
+  </div>
+
+  <div class="admin-panel" id="pSoc">
+    <div class="admin-panel-head"><h2>Social media votes</h2></div>
+    <p class="adm-hint" style="margin-top:0">Count the votes yourself on each platform, enter them here, then approve them. Only approved votes are added to the total.</p>
+    <div class="ch-a-cols">
+      <div class="auth-field"><label for="sBride">Couple</label><select id="sBride"></select></div>
+      <div class="auth-field"><label for="sPlat">Platform</label><select id="sPlat"><option>Instagram</option><option>Facebook</option><option>WhatsApp</option><option>TikTok</option><option>X (Twitter)</option><option>YouTube</option><option value="__other">Other…</option></select></div>
+      <div class="auth-field" id="sOtherBox" hidden><label for="sOther">Platform name</label><input type="text" id="sOther" maxlength="40"></div>
+      <div class="auth-field"><label for="sVotes">Number of votes</label><input type="number" id="sVotes" min="1" max="1000000"></div>
+    </div>
+    <div class="auth-field"><label for="sNote">Where the count came from (optional, for your records)</label><input type="text" id="sNote" maxlength="500" placeholder="e.g. Instagram reel likes counted 6 Dec, 9am"></div>
+    <p id="mSoc" class="adm-msg" role="status" aria-live="polite"></p>
+    <button type="button" class="btn btn-gold" id="bSocAdd" style="padding:9px 18px;font-size:.85rem;">Add (waits for approval)</button>
+    <div style="overflow-x:auto;margin-top:14px"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Social media votes entered</caption>
+      <thead><tr><th scope="col">Entered</th><th scope="col">Couple</th><th scope="col">Platform</th><th scope="col">Votes</th><th scope="col">Note</th><th scope="col">Status</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="socRows"><tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:20px">Loading…</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="admin-panel" id="pVot">
+    <div class="admin-panel-head"><h2>Voters <span id="votCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2>
+      <button type="button" class="btn btn-outline" id="bVCsv" style="padding:7px 14px;font-size:.8rem;border-color:var(--line);">Download CSV</button></div>
+    <p class="adm-hint" style="margin-top:0">Private. Removing a vote takes it out of the count but keeps that email, phone and device blocked from voting again.</p>
+    <input type="search" id="vSearch" placeholder="Search name, email, phone…" aria-label="Search voters" style="width:100%;max-width:360px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;margin-bottom:10px;box-sizing:border-box">
+    <div style="overflow-x:auto"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Website voters</caption>
+      <thead><tr><th scope="col">Time</th><th scope="col">Voter</th><th scope="col">Contact</th><th scope="col">Voted for</th><th scope="col">How</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="votRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:20px">Loading…</td></tr></tbody>
+    </table></div>
+    <p style="text-align:center;margin-top:12px"><button type="button" class="btn btn-outline" id="bMore" style="padding:7px 16px;font-size:.82rem;border-color:var(--line)" hidden>Show more</button></p>
+  </div>
+
+  <div class="admin-panel" id="pAud">
+    <div class="admin-panel-head"><h2>Activity log</h2></div>
+    <div style="overflow-x:auto"><table class="admin-table"><caption class="sr-only" style="position:absolute;left:-9999px">Admin actions on votes</caption>
+      <thead><tr><th scope="col">When</th><th scope="col">What</th><th scope="col">Details</th></tr></thead>
+      <tbody id="audRows"><tr><td colspan="3" style="text-align:center;color:var(--ink-soft);padding:20px">Loading…</td></tr></tbody></table></div>
+  </div>
+
+</div>
+</main>
+</div>
+<style>
+.admin-main .btn-outline{color:#2b2118}.admin-main .btn-outline:disabled{opacity:.45}
+.ch-a-checks{display:grid;gap:8px}.ch-a-checks label{display:flex;gap:10px;align-items:flex-start;font-size:.9rem}.ch-a-checks input{margin-top:3px}
+.ch-a-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin-bottom:8px}
+.auth-field select,.auth-field input[type=number]{width:100%;box-sizing:border-box;padding:10px 12px;border:1px solid var(--line,#ddd);border-radius:8px;font:inherit}
+.ch-bar{height:12px;background:#f3f1e6;border-radius:6px;overflow:hidden;min-width:140px}.ch-bar i{display:block;height:100%;background:#F4D900}
+.ch-bars{display:flex;align-items:flex-end;gap:3px;height:140px;overflow-x:auto;padding-bottom:4px}.ch-bars div{flex:0 0 14px;background:#F4D900;border-radius:3px 3px 0 0;min-height:2px}
+.ch-pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:.75rem;font-weight:700}.ch-pill.p{background:#fff3cd}.ch-pill.a{background:#d9f2df}.ch-pill.r{background:#f5d4d4}
+.ch-flag{border:1px solid #eadf9a;background:#fffbe6;border-radius:10px;padding:10px 14px;margin:0 0 8px;font-size:.88rem;line-height:1.5}
+.ch-void td{opacity:.55;text-decoration:line-through}.ch-void td:last-child{opacity:1;text-decoration:none}
+</style>
+<script src="js/challenge-core.js"></script>
+<script src="js/admin-challenge-votes.js"></script>
+</body>
+</html>

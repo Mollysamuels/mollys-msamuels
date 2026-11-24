@@ -94,24 +94,33 @@
   function renderBrides() {
     var s = settings, grid = $("chBrides");
     $("chBridesT").textContent = phase === "voting" ? "Meet our finalist brides, then vote for your favourite." : "Our finalist brides and their love stories will appear here.";
-    C.request("challenge_contestants?is_published=eq.true&select=id,contestant_number,bride_name,groom_name,photo_url,partner_photo_url,story,video_url&order=sort_order.asc,contestant_number.asc")
+    C.request("challenge_contestants?is_published=eq.true&select=id,contestant_number,bride_name,groom_name,photo_url,partner_photo_url,city,story,video_url&order=sort_order.asc,contestant_number.asc")
       .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; }).then(function (rows) {
         if (!rows || !rows.length) { grid.innerHTML = '<p class="ch-note">Finalists will be announced after the interviews.</p>'; return; }
         grid.innerHTML = rows.map(function (c) {
           var img = C.safeImg(c.photo_url), p2 = C.safeImg(c.partner_photo_url), v = C.parseVideo(c.video_url);
-          return '<article class="ch-bride" id="bride-' + e(c.id) + '"><div class="ch-bride-img">' + (img ? '<img src="' + e(img) + '" alt="' + e(c.bride_name) + ' in her bridal look" loading="lazy" decoding="async">' : "") +
-            '<span class="ch-num">No. ' + e(c.contestant_number) + '</span></div><div class="ch-bride-b"><h3>' + e(c.bride_name) + (c.groom_name ? " &amp; " + e(c.groom_name) : "") + "</h3>" +
+          var url = "https://mollysamuels.com/bridal-challenge#bride-" + c.id, nm = c.bride_name + (c.groom_name ? " & " + c.groom_name : "");
+          var msg = "Vote for " + c.bride_name + " in the Mollys \u00d7 M. Samuels Bridal Challenge! ";
+          return '<article class="ch-bride" id="bride-' + e(c.id) + '" data-id="' + e(c.id) + '" data-name="' + e(c.bride_name) + '"><div class="ch-bride-img">' + (img ? '<img src="' + e(img) + '" alt="' + e(c.bride_name) + ' in her bridal look" loading="lazy" decoding="async">' : "") +
+            '<span class="ch-num">No. ' + e(c.contestant_number) + '</span></div><div class="ch-bride-b"><h3>' + e(nm) + "</h3>" +
+            (c.city ? '<p class="ch-city">' + e(c.city) + "</p>" : "") +
             (c.story ? "<p>" + e(c.story) + "</p>" : "") +
             (p2 ? '<img class="ch-bride-p" src="' + e(p2) + '" alt="' + e(c.bride_name) + ' with her partner" loading="lazy" decoding="async">' : "") +
-            (v ? '<a class="ch-link" href="' + e(v.kind === "file" ? v.src : "https://" + (v.kind === "youtube" ? "www.youtube.com/watch?v=" : "vimeo.com/") + v.id) + '" target="_blank" rel="noopener noreferrer">Watch her transformation</a>' : "") + "</div></article>";
+            (v && v.kind === "youtube" ? '<a class="ch-link" href="https://www.youtube.com/watch?v=' + e(v.id) + '" target="_blank" rel="noopener noreferrer">Watch her transformation</a>' : "") +
+            '<div class="ch-live" hidden aria-live="polite"></div>' +
+            (phase === "voting" ? '<button type="button" class="ch-vote" data-id="' + e(c.id) + '" data-name="' + e(c.bride_name) + '">VOTE FOR THIS BRIDE</button>' : "") +
+            '<div class="ch-bshare"><span>Share</span><a target="_blank" rel="noopener noreferrer" aria-label="Share ' + e(c.bride_name) + ' on WhatsApp" href="https://wa.me/?text=' + encodeURIComponent(msg + url) + '">WhatsApp</a>' +
+            '<a target="_blank" rel="noopener noreferrer" aria-label="Share ' + e(c.bride_name) + ' on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '">Facebook</a>' +
+            '<a target="_blank" rel="noopener noreferrer" aria-label="Share ' + e(c.bride_name) + ' on X" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + "&url=" + encodeURIComponent(url) + '">X</a></div></div></article>';
         }).join("");
+        if (window.ChVote) window.ChVote.start({ sb: sb, settings: settings, phase: phase });
       });
   }
 
   /* ---------- 5. vote ---------- */
   function renderVote() {
     var s = settings, box = $("chVoteBox");
-    var info = '<ol class="ch-howto"><li>Sign in with your Google account to verify who you are.</li><li>Choose your favourite bride.</li><li>Cast your vote. Each verified account has one website vote.</li></ol>';
+    var info = '<ol class="ch-howto"><li>Choose your favourite bride and press &ldquo;Vote for this bride&rdquo;.</li><li>Confirm it is you with Google, or with a code we email you.</li><li>Your vote is counted. Each email, phone number and device can vote once.</li></ol>';
     var status = {
       voting: "Voting is open until 11:59 PM on " + C.dayLabel(s.voting_close) + " (Nigeria time).",
       counting: "Voting has closed. The winner is announced on " + C.dayLabel(s.winner_date) + ".",

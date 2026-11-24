@@ -23,15 +23,15 @@
     shortlisting: { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "Applications are closed. We are reviewing every couple and will announce our finalists soon.", button: "See the challenge" },
     interviews:   { title: "OUR FINALISTS ARE IN THE SPOTLIGHT", text: "Interviews and bridal styling are happening from {interviews_range}. Voting opens on {voting_open_day}.", button: "See the challenge" },
     voting_soon:  { title: "MEET OUR FINALIST BRIDES", text: "Voting opens on {voting_open_day}. Get to know our brides before you choose your favourite.", button: "Meet the brides" },
-    voting:       { title: "VOTE FOR YOUR FAVOURITE BRIDE", text: "Voting is open until 11:59 PM on {voting_close_day} (Nigeria time). Sign in with Google and cast your vote.", button: "VOTE NOW" },
+    voting:       { title: "VOTE FOR YOUR FAVOURITE BRIDE", text: "Voting is open until 11:59 PM on {voting_close_day} (Nigeria time). Confirm with Google or an email code and cast your vote.", button: "VOTE NOW" },
     counting:     { title: "VOTING IS NOW CLOSED", text: "Thank you for voting! We are counting the votes. The winner will be announced on {winner_day}.", button: "See the brides" },
     winner:       { title: "THE WINNER HAS BEEN ANNOUNCED", text: "Congratulations to our winning couple. Thank you to everyone who took part.", button: "Meet the brides" }
   };
   var DEFAULT_RULES = [
     "Open to engaged couples who are planning their wedding. Apply between {reg_open_day} and {reg_close_day}. Our team registers each couple.",
     "Our team will shortlist 3 to 4 couples (6 at most). shortlisted couples take part in interviews and bridal styling from {interviews_range}.",
-    "Anyone can vote, including people who have never shopped with us. Voters must verify their identity by signing in with Google.",
-    "Each verified account has one website vote. Voting runs from {voting_open_day} to 11:59 PM on {voting_close_day} (Nigeria time).",
+    "Anyone can vote, including people who have never shopped with us. Voters confirm their identity with Google or with a code sent to their email.",
+    "Each email address, phone number and device can vote once. Voting runs from {voting_open_day} to 11:59 PM on {voting_close_day} (Nigeria time).",
     "Votes from social media are also counted. They are collected and reviewed by our team before they are added.",
     "The winner is announced on {winner_day}. The prize presentation takes place from {prize_range}.",
     "Votes found to be fake, bought or duplicated are removed. Molly Samuels Limited's decision on the result is final."

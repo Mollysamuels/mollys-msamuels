@@ -45,14 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// ---------- Bridal Challenge link in the admin sidebar (added here so every admin page gets it) ----------
+// ---------- Bridal Challenge links in the admin sidebar (added here so every admin page gets them) ----------
 document.addEventListener("DOMContentLoaded", () => {
   const list = document.querySelector(".admin-nav-list");
-  if (!list || list.querySelector('a[href="admin-challenge.html"]')) return;
-  const a = document.createElement("a");
-  a.href = "admin-challenge.html";
-  a.className = "admin-nav";
-  a.innerHTML = '<svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Bridal Challenge';
+  if (!list) return;
   const settings = list.querySelector('a[href="admin-settings.html"]');
-  list.insertBefore(a, settings || null);
+  const icon = '<svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>';
+  [["admin-challenge.html", "Bridal Challenge"], ["admin-challenge-votes.html", "Challenge Votes"]].forEach(([href, label]) => {
+    if (list.querySelector('a[href="' + href + '"]')) return;
+    const a = document.createElement("a");
+    a.href = href; a.className = "admin-nav"; a.innerHTML = icon + label;
+    list.insertBefore(a, settings || null);
+  });
 });
