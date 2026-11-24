@@ -1,10 +1,10 @@
-/* Molly Samuels - Bridal Challenge admin (Phase 1: campaign, photos, video, messages, registrations).
+/* Molly Samuels - Bridal Challenge admin (campaign, photos, video, messages, and the couples, who are added by admins only).
    Everything the admin types is shown as plain text, never as code. Only signed-in admins can save (the database enforces this too). */
 (function () {
   "use strict";
   var C = window.MSChallenge, e = C.esc;
   var $ = function (id) { return document.getElementById(id); };
-  var S = null, regs = [];
+  var S = null, regs = [], editing = null, cur = {};
   var DATE_FIELDS = { dRegOpen: "reg_open", dRegClose: "reg_close", dIntStart: "interviews_start", dIntEnd: "interviews_end", dVoteOpen: "voting_open", dVoteClose: "voting_close", dWinner: "winner_date", dPrizeStart: "prize_start", dPrizeEnd: "prize_end", dEnd: "campaign_end" };
 
   function say(id, msg, bad) { var m = $(id); m.textContent = msg; m.style.color = bad ? "#9b1c1c" : "#1c6b2f"; m.className = "adm-msg"; }
@@ -40,18 +40,11 @@
     });
     $("bFounder").addEventListener("click", function () {
       var url = $("vUrl").value.trim();
-      if (url && !C.parseVideo(url)) return say("mFounder", "That video link is not accepted. Use a YouTube or Vimeo link, or upload an MP4/WebM file.", true);
-      if ($("vPublished").checked && !url) return say("mFounder", "Add a video link or upload a video before publishing.", true);
+      if (url && !C.parseVideo(url)) return say("mFounder", "That video link is not accepted. Please paste a YouTube link.", true);
+      if ($("vPublished").checked && !url) return say("mFounder", "Add the YouTube link before publishing.", true);
       save({ founder_published: $("vPublished").checked, founder_heading: $("vHeading").value.trim() || "A Special Message From Our Founder", founder_text: $("vText").value.trim(), founder_video_url: url || null, founder_ratio: $("vRatio").value }, "mFounder");
     });
     $("vUrl").addEventListener("input", prevVideo); $("vRatio").addEventListener("change", prevVideo);
-    $("vFile").addEventListener("change", function () {
-      var f = this.files[0]; if (!f) return;
-      if (["video/mp4", "video/webm"].indexOf(f.type) < 0) return say("mFounder", "The video must be an MP4 or WebM file.", true);
-      if (f.size > 50 * 1024 * 1024) return say("mFounder", "That file is over 50 MB. Please upload it to YouTube and paste the link instead.", true);
-      say("mFounder", "Uploading video…");
-      upload(f, "founder").then(function (u) { if (u) { $("vUrl").value = u; prevVideo(); say("mFounder", "Video uploaded. Press “Save founder's video” to use it."); } });
-    });
     $("mPhase").addEventListener("change", loadMsg);
     ["mTitle", "mBody", "mBtn"].forEach(function (id) { $(id).addEventListener("input", prevPop); });
     $("bMsgs").addEventListener("click", function () {
@@ -62,9 +55,13 @@
       save({ phase_texts: pt }, "mMsgs");
     });
     $("bText").addEventListener("click", function () {
-      save({ hero_headline: $("tHeroH").value.trim() || "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", hero_subtext: $("tHeroS").value.trim(), about_text: $("tAbout").value.trim() || null, prize_text: $("tPrize").value.trim() || null, eligibility_text: $("tElig").value.trim() || null, rules_text: $("tRules").value.trim() || null }, "mText");
+      var al = $("tApplyLink").value.trim();
+      if (al && !/^(https:\/\/[^\s"'<>]+|mailto:[^\s"'<>]+|tel:[+\d\s-]+)$/i.test(al)) return say("mText", "The apply link must start with https://, mailto: or tel:", true);
+      save({ hero_headline: $("tHeroH").value.trim() || "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", hero_subtext: $("tHeroS").value.trim(), about_text: $("tAbout").value.trim() || null, prize_text: $("tPrize").value.trim() || null, eligibility_text: $("tElig").value.trim() || null, rules_text: $("tRules").value.trim() || null, apply_text: $("tApply").value.trim() || null, apply_link: $("tApplyLink").value.trim() || null }, "mText");
     });
-    $("rSearch").addEventListener("input", renderRegs); $("rFilter").addEventListener("change", renderRegs);
+    $("bAdd").addEventListener("click", function () { openForm(null); });
+    $("bCCancel").addEventListener("click", function () { $("cForm").hidden = true; });
+    $("bCSave").addEventListener("click", saveCouple);
     $("bCsv").addEventListener("click", csv);
     $("regRows").addEventListener("click", rowClick); $("regRows").addEventListener("change", rowChange);
   }
@@ -75,53 +72,50 @@
     $("fEnabled").checked = !!S.is_enabled; $("fPopup").checked = S.popup_enabled !== false; $("fIcon").checked = S.icon_enabled !== false; $("fOverride").value = S.phase_override || "";
     Object.keys(DATE_FIELDS).forEach(function (id) { $(id).value = toInput(S[DATE_FIELDS[id]]); });
     $("vPublished").checked = !!S.founder_published; $("vHeading").value = S.founder_heading || ""; $("vText").value = S.founder_text || ""; $("vUrl").value = S.founder_video_url || ""; $("vRatio").value = S.founder_ratio || "16:9";
-    $("tHeroH").value = S.hero_headline || ""; $("tHeroS").value = S.hero_subtext || ""; $("tAbout").value = S.about_text || ""; $("tPrize").value = S.prize_text || ""; $("tElig").value = S.eligibility_text || ""; $("tRules").value = S.rules_text || "";
-    imgBox($("imgBoxes"), "hero_image_url", "Main banner photo (top of the landing page)", "hero");
-    imgBox($("imgBoxes"), "popup_image_url", "Pop-up photo: the bride", "popup");
-    imgBox($("imgBoxes"), "popup_image2_url", "Pop-up photo: the groom (optional)", "popup");
-    imgBox($("thumbBox"), "founder_thumb_url", "Founder video thumbnail", "thumb");
+    $("tHeroH").value = S.hero_headline || ""; $("tHeroS").value = S.hero_subtext || ""; $("tAbout").value = S.about_text || ""; $("tPrize").value = S.prize_text || ""; $("tElig").value = S.eligibility_text || ""; $("tApply").value = S.apply_text || ""; $("tApplyLink").value = S.apply_link || ""; $("tRules").value = S.rules_text || "";
+    imgBox($("imgBoxes"), "hero_image_url", "Main banner photo (top of the landing page)");
+    imgBox($("imgBoxes"), "popup_image_url", "Pop-up photo: the bride");
+    imgBox($("imgBoxes"), "popup_image2_url", "Pop-up photo: the groom (optional)");
+    imgBox($("thumbBox"), "founder_thumb_url", "Founder video thumbnail");
     loadMsg(); prevVideo();
   }
 
-  /* ---------- pictures ---------- */
-  function imgBox(host, field, title, kind) {
+  /* ---------- pictures (kept in GitHub: assets/images/challenge/) ---------- */
+  var FOLDER = "assets/images/challenge/";
+  function cleanPath(v) {
+    v = String(v || "").trim(); if (!v) return "";
+    if (/^https:\/\/[^\s"'<>]+$/i.test(v)) return v;
+    if (/^assets\/[^\s"'<>]+$/.test(v)) return /\.(jpe?g|png|webp)$/i.test(v) && v.indexOf("..") < 0 ? v : null;
+    return /^[A-Za-z0-9][A-Za-z0-9._-]*\.(jpe?g|png|webp)$/i.test(v) ? FOLDER + v : null;
+  }
+  // One picture box: shows a preview, and a file-name field. onSet(path|null) is called when the admin presses the button.
+  function photoBox(host, title, current, onSet, btnText) {
+    host.innerHTML = "<h3>" + e(title) + '</h3><div class="pv">' + (current ? '<img src="' + e(C.safeImg(current)) + '" alt="" onerror="this.parentNode.textContent=\'Picture not found in GitHub yet\'">' : "No photo yet") + "</div>" +
+      '<input type="text" class="fn" maxlength="200" placeholder="file name, e.g. banner.webp" aria-label="File name for: ' + e(title) + '" value="' + e(current ? current.replace(FOLDER, "") : "") + '">' +
+      '<button type="button" class="use" style="color:#000;background:#F4D900;border:0;border-radius:99px;padding:6px 14px;font-weight:700;text-decoration:none;margin-top:8px">' + e(btnText) + "</button>" +
+      (current ? '<button type="button" class="rm">Remove photo</button>' : "");
+    host.querySelector(".use").addEventListener("click", function () {
+      var v = cleanPath(host.querySelector(".fn").value);
+      if (v === null) return alert("Use a file name ending in .jpg, .png or .webp (letters, numbers, dot, dash only), for example banner.webp. Upload the picture to the " + FOLDER + " folder on GitHub first.");
+      onSet(v || null);
+    });
+    var rm = host.querySelector(".rm"); if (rm) rm.addEventListener("click", function () { if (confirm("Remove this photo?")) onSet(null); });
+  }
+  function imgBox(host, field, title) {
     var id = "ib_" + field, box = document.getElementById(id);
     if (!box) { box = document.createElement("div"); box.className = "ch-a-img"; box.id = id; host.appendChild(box); }
-    var url = S[field];
-    box.innerHTML = "<h3>" + e(title) + '</h3><div class="pv">' + (url ? '<img src="' + e(C.safeImg(url)) + '" alt="">' : "No photo yet") + '</div><input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Choose a photo: ' + e(title) + '">' + (url ? '<button type="button">Remove this photo</button>' : "");
-    box.querySelector("input").addEventListener("change", function () {
-      var f = this.files[0]; if (!f) return;
-      if (["image/jpeg", "image/png", "image/webp"].indexOf(f.type) < 0) return alert("Please choose a JPG, PNG or WebP picture.");
-      if (f.size > 4 * 1024 * 1024) return alert("That picture is over 4 MB. Please shrink it first (for example with squoosh.app).");
-      box.querySelector(".pv").textContent = "Uploading…";
-      var old = S[field];
-      upload(f, kind).then(function (u) {
-        if (!u) { box.querySelector(".pv").textContent = "Upload failed"; return; }
-        var p = {}; p[field] = u;
-        save(p, field === "founder_thumb_url" ? "mFounder" : "mStatus").then(function (ok) { if (ok) removeOld(old); imgBox(host, field, title, kind); prevPop(); });
-      });
-    });
-    var rm = box.querySelector("button");
-    if (rm) rm.addEventListener("click", function () { if (!confirm("Remove this photo?")) return; var old = S[field], p = {}; p[field] = null; save(p, "mStatus").then(function (ok) { if (ok) removeOld(old); imgBox(host, field, title, kind); prevPop(); }); });
+    photoBox(box, title, S[field], function (v) {
+      var p = {}; p[field] = v;
+      save(p, field === "founder_thumb_url" ? "mFounder" : "mStatus").then(function () { imgBox(host, field, title); prevPop(); });
+    }, "Use this photo");
   }
-  function upload(file, kind) {
-    var ext = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "video/mp4": "mp4", "video/webm": "webm" }[file.type];
-    var path = kind + "/" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + "." + ext;
-    return supabaseClient.storage.from("challenge-media").upload(path, file, { contentType: file.type, cacheControl: "31536000", upsert: false }).then(function (r) {
-      if (r.error) { alert("Upload failed: " + r.error.message); return null; }
-      return supabaseClient.storage.from("challenge-media").getPublicUrl(path).data.publicUrl;
-    });
-  }
-  function removeOld(url) {
-    var m = String(url || "").match(/\/storage\/v1\/object\/public\/challenge-media\/(.+)$/);
-    if (m) supabaseClient.storage.from("challenge-media").remove([decodeURIComponent(m[1])]);
-  }
+  function removeOld() {}
 
   /* ---------- previews ---------- */
   function prevVideo() {
     var box = $("vPreview"), u = $("vUrl").value.trim(), v = C.parseVideo(u);
     if (!u) { box.innerHTML = ""; return; }
-    if (!v) { box.innerHTML = '<span style="color:#9b1c1c">This link is not accepted. Use YouTube, Vimeo or an MP4/WebM link.</span>'; return; }
+    if (!v) { box.innerHTML = '<span style="color:#9b1c1c">This link is not accepted. Please paste a YouTube link.</span>'; return; }
     var w = $("vRatio").value === "9:16" ? "max-width:240px" : "max-width:480px", ar = $("vRatio").value === "9:16" ? "9/16" : "16/9";
     if (v.kind === "file") box.innerHTML = '<video controls preload="metadata" src="' + e(v.src) + '" style="' + w + '"></video>';
     else box.innerHTML = '<div style="' + w + ';aspect-ratio:' + ar + '"><iframe src="' + e(v.embed.replace("autoplay=1", "autoplay=0")) + '" title="Preview" style="width:100%;height:100%;border:0" allowfullscreen loading="lazy"></iframe></div>';
@@ -139,59 +133,100 @@
     $("popPrev").innerHTML = '<p style="margin:0 0 8px;color:#777">Preview of the pop-up for this stage' + (img ? "" : " (no pop-up photo yet, so the pop-up is hidden on the site)") + ':</p><div class="mock"><div class="i" style="' + (img ? "background-image:url('" + e(img) + "')" : "") + '"></div><div class="t"><b>' + e(C.fill(t.title, s2)) + "</b>" + e(C.fill(t.text, s2)) + '<br><span class="b">' + e(C.fill(t.button, s2)) + "</span></div></div>";
   }
 
-  /* ---------- registrations ---------- */
+  /* ---------- couples (added by admins only) ---------- */
   function loadRegs() {
-    supabaseClient.from("challenge_registrations").select("*").order("created_at", { ascending: false }).limit(1000).then(function (r) {
-      if (r.error) { $("regRows").innerHTML = '<tr><td colspan="6" style="color:#9b1c1c;padding:16px">Could not load registrations: ' + e(r.error.message) + "</td></tr>"; return; }
-      regs = r.data || []; renderRegs();
+    Promise.all([
+      supabaseClient.from("challenge_contestants").select("*").order("sort_order", { ascending: true }).order("contestant_number", { ascending: true }).limit(200),
+      supabaseClient.from("challenge_contestant_private").select("*").limit(200)
+    ]).then(function (rs) {
+      if (rs[0].error) { $("regRows").innerHTML = '<tr><td colspan="5" style="color:#9b1c1c;padding:16px">Could not load couples: ' + e(rs[0].error.message) + "</td></tr>"; return; }
+      var pr = {}; (rs[1].data || []).forEach(function (x) { pr[x.contestant_id] = x; });
+      regs = (rs[0].data || []).map(function (c) { c.priv = pr[c.id] || {}; return c; }); renderRegs();
     });
   }
   function renderRegs() {
-    var q = $("rSearch").value.trim().toLowerCase(), f = $("rFilter").value;
-    var list = regs.filter(function (x) { return (!f || x.status === f) && (!q || [x.bride_name, x.groom_name, x.email, x.city, x.phone].join(" ").toLowerCase().indexOf(q) > -1); });
-    var n = { new: 0, shortlisted: 0, reserve: 0, declined: 0 }; regs.forEach(function (x) { n[x.status]++; });
-    $("regCount").textContent = "(" + regs.length + " total: " + n.new + " new, " + n.shortlisted + " shortlisted, " + n.reserve + " reserve, " + n.declined + " declined)";
-    if (!list.length) { $("regRows").innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:20px;">' + (regs.length ? "No match." : "No registrations yet.") + "</td></tr>"; return; }
-    $("regRows").innerHTML = list.map(function (x) {
-      var d = new Date(x.created_at).toLocaleString("en-GB", { timeZone: "Africa/Lagos", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
-      return '<tr data-id="' + e(x.id) + '"><td>' + e(d) + "</td><td><b>" + e(x.bride_name) + "</b><br>& " + e(x.groom_name) + "</td><td>" + e(x.email) + "<br>" + e(x.phone) + "</td><td>" + e(x.city) + "</td>" +
-        '<td><select class="reg-st" aria-label="Status for ' + e(x.bride_name) + '">' + ["new", "shortlisted", "reserve", "declined"].map(function (s) { return '<option value="' + s + '"' + (s === x.status ? " selected" : "") + ">" + s + "</option>"; }).join("") + "</select></td>" +
-        '<td><button type="button" class="btn btn-outline" data-act="view" style="padding:5px 12px;font-size:.78rem;border-color:var(--line)">Details</button></td></tr>';
+    $("regCount").textContent = "(" + regs.length + " total, " + regs.filter(function (x) { return x.is_published; }).length + " shown on the website)";
+    if (!regs.length) { $("regRows").innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:20px;">No couples yet. Press “Add couple”.</td></tr>'; return; }
+    $("regRows").innerHTML = regs.map(function (x, i) {
+      var th = C.safeImg(x.photo_url);
+      return '<tr data-id="' + e(x.id) + '"><td>' + e(x.contestant_number) + "</td><td>" + (th ? '<img class="ch-th" src="' + e(th) + '" alt="">' : "") + "<b>" + e(x.bride_name) + "</b>" + (x.groom_name ? " &amp; " + e(x.groom_name) : "") + (x.city ? "<br><small>" + e(x.city) + "</small>" : "") + "</td>" +
+        "<td>" + e(x.priv.phone || "") + (x.priv.email ? "<br>" + e(x.priv.email) : "") + '</td><td><label><input type="checkbox" data-act="pub"' + (x.is_published ? " checked" : "") + ' aria-label="Show ' + e(x.bride_name) + ' on the website"> ' + (x.is_published ? "Shown" : "Hidden") + "</label></td>" +
+        '<td style="white-space:nowrap"><button type="button" class="btn btn-outline" data-act="edit" style="padding:5px 10px;font-size:.78rem;border-color:var(--line)">Edit</button> ' +
+        '<button type="button" class="btn btn-outline" data-act="up" aria-label="Move up" style="padding:5px 9px;font-size:.78rem;border-color:var(--line)"' + (i === 0 ? " disabled" : "") + '>&uarr;</button> ' +
+        '<button type="button" class="btn btn-outline" data-act="down" aria-label="Move down" style="padding:5px 9px;font-size:.78rem;border-color:var(--line)"' + (i === regs.length - 1 ? " disabled" : "") + '>&darr;</button> ' +
+        '<button type="button" class="btn btn-outline" data-act="del" style="padding:5px 10px;font-size:.78rem;border-color:#e6b4b4;color:#9b1c1c">Delete</button></td></tr>';
     }).join("");
   }
+  function find(id) { return regs.filter(function (r) { return r.id === id; })[0]; }
+  function coupleBox(host, key, title) {
+    photoBox(host, title, cur[key], function (v) { cur[key] = v; coupleBox(host, key, title); }, "Use this photo");
+  }
+  function openForm(x) {
+    editing = x ? x.id : null; cur = x ? { photo_url: x.photo_url, partner_photo_url: x.partner_photo_url, orig: [x.photo_url, x.partner_photo_url, x.video_url] } : { photo_url: null, partner_photo_url: null, orig: [] };
+    var nextNo = regs.reduce(function (m, r) { return Math.max(m, r.contestant_number); }, 0) + 1;
+    $("cFormT").textContent = x ? "Edit couple" : "Add a couple";
+    $("cNum").value = x ? x.contestant_number : nextNo; $("cBride").value = x ? x.bride_name : ""; $("cGroom").value = x ? x.groom_name || "" : ""; $("cCity").value = x ? x.city || "" : "";
+    $("cStory").value = x ? x.story || "" : ""; $("cVideo").value = x ? x.video_url || "" : ""; $("cPub").checked = x ? !!x.is_published : false;
+    var p = x ? x.priv : {}; $("cEmail").value = p.email || ""; $("cPhone").value = p.phone || ""; $("cWed").value = p.wedding_date || ""; $("cSocial").value = p.social_handle || ""; $("cNote").value = p.admin_note || "";
+    coupleBox($("cBox1"), "photo_url", "Bride's photo (main card photo)"); coupleBox($("cBox2"), "partner_photo_url", "Partner / couple photo (optional)");
+    say("mCouple", ""); $("cForm").hidden = false; $("cForm").scrollIntoView({ behavior: "smooth", block: "start" }); $("cBride").focus();
+  }
+  function saveCouple() {
+    var bride = $("cBride").value.trim(), num = parseInt($("cNum").value, 10), video = $("cVideo").value.trim();
+    if (bride.length < 2) return say("mCouple", "Please enter the bride's name.", true);
+    if (!(num >= 1 && num <= 99)) return say("mCouple", "The number must be between 1 and 99.", true);
+    if (video && !C.parseVideo(video)) return say("mCouple", "That video link is not accepted. Please paste a YouTube link.", true);
+    var email = $("cEmail").value.trim().toLowerCase();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return say("mCouple", "That email address does not look right.", true);
+    if ($("cPub").checked && !cur.photo_url) return say("mCouple", "Add the bride's photo before showing this couple on the website.", true);
+    var row = { contestant_number: num, bride_name: bride, groom_name: $("cGroom").value.trim() || null, city: $("cCity").value.trim() || null, story: $("cStory").value.trim() || null,
+      photo_url: cur.photo_url || null, partner_photo_url: cur.partner_photo_url || null, video_url: video || null, is_published: $("cPub").checked };
+    var priv = { email: email || null, phone: $("cPhone").value.trim() || null, wedding_date: $("cWed").value || null, social_handle: $("cSocial").value.trim() || null, admin_note: $("cNote").value.trim() || null };
+    say("mCouple", "Saving…");
+    var q;
+    if (editing) q = supabaseClient.from("challenge_contestants").update(row).eq("id", editing).select().single();
+    else { row.sort_order = regs.reduce(function (m, r) { return Math.max(m, r.sort_order); }, 0) + 1; q = supabaseClient.from("challenge_contestants").insert(row).select().single(); }
+    q.then(function (r) {
+      if (r.error || !r.data) { say("mCouple", r.error && r.error.code === "23505" ? "That number is already used by another couple. Please choose a different number." : "Could not save: " + ((r.error && r.error.message) || "no permission"), true); return null; }
+      priv.contestant_id = r.data.id;
+      return supabaseClient.from("challenge_contestant_private").upsert(priv).then(function (r2) {
+        if (r2.error) { say("mCouple", "The couple was saved but the private details were not: " + r2.error.message, true); return null; }
+        [["photo_url", 0], ["partner_photo_url", 1], ["video_url", 2]].forEach(function (k) { var o = cur.orig[k[1]]; if (o && o !== row[k[0]]) removeOld(o); });
+        say("mCouple", "Saved."); $("cForm").hidden = true; loadRegs(); return true;
+      });
+    });
+  }
   function rowChange(ev) {
-    if (!ev.target.classList.contains("reg-st")) return;
-    var tr = ev.target.closest("tr"), id = tr.dataset.id, st = ev.target.value;
-    supabaseClient.from("challenge_registrations").update({ status: st }).eq("id", id).then(function (r) {
-      if (r.error) { alert("Could not change the status: " + r.error.message); loadRegs(); return; }
-      regs.forEach(function (x) { if (x.id === id) x.status = st; }); renderRegs();
+    var t = ev.target; if (t.dataset.act !== "pub") return;
+    var id = t.closest("tr").dataset.id, x = find(id);
+    if (t.checked && !C.safeImg(x.photo_url)) { t.checked = false; return alert("Add the bride's photo first (Edit), then show her on the website."); }
+    supabaseClient.from("challenge_contestants").update({ is_published: t.checked }).eq("id", id).then(function (r) {
+      if (r.error) { alert("Could not change this: " + r.error.message); loadRegs(); return; }
+      x.is_published = t.checked; renderRegs();
     });
   }
   function rowClick(ev) {
     var b = ev.target.closest("button[data-act]"); if (!b) return;
-    var tr = b.closest("tr"), id = tr.dataset.id, x = regs.filter(function (r) { return r.id === id; })[0]; if (!x) return;
-    var nx = tr.nextElementSibling;
-    if (nx && nx.classList.contains("reg-det")) { nx.remove(); return; }
-    var wa = "https://wa.me/" + String(x.phone).replace(/[^\d]/g, "");
-    var row = document.createElement("tr"); row.className = "reg-det";
-    row.innerHTML = '<td colspan="6"><p><b>Love story:</b><br>' + e(x.love_story).replace(/\n/g, "<br>") + "</p><p><b>Wedding date:</b> " + e(x.wedding_date || "not given") + " &nbsp; <b>Social:</b> " + e(x.social_handle || "none") + " &nbsp; <b>Heard about us:</b> " + e(x.how_heard || "not said") +
-      '</p><p><a href="mailto:' + e(x.email) + '">Email</a> &nbsp; <a href="' + e(wa) + '" target="_blank" rel="noopener">WhatsApp</a></p><div class="ph"></div>' +
-      '<label>Private note<textarea rows="2" maxlength="1000">' + e(x.admin_note || "") + '</textarea></label><p><button type="button" class="btn btn-gold" data-act="note" style="padding:6px 14px;font-size:.8rem">Save note</button> &nbsp; <button type="button" class="btn btn-outline" data-act="del" style="padding:6px 14px;font-size:.8rem;border-color:#9b1c1c;color:#9b1c1c">Delete registration</button></p></td>';
-    tr.after(row);
-    if (x.couple_photo_path) supabaseClient.storage.from("challenge-entries").createSignedUrl(x.couple_photo_path, 600).then(function (r) { if (r.data) row.querySelector(".ph").innerHTML = '<a href="' + e(r.data.signedUrl) + '" target="_blank" rel="noopener"><img src="' + e(r.data.signedUrl) + '" alt="Photo of ' + e(x.bride_name) + ' and ' + e(x.groom_name) + '" style="max-width:220px;border-radius:10px"></a>'; });
-    row.addEventListener("click", function (e2) {
-      var a = e2.target.closest("button[data-act]"); if (!a) return;
-      if (a.dataset.act === "note") supabaseClient.from("challenge_registrations").update({ admin_note: row.querySelector("textarea").value.trim() || null }).eq("id", id).then(function (r) { a.textContent = r.error ? "Failed" : "Saved"; x.admin_note = row.querySelector("textarea").value.trim(); });
-      if (a.dataset.act === "del" && confirm("Delete this registration for good?")) {
-        var paths = x.couple_photo_path ? [x.couple_photo_path] : [];
-        supabaseClient.from("challenge_registrations").delete().eq("id", id).then(function (r) { if (r.error) return alert("Could not delete: " + r.error.message); if (paths.length) supabaseClient.storage.from("challenge-entries").remove(paths); regs = regs.filter(function (z) { return z.id !== id; }); renderRegs(); });
-      }
-    });
+    var id = b.closest("tr").dataset.id, x = find(id), i = regs.indexOf(x); if (!x) return;
+    if (b.dataset.act === "edit") return openForm(x);
+    if (b.dataset.act === "up" || b.dataset.act === "down") {
+      var y = regs[b.dataset.act === "up" ? i - 1 : i + 1]; if (!y) return;
+      var a1 = x.sort_order, a2 = y.sort_order; if (a1 === a2) a2 = a1 + (b.dataset.act === "up" ? -1 : 1);
+      return supabaseClient.from("challenge_contestants").update({ sort_order: a2 }).eq("id", x.id).then(function (r1) {
+        return supabaseClient.from("challenge_contestants").update({ sort_order: a1 }).eq("id", y.id).then(function (r2) { if (r1.error || r2.error) alert("Could not reorder."); loadRegs(); });
+      });
+    }
+    if (b.dataset.act === "del" && confirm("Delete " + x.bride_name + " for good? Her photos will be removed too. To only hide her, untick “On website” instead.")) {
+      supabaseClient.from("challenge_contestants").delete().eq("id", id).then(function (r) {
+        if (r.error) return alert("Could not delete: " + r.error.message);
+        [x.photo_url, x.partner_photo_url, x.video_url].forEach(removeOld); loadRegs();
+      });
+    }
   }
   function csv() {
-    var cols = ["created_at", "status", "bride_name", "groom_name", "email", "phone", "city", "wedding_date", "social_handle", "how_heard", "love_story", "admin_note"];
+    var cols = ["contestant_number", "bride_name", "groom_name", "city", "is_published", "story", "video_url", "email", "phone", "wedding_date", "social_handle", "admin_note"];
     var cell = function (v) { v = String(v == null ? "" : v).replace(/"/g, '""'); if (/^[=+\-@\t\r]/.test(v)) v = "'" + v; return '"' + v + '"'; };
-    var out = [cols.join(",")].concat(regs.map(function (r) { return cols.map(function (c) { return cell(r[c]); }).join(","); })).join("\r\n");
-    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + out], { type: "text/csv;charset=utf-8" })); a.download = "bridal-challenge-registrations.csv"; document.body.appendChild(a); a.click(); a.remove();
+    var out = [cols.join(",")].concat(regs.map(function (r) { return cols.map(function (c) { return cell(c in r ? r[c] : r.priv[c]); }).join(","); })).join("\r\n");
+    var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["\ufeff" + out], { type: "text/csv;charset=utf-8" })); a.download = "bridal-challenge-couples.csv"; document.body.appendChild(a); a.click(); a.remove();
   }
 })();

@@ -107,7 +107,7 @@
 
   <div class="admin-panel" id="pPics">
     <div class="admin-panel-head"><h2>Campaign photos</h2></div>
-    <p style="font-size:.84rem;color:var(--ink-soft);margin-bottom:14px;">Use real campaign photographs (JPG, PNG or WebP, up to 4 MB). Pictures go live as soon as they are uploaded. The pop-up stays hidden until a pop-up photo is uploaded.</p>
+    <p style="font-size:.84rem;color:var(--ink-soft);margin-bottom:14px;">Photos live in GitHub. Step 1: upload the picture to the <b>assets/images/challenge</b> folder on GitHub (JPG, PNG or WebP, under 1 MB each is best). Step 2: type the file name below, for example <b>banner.webp</b>, and press “Use this photo”. The pop-up stays hidden until a pop-up photo is set.</p>
     <div class="ch-a-imgs" id="imgBoxes"></div>
   </div>
 
@@ -117,8 +117,7 @@
     <div class="auth-field"><label for="vHeading">Heading</label><input type="text" id="vHeading" maxlength="120"></div>
     <div class="auth-field"><label for="vText">Supporting text</label><textarea id="vText" rows="2" maxlength="300"></textarea></div>
     <div class="auth-field"><label for="vUrl">Video link</label><input type="url" id="vUrl" maxlength="500" placeholder="https://www.youtube.com/watch?v=…">
-      <span class="adm-hint">Best: paste a YouTube or Vimeo link. This protects your free storage and keeps the page fast. You can also upload an MP4 or WebM file (up to 50 MB) below.</span></div>
-    <div class="auth-field"><label for="vFile">Or upload a video file</label><input type="file" id="vFile" accept="video/mp4,video/webm"></div>
+      <span class="adm-hint">Paste the YouTube link of the video.</span></div>
     <div class="auth-field" style="max-width:300px;"><label for="vRatio">Video shape</label><select id="vRatio"><option value="16:9">Landscape (16:9)</option><option value="9:16">Portrait (9:16)</option></select></div>
     <p style="font-size:.84rem;margin:6px 0;">Thumbnail picture (optional for YouTube, which supplies its own):</p>
     <div class="ch-a-imgs" id="thumbBox"></div>
@@ -145,6 +144,8 @@
     <div class="auth-field"><label for="tHeroS">Line under the headline</label><input type="text" id="tHeroS" maxlength="160"></div>
     <div class="auth-field"><label for="tAbout">About the challenge</label><textarea id="tAbout" rows="3" maxlength="800"></textarea></div>
     <div class="auth-field"><label for="tPrize">Prize details</label><textarea id="tPrize" rows="3" maxlength="800" placeholder="Leave empty for: A bridal package worth up to ₦2 million…"></textarea></div>
+    <div class="auth-field"><label for="tApply">How to apply (shown in the “How to Apply” section)</label><textarea id="tApply" rows="3" maxlength="500" placeholder="For example: Message us on WhatsApp with your names, city and wedding date."></textarea></div>
+    <div class="auth-field"><label for="tApplyLink">Apply button link (WhatsApp, email or website)</label><input type="text" id="tApplyLink" maxlength="300" placeholder="https://wa.me/234XXXXXXXXXX or mailto:you@example.com"><span class="adm-hint">Use the full link. For WhatsApp: https://wa.me/ followed by the number with country code and no plus or spaces. Leave empty to hide the button.</span></div>
     <div class="auth-field"><label for="tElig">Who can enter</label><textarea id="tElig" rows="3" maxlength="800"></textarea></div>
     <div class="auth-field"><label for="tRules">Rules (one rule per line)</label><textarea id="tRules" rows="8" maxlength="3000" placeholder="Leave empty to use the standard rules, which follow your dates."></textarea></div>
     <p id="mText" class="adm-msg" role="status" aria-live="polite"></p>
@@ -152,16 +153,42 @@
   </div>
 
   <div class="admin-panel" id="pRegs">
-    <div class="admin-panel-head"><h2>Registrations <span id="regCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2>
-      <button type="button" class="btn btn-outline" id="bCsv" style="padding:7px 14px;font-size:.8rem;border-color:var(--line);">Download CSV</button></div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
-      <input type="search" id="rSearch" placeholder="Search name, email, city…" aria-label="Search registrations" style="flex:1 1 220px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;">
-      <select id="rFilter" aria-label="Filter by status" style="padding:9px 12px;border:1px solid var(--line);border-radius:8px;"><option value="">All</option><option value="new">New</option><option value="shortlisted">Shortlisted</option><option value="reserve">Reserve</option><option value="declined">Declined</option></select>
-    </div>
-    <div style="overflow-x:auto;"><table class="admin-table">
-      <caption class="sr-only" style="position:absolute;left:-9999px">Couples who registered</caption>
-      <thead><tr><th scope="col">Date</th><th scope="col">Couple</th><th scope="col">Contact</th><th scope="col">City</th><th scope="col">Status</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
-      <tbody id="regRows"><tr><td colspan="6" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
+    <div class="admin-panel-head"><h2>Couples <span id="regCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2>
+      <span><button type="button" class="btn btn-gold" id="bAdd" style="padding:7px 14px;font-size:.8rem;">Add couple</button>
+      <button type="button" class="btn btn-outline" id="bCsv" style="padding:7px 14px;font-size:.8rem;border-color:var(--line);">Download CSV</button></span></div>
+    <p class="adm-hint" style="margin-top:0">Only you can add couples. A couple appears on the website only when “Show on the website” is ticked. Phone, email and notes are private and never shown to visitors.</p>
+
+    <form id="cForm" class="ch-a-form" hidden novalidate>
+      <h3 id="cFormT" style="margin:0 0 12px">Add a couple</h3>
+      <div class="ch-a-cols">
+        <div class="auth-field"><label for="cNum">Number</label><input type="number" id="cNum" min="1" max="99"></div>
+        <div class="auth-field"><label for="cBride">Bride's name *</label><input type="text" id="cBride" maxlength="100"></div>
+        <div class="auth-field"><label for="cGroom">Partner's name</label><input type="text" id="cGroom" maxlength="100"></div>
+        <div class="auth-field"><label for="cCity">City</label><input type="text" id="cCity" maxlength="100"></div>
+      </div>
+      <div class="auth-field"><label for="cStory">Love story (shown on the website)</label><textarea id="cStory" rows="5" maxlength="1500"></textarea></div>
+      <div class="ch-a-cols">
+        <div class="ch-a-img" id="cBox1"></div><div class="ch-a-img" id="cBox2"></div>
+      </div>
+      <div class="auth-field"><label for="cVideo">Transformation video (YouTube link)</label><input type="text" id="cVideo" maxlength="400"></div>
+      <div class="ch-a-checks"><label><input type="checkbox" id="cPub"> Show on the website</label></div>
+      <h3 style="margin:18px 0 8px;font-size:.95rem">Private details (admin only)</h3>
+      <div class="ch-a-cols">
+        <div class="auth-field"><label for="cEmail">Email</label><input type="email" id="cEmail" maxlength="254"></div>
+        <div class="auth-field"><label for="cPhone">Phone / WhatsApp</label><input type="text" id="cPhone" maxlength="30"></div>
+        <div class="auth-field"><label for="cWed">Wedding date</label><input type="date" id="cWed"></div>
+        <div class="auth-field"><label for="cSocial">Social handle</label><input type="text" id="cSocial" maxlength="100"></div>
+      </div>
+      <div class="auth-field"><label for="cNote">Private note</label><textarea id="cNote" rows="2" maxlength="1000"></textarea></div>
+      <p id="mCouple" class="adm-msg" role="status" aria-live="polite"></p>
+      <button type="button" class="btn btn-gold" id="bCSave" style="padding:9px 18px;font-size:.85rem;">Save couple</button>
+      <button type="button" class="btn btn-outline" id="bCCancel" style="padding:9px 18px;font-size:.85rem;border-color:var(--line);">Cancel</button>
+    </form>
+
+    <div style="overflow-x:auto;margin-top:14px"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Couples in the challenge</caption>
+      <thead><tr><th scope="col">No.</th><th scope="col">Couple</th><th scope="col">Private contact</th><th scope="col">On website</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="regRows"><tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
     </table></div>
   </div>
 
@@ -180,8 +207,10 @@
 .ch-a-prev .mock .i{min-height:170px;background:#222 center top/cover}.ch-a-prev .mock .t{padding:16px}.ch-a-prev .mock b{display:block;font-family:'Fraunces',serif;font-size:1.05rem;margin-bottom:6px}
 .ch-a-prev .mock span.b{display:inline-block;margin-top:8px;background:#F4D900;color:#000;border-radius:99px;padding:6px 14px;font-weight:700;font-size:.8rem}
 .ch-a-prev video,.ch-a-prev iframe,.ch-a-prev img.vt{max-width:100%;border-radius:10px}
-.reg-det td{background:#faf8ee;font-size:.88rem;line-height:1.55}.reg-det textarea{width:100%;margin-top:6px;padding:8px;border:1px solid var(--line);border-radius:8px}
-.reg-st{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:.82rem}
+.ch-a-form{border:1px solid var(--line);border-radius:12px;padding:16px;background:#faf8ee;margin:10px 0}.ch-a-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:8px}
+.ch-a-form input[type=text],.ch-a-form input[type=email],.ch-a-form input[type=number],.ch-a-form input[type=date]{width:100%;box-sizing:border-box}
+.ch-a-img input.fn{width:100%;box-sizing:border-box;padding:7px 9px;border:1px solid var(--line);border-radius:8px;font-size:.85rem}
+.ch-th{width:44px;height:55px;object-fit:cover;object-position:top;border-radius:6px;vertical-align:middle;margin-right:8px;background:#eee}
 </style>
 <script src="js/challenge-core.js"></script>
 <script src="js/admin-challenge.js"></script>

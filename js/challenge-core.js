@@ -7,7 +7,7 @@
 
   var PHASES = ["coming", "registration", "shortlisting", "interviews", "voting_soon", "voting", "counting", "winner", "ended"];
   var PHASE_LABEL = {
-    coming: "Opening soon", registration: "Registration open", shortlisting: "Finalists being chosen",
+    coming: "Opening soon", registration: "Applications open", shortlisting: "Finalists being chosen",
     interviews: "Interviews and bridal styling", voting_soon: "Voting opens soon", voting: "Voting is open",
     counting: "Voting closed", winner: "Winner announced", ended: "Campaign ended"
   };
@@ -18,9 +18,9 @@
   };
   // Default pop-up / banner messages. {tokens} are replaced with the real dates from the settings.
   var DEFAULT_TEXTS = {
-    coming:       { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "The Mollys × M. Samuels ₦2 Million Bridal Challenge opens for engaged couples on {reg_open}. Get ready to register.", button: "Learn more" },
-    registration: { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "Engaged and planning your wedding? Register your couple by {reg_close_day} for a chance to be one of our finalists.", button: "Register your couple" },
-    shortlisting: { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "Registration is closed. We are reviewing every couple and will announce our finalists soon.", button: "See the challenge" },
+    coming:       { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "The Mollys × M. Samuels ₦2 Million Bridal Challenge opens for engaged couples on {reg_open}. Get ready to apply.", button: "Learn more" },
+    registration: { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "Engaged and planning your wedding? Apply by {reg_close_day} for a chance to be one of our finalists.", button: "How to apply" },
+    shortlisting: { title: "WIN A BRIDAL PACKAGE WORTH UP TO ₦2 MILLION!", text: "Applications are closed. We are reviewing every couple and will announce our finalists soon.", button: "See the challenge" },
     interviews:   { title: "OUR FINALISTS ARE IN THE SPOTLIGHT", text: "Interviews and bridal styling are happening from {interviews_range}. Voting opens on {voting_open_day}.", button: "See the challenge" },
     voting_soon:  { title: "MEET OUR FINALIST BRIDES", text: "Voting opens on {voting_open_day}. Get to know our brides before you choose your favourite.", button: "Meet the brides" },
     voting:       { title: "VOTE FOR YOUR FAVOURITE BRIDE", text: "Voting is open until 11:59 PM on {voting_close_day} (Nigeria time). Sign in with Google and cast your vote.", button: "VOTE NOW" },
@@ -28,7 +28,7 @@
     winner:       { title: "THE WINNER HAS BEEN ANNOUNCED", text: "Congratulations to our winning couple. Thank you to everyone who took part.", button: "Meet the brides" }
   };
   var DEFAULT_RULES = [
-    "Open to engaged couples who are planning their wedding. Register between {reg_open_day} and {reg_close_day}.",
+    "Open to engaged couples who are planning their wedding. Apply between {reg_open_day} and {reg_close_day}. Our team registers each couple.",
     "Our team will shortlist 3 to 4 couples (6 at most). shortlisted couples take part in interviews and bridal styling from {interviews_range}.",
     "Anyone can vote, including people who have never shopped with us. Voters must verify their identity by signing in with Google.",
     "Each verified account has one website vote. Voting runs from {voting_open_day} to 11:59 PM on {voting_close_day} (Nigeria time).",
@@ -71,7 +71,7 @@
   }
   // The next date worth counting down to.
   function nextMilestone(s, phase) {
-    var m = { coming: ["Registration opens in", s.reg_open], registration: ["Registration closes in", s.reg_close],
+    var m = { coming: ["Applications open in", s.reg_open], registration: ["Applications close in", s.reg_close],
       shortlisting: ["Interviews begin in", s.interviews_start], interviews: ["Voting opens in", s.voting_open],
       voting_soon: ["Voting opens in", s.voting_open], voting: ["Voting closes in", s.voting_close],
       counting: ["Winner announced in", s.winner_date] }[phase];
@@ -106,18 +106,16 @@
   }
 
   // Turns a pasted video link into something safe to show. Only YouTube, Vimeo or a direct .mp4/.webm file are accepted.
+  // Videos are YouTube links only.
   function parseVideo(url) {
     if (!url) return null;
     url = String(url).trim();
     var m = url.match(/^https:\/\/(?:www\.|m\.)?(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/|shorts\/|live\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
     if (m) return { kind: "youtube", id: m[1], embed: "https://www.youtube-nocookie.com/embed/" + m[1] + "?autoplay=1&rel=0&modestbranding=1&playsinline=1", thumb: "https://i.ytimg.com/vi/" + m[1] + "/hqdefault.jpg" };
-    m = url.match(/^https:\/\/(?:www\.)?vimeo\.com\/(?:video\/)?(\d{6,12})/);
-    if (m) return { kind: "vimeo", id: m[1], embed: "https://player.vimeo.com/video/" + m[1] + "?autoplay=1&title=0&byline=0&portrait=0", thumb: null };
-    if (/^https:\/\/[^\s"'<>]+\.(mp4|webm)(\?[^\s"'<>]*)?$/i.test(url)) return { kind: "file", src: url, thumb: null };
     return null;
   }
   function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
-  // Only allow image addresses that are our own storage, or a normal https picture.
+  // Only allow pictures kept in the website's own assets folder (GitHub), or a normal https picture.
   function safeImg(u) { u = String(u || "").trim(); return /^https:\/\/[^\s"'<>]+$/i.test(u) || /^assets\/[^\s"'<>]+$/.test(u) ? u : ""; }
 
   w.MSChallenge = { SB_URL: SB_URL, SB_KEY: SB_KEY, PHASES: PHASES, PHASE_LABEL: PHASE_LABEL, DEFAULT_TEXTS: DEFAULT_TEXTS, DEFAULT_RULES: DEFAULT_RULES,
