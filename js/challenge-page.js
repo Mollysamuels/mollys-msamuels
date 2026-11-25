@@ -75,7 +75,7 @@
     $("chSteps").innerHTML = steps.map(function (x) { return "<li><b>" + e(x[0]) + "</b><span>" + e(x[1]) + "</span></li>"; }).join("");
   }
 
-  /* ---------- how to apply (couples are registered by our team, never on the site) ---------- */
+  /* ---------- how to apply (couples apply on this page; our team reviews every application) ---------- */
   function safeLink(u) { u = String(u || "").trim(); return /^(https:\/\/[^\s"'<>]+|mailto:[^\s"'<>]+|tel:[+\d\s-]+)$/i.test(u) ? u : ""; }
   function renderRegister() {
     var s = settings, box = $("chRegBox");
@@ -84,27 +84,31 @@
       interviews: "Applications are closed. Our finalists are being interviewed and styled.", voting_soon: "Applications are closed.",
       voting: "Applications are closed. Voting is open now.", counting: "Applications are closed.", winner: "Applications are closed." }[phase];
     if (closed) { box.innerHTML = '<p class="ch-note">' + e(closed) + "</p>"; return; }
-    var when = phase === "coming" ? "Applications open on <b>" + e(C.dayLabel(s.reg_open)) + "</b>." : "Applications close on <b>" + e(C.dayLabel(s.reg_close)) + "</b> at 11:59 PM (Nigeria time).";
-    box.innerHTML = '<p class="ch-note">' + when + " Our team registers every couple personally.</p>" +
+    var open = phase === "registration";
+    var when = open ? "Applications close on <b>" + e(C.dayLabel(s.reg_close)) + "</b> at 11:59 PM (Nigeria time)." : "Applications open on <b>" + e(C.dayLabel(s.reg_open)) + "</b>. You will apply right here on this page.";
+    box.innerHTML = '<p class="ch-note">' + when + "</p>" +
+      '<ol class="ch-howto ch-howto-light"><li>' + (open ? "Press <b>Apply now</b> and sign in" : "Sign in") + ' with Google or an email code.</li><li>Tell us your names, your location and your love story (50 to 500 words).</li><li>Our team reads every application and contacts the couples we shortlist.</li></ol>' +
       (txt ? '<p class="ch-sub light">' + e(txt) + "</p>" : "") +
-      (link && phase === "registration" ? '<p class="ch-center"><a class="ch-btn" href="' + e(link) + '" target="_blank" rel="noopener noreferrer">Apply to take part</a></p>' : "");
+      (open ? '<div class="ch-apply-row"><button type="button" class="ch-btn ch-apply">Apply now</button>' +
+        (link ? '<a class="ch-help" href="' + e(link) + '" target="_blank" rel="noopener noreferrer">Need help? Message us</a>' : "") + "</div>" : "");
+    if (open && window.ChApply) window.ChApply.start({ sb: sb, settings: s, phase: phase });
   }
 
   /* ---------- 4. brides ---------- */
   function renderBrides() {
     var s = settings, grid = $("chBrides");
-    $("chBridesT").textContent = phase === "voting" ? "Meet our finalist brides, then vote for your favourite." : "Our finalist brides and their love stories will appear here.";
+    $("chBridesT").textContent = phase === "voting" ? "Meet our finalist brides, then vote for your favourite." : "Meet our brides and read their love stories.";
     C.request("challenge_contestants?is_published=eq.true&select=id,contestant_number,bride_name,groom_name,photo_url,partner_photo_url,city,story,video_url&order=sort_order.asc,contestant_number.asc")
       .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; }).then(function (rows) {
-        if (!rows || !rows.length) { grid.innerHTML = '<p class="ch-note">Finalists will be announced after the interviews.</p>'; return; }
+        if (!rows || !rows.length) { grid.innerHTML = '<p class="ch-note">Love stories will appear here as couples are approved.</p>'; return; }
         grid.innerHTML = rows.map(function (c) {
           var img = C.safeImg(c.photo_url), p2 = C.safeImg(c.partner_photo_url), v = C.parseVideo(c.video_url);
           var url = "https://mollysamuels.com/bridal-challenge#bride-" + c.id, nm = c.bride_name + (c.groom_name ? " & " + c.groom_name : "");
           var msg = "Vote for " + c.bride_name + " in the Mollys \u00d7 M. Samuels Bridal Challenge! ";
-          return '<article class="ch-bride" id="bride-' + e(c.id) + '" data-id="' + e(c.id) + '" data-name="' + e(c.bride_name) + '"><div class="ch-bride-img">' + (img ? '<img src="' + e(img) + '" alt="' + e(c.bride_name) + ' in her bridal look" loading="lazy" decoding="async">' : "") +
+          return '<article class="ch-bride" id="bride-' + e(c.id) + '" data-id="' + e(c.id) + '" data-name="' + e(c.bride_name) + '"><div class="ch-bride-img' + (img ? "" : " is-empty") + '">' + (img ? '<img src="' + e(img) + '" alt="' + e(c.bride_name) + ' in her bridal look" loading="lazy" decoding="async">' : '<span class="ch-init" aria-hidden="true">' + e(String(c.bride_name).charAt(0).toUpperCase()) + "</span>") +
             '<span class="ch-num">No. ' + e(c.contestant_number) + '</span></div><div class="ch-bride-b"><h3>' + e(nm) + "</h3>" +
             (c.city ? '<p class="ch-city">' + e(c.city) + "</p>" : "") +
-            (c.story ? "<p>" + e(c.story) + "</p>" : "") +
+            (c.story ? '<p class="ch-story">' + e(c.story) + "</p>" + (c.story.length > 260 ? '<button type="button" class="ch-more" aria-expanded="false">Read her love story</button>' : "") : "") +
             (p2 ? '<img class="ch-bride-p" src="' + e(p2) + '" alt="' + e(c.bride_name) + ' with her partner" loading="lazy" decoding="async">' : "") +
             (v && v.kind === "youtube" ? '<a class="ch-link" href="https://www.youtube.com/watch?v=' + e(v.id) + '" target="_blank" rel="noopener noreferrer">Watch her transformation</a>' : "") +
             '<div class="ch-live" hidden aria-live="polite"></div>' +
@@ -113,6 +117,11 @@
             '<a target="_blank" rel="noopener noreferrer" aria-label="Share ' + e(c.bride_name) + ' on Facebook" href="https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url) + '">Facebook</a>' +
             '<a target="_blank" rel="noopener noreferrer" aria-label="Share ' + e(c.bride_name) + ' on X" href="https://twitter.com/intent/tweet?text=' + encodeURIComponent(msg) + "&url=" + encodeURIComponent(url) + '">X</a></div></div></article>';
         }).join("");
+        grid.addEventListener("click", function (ev) {
+          var m = ev.target.closest && ev.target.closest(".ch-more"); if (!m) return;
+          var card = m.closest(".ch-bride"), on = card.classList.toggle("ch-open");
+          m.setAttribute("aria-expanded", on ? "true" : "false"); m.textContent = on ? "Show less" : "Read her love story";
+        });
         if (window.ChVote) window.ChVote.start({ sb: sb, settings: settings, phase: phase });
       });
   }
@@ -146,10 +155,15 @@
 
   /* ---------- 8. rules ---------- */
   function renderRules() {
-    var s = settings, L = function (d) { return C.dateTimeLabel(d); };
-    var rows = [["Applications open", s.reg_open], ["Applications close", s.reg_close], ["Interviews and bridal styling", null, C.rangeLabel(s.interviews_start, s.interviews_end)],
-      ["Voting opens", s.voting_open], ["Voting closes", s.voting_close], ["Winner announced", null, C.dayLabel(s.winner_date)], ["Prize presentation", null, C.rangeLabel(s.prize_start, s.prize_end)]];
-    $("chSched").innerHTML = rows.map(function (r) { return "<tr><th scope=\"row\">" + e(r[0]) + "</th><td>" + e(r[2] || L(r[1])) + "</td></tr>"; }).join("");
-    $("chRulesList").innerHTML = C.rulesList(s).map(function (x) { return "<li>" + e(x) + "</li>"; }).join("");
+    var s = settings;
+    $("chSched").innerHTML = C.stages(s, phase).map(function (x, i) {
+      var mark = x.state === "done" ? "&#10003;" : String(i + 1);
+      return '<li class="is-' + x.state + '"><span class="ch-tl-dot" aria-hidden="true">' + mark + '</span><div class="ch-tl-b"><b>' + e(x.name) + "</b><span>" + e(x.when) + "</span>" +
+        (x.state === "now" ? '<em class="ch-tl-tag" style="font-style:normal">Happening now</em>' : "") + "</div></li>";
+    }).join("");
+    var n = 0;
+    $("chRulesBox").innerHTML = "<h3>Rules</h3>" + C.rulesGroups(s).map(function (g) {
+      return '<div class="ch-rg">' + (g.h ? "<h4>" + e(g.h) + "</h4>" : "") + "<ol>" + g.items.map(function (x) { n++; return '<li data-n="' + n + '">' + e(x) + "</li>"; }).join("") + "</ol></div>";
+    }).join("");
   }
 })();

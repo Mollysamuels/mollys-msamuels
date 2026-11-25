@@ -175,12 +175,13 @@
 
 <!-- SECTION 8 - RULES -->
 <section class="ch-sec ch-cream" id="rules" aria-labelledby="chRulesH">
-  <div class="ch-wrap ch-narrow">
+  <div class="ch-wrap ch-rules-wrap">
     <h2 id="chRulesH">Competition Rules</h2>
-    <h3 class="ch-h3">Schedule (Nigeria time)</h3>
-    <table class="ch-table"><caption class="sr-only" style="position:absolute;left:-9999px">Challenge schedule</caption><tbody id="chSched"></tbody></table>
-    <h3 class="ch-h3">Rules</h3>
-    <ul class="ch-rules" id="chRulesList"></ul>
+    <div class="ch-panel">
+      <h3>Schedule <small style="font-weight:400;font-size:.85rem;color:#777">(Nigeria time)</small></h3>
+      <ol class="ch-tl" id="chSched"></ol>
+    </div>
+    <div class="ch-panel" id="chRulesBox"></div>
   </div>
 </section>
 
@@ -256,6 +257,7 @@
 <script src="js/main.js"></script>
 <script src="js/challenge-core.js"></script>
 <script src="js/challenge-vote.js"></script>
+<script src="js/challenge-apply.js"></script>
 <script src="js/challenge-page.js"></script>
 <script src="js/cookie-notice.js"></script>
 </body>

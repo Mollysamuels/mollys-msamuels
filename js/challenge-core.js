@@ -27,15 +27,22 @@
     counting:     { title: "VOTING IS NOW CLOSED", text: "Thank you for voting! We are counting the votes. The winner will be announced on {winner_day}.", button: "See the brides" },
     winner:       { title: "THE WINNER HAS BEEN ANNOUNCED", text: "Congratulations to our winning couple. Thank you to everyone who took part.", button: "Meet the brides" }
   };
-  var DEFAULT_RULES = [
-    "Open to engaged couples who are planning their wedding. Apply between {reg_open_day} and {reg_close_day}. Our team registers each couple.",
-    "Our team will shortlist 3 to 4 couples (6 at most). shortlisted couples take part in interviews and bridal styling from {interviews_range}.",
-    "Anyone can vote, including people who have never shopped with us. Voters confirm their identity with Google or with a code sent to their email.",
-    "Each email address, phone number and device can vote once. Voting runs from {voting_open_day} to 11:59 PM on {voting_close_day} (Nigeria time).",
-    "Votes from social media are also counted. They are collected and reviewed by our team before they are added.",
-    "The winner is announced on {winner_day}. The prize presentation takes place from {prize_range}.",
-    "Votes found to be fake, bought or duplicated are removed. Molly Samuels Limited's decision on the result is final."
+  // The standard rules, in three groups. If you type your own rules in admin (Page wording), those replace these.
+  var DEFAULT_RULE_GROUPS = [
+    { h: "Who can enter", items: [
+      "Open to engaged couples who are planning their wedding.",
+      "Apply on this page between {reg_open_day} and {reg_close_day} (Nigeria time). Sign in with Google or an email code, then share your names, location and love story.",
+      "Our team reviews every application and shortlists 3 to 4 couples (6 at most). Shortlisted couples take part in an interview and bridal styling from {interviews_range}." ] },
+    { h: "How voting works", items: [
+      "Anyone can vote, including people who have never shopped with us. Voters confirm their identity with Google or with a code sent to their email.",
+      "Each email address, phone number and device can vote once. Voting runs from {voting_open_day} to 11:59 PM on {voting_close_day} (Nigeria time).",
+      "Votes from social media are also counted. They are collected and reviewed by our team before they are added." ] },
+    { h: "The winner", items: [
+      "The winner is announced on {winner_day}. The prize presentation takes place from {prize_range}.",
+      "Votes found to be fake, bought or duplicated are removed. Molly Samuels Limited's decision on the result is final." ] }
   ];
+  var DEFAULT_RULES = [].concat.apply([], DEFAULT_RULE_GROUPS.map(function (g) { return g.items; }));
+
 
   function ms(v) { return v ? new Date(v).getTime() : NaN; }
   function pad(n) { return (n < 10 ? "0" : "") + n; }
@@ -44,6 +51,7 @@
   var MON = ["January","February","March","April","May","June","July","August","September","October","November","December"];
   function dayLabel(d) { var x = wat(d); return x.getUTCDate() + " " + MON[x.getUTCMonth()]; }
   function dateTimeLabel(d) { var x = wat(d); var h = x.getUTCHours(), ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return x.getUTCDate() + " " + MON[x.getUTCMonth()] + " " + x.getUTCFullYear() + ", " + h + ":" + pad(x.getUTCMinutes()) + " " + ap; }
+  function dayTimeLabel(d) { var x = wat(d); var h = x.getUTCHours(), ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12; return x.getUTCDate() + " " + MON[x.getUTCMonth()] + ", " + h + ":" + pad(x.getUTCMinutes()) + " " + ap; }
   function rangeLabel(a, b) { var x = wat(a), y = wat(b); return x.getUTCMonth() === y.getUTCMonth() ? x.getUTCDate() + " to " + y.getUTCDate() + " " + MON[x.getUTCMonth()] : dayLabel(a) + " to " + dayLabel(b); }
   function tokens(s) {
     return {
@@ -83,6 +91,31 @@
     function pick(k) { return (over[k] && String(over[k]).trim()) || base[k]; }
     return { title: fill(pick("title"), s), text: fill(pick("text"), s), button: fill(pick("button"), s), href: PHASE_BUTTON_TARGET[phase] || "bridal-challenge" };
   }
+  // Rules as groups with headings (your own typed rules come back as one group without a heading).
+  function rulesGroups(s) {
+    var raw = s && s.rules_text && s.rules_text.trim();
+    if (raw) return [{ h: "", items: raw.split(/\n+/).map(function (x) { return fill(x.trim(), s); }).filter(Boolean) }];
+    return DEFAULT_RULE_GROUPS.map(function (g) { return { h: g.h, items: g.items.map(function (x) { return fill(x, s); }) }; });
+  }
+  // The five stages of the challenge for the timeline, each marked done / now / next.
+  function stages(s, phase) {
+    var L = dayTimeLabel, now = Date.now();
+    var list = [
+      { name: "Apply", when: L(s.reg_open) + " to " + L(s.reg_close), a: ms(s.reg_open), b: ms(s.reg_close) },
+      { name: "Interviews and bridal styling", when: rangeLabel(s.interviews_start, s.interviews_end), a: ms(s.interviews_start), b: ms(s.interviews_end) },
+      { name: "Public voting", when: L(s.voting_open) + " to " + L(s.voting_close), a: ms(s.voting_open), b: ms(s.voting_close) },
+      { name: "Winner announced", when: dayLabel(s.winner_date), a: ms(s.winner_date), b: ms(s.prize_start) },
+      { name: "Prize presentation", when: rangeLabel(s.prize_start, s.prize_end), a: ms(s.prize_start), b: ms(s.prize_end) }
+    ];
+    var map = { coming: -1, registration: 0, shortlisting: 0.5, interviews: 1, voting_soon: 1.5, voting: 2, counting: 2.5, winner: 3 };
+    list.forEach(function (x, i) {
+      if (s.phase_override && map[phase] != null) {
+        var idx = map[phase];
+        x.state = idx % 1 ? (i <= Math.floor(idx) ? "done" : "next") : (i < idx ? "done" : i === idx ? "now" : "next");
+      } else x.state = now > x.b ? "done" : now >= x.a ? "now" : "next";
+    });
+    return list;
+  }
   function rulesList(s) {
     var raw = s && s.rules_text && s.rules_text.trim();
     var lines = raw ? raw.split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean) : DEFAULT_RULES;
@@ -118,7 +151,7 @@
   // Only allow pictures kept in the website's own assets folder (GitHub), or a normal https picture.
   function safeImg(u) { u = String(u || "").trim(); return /^https:\/\/[^\s"'<>]+$/i.test(u) || /^assets\/[^\s"'<>]+$/.test(u) ? u : ""; }
 
-  w.MSChallenge = { SB_URL: SB_URL, SB_KEY: SB_KEY, PHASES: PHASES, PHASE_LABEL: PHASE_LABEL, DEFAULT_TEXTS: DEFAULT_TEXTS, DEFAULT_RULES: DEFAULT_RULES,
-    phaseOf: phaseOf, nextMilestone: nextMilestone, textsFor: textsFor, rulesList: rulesList, getSettings: getSettings, request: request,
+  w.MSChallenge = { SB_URL: SB_URL, SB_KEY: SB_KEY, PHASES: PHASES, PHASE_LABEL: PHASE_LABEL, DEFAULT_TEXTS: DEFAULT_TEXTS, DEFAULT_RULES: DEFAULT_RULES, DEFAULT_RULE_GROUPS: DEFAULT_RULE_GROUPS,
+    phaseOf: phaseOf, nextMilestone: nextMilestone, textsFor: textsFor, rulesList: rulesList, rulesGroups: rulesGroups, stages: stages, getSettings: getSettings, request: request,
     parseVideo: parseVideo, esc: esc, safeImg: safeImg, fill: fill, dayLabel: dayLabel, dateTimeLabel: dateTimeLabel, rangeLabel: rangeLabel, ms: ms };
 })(window);

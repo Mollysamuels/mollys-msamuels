@@ -27,7 +27,7 @@
     C.PHASES.forEach(function (p) { sel.insertAdjacentHTML("beforeend", '<option value="' + p + '">' + e(C.PHASE_LABEL[p]) + "</option>"); if (p !== "ended") ms.insertAdjacentHTML("beforeend", '<option value="' + p + '">' + e(C.PHASE_LABEL[p]) + "</option>"); });
     supabaseClient.from("challenge_settings").select("*").eq("id", 1).single().then(function (r) {
       if (r.error || !r.data) { document.querySelector(".admin-content").insertAdjacentHTML("afterbegin", '<div class="admin-panel"><p style="color:#9b1c1c"><b>The Bridal Challenge database is not set up yet.</b> Run <code>1-CHALLENGE-SETUP.sql</code> in Supabase, then refresh this page.</p></div>'); return; }
-      S = r.data; fill(); loadRegs();
+      S = r.data; fill(); loadRegs(); loadApps();
     });
     $("bStatus").addEventListener("click", function () { save({ is_enabled: $("fEnabled").checked, popup_enabled: $("fPopup").checked, icon_enabled: $("fIcon").checked, phase_override: $("fOverride").value || null }, "mStatus"); });
     $("bDates").addEventListener("click", function () {
@@ -64,6 +64,7 @@
     $("bCSave").addEventListener("click", saveCouple);
     $("bCsv").addEventListener("click", csv);
     $("regRows").addEventListener("click", rowClick); $("regRows").addEventListener("change", rowChange);
+    $("appRows").addEventListener("click", appClick);
   }
 
   function refreshPhase() { $("curPhase").textContent = C.PHASE_LABEL[C.phaseOf(S)] + (S.phase_override ? " (forced by the Stage setting)" : " (by the dates)"); }
@@ -131,6 +132,68 @@
     var t = { title: $("mTitle").value.trim() || d.title, text: $("mBody").value.trim() || d.text, button: $("mBtn").value.trim() || d.button };
     var s2 = Object.assign({}, S), img = C.safeImg(S.popup_image_url);
     $("popPrev").innerHTML = '<p style="margin:0 0 8px;color:#777">Preview of the pop-up for this stage' + (img ? "" : " (no pop-up photo yet, so the pop-up is hidden on the site)") + ':</p><div class="mock"><div class="i" style="' + (img ? "background-image:url('" + e(img) + "')" : "") + '"></div><div class="t"><b>' + e(C.fill(t.title, s2)) + "</b>" + e(C.fill(t.text, s2)) + '<br><span class="b">' + e(C.fill(t.button, s2)) + "</span></div></div>";
+  }
+
+
+  /* ---------- applications (couples apply on the website; you approve them) ---------- */
+  var apps = [];
+  function when(iso) { var d = new Date(new Date(iso).getTime() + 3600000); return d.getUTCDate() + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getUTCMonth()] + ", " + pad(d.getUTCHours()) + ":" + pad(d.getUTCMinutes()); }
+  function loadApps() {
+    supabaseClient.from("challenge_applications").select("*").order("created_at", { ascending: false }).limit(300).then(function (r) {
+      if (r.error) {
+        var missing = /relation|does not exist|schema cache|404/i.test(r.error.message || "");
+        $("appRows").innerHTML = '<tr><td colspan="5" style="padding:16px;color:#9b1c1c">' + (missing ? "<b>Applications are not set up yet.</b> Run <code>5-APPLICATIONS-SETUP.sql</code> in Supabase, then refresh this page." : "Could not load applications: " + e(r.error.message)) + "</td></tr>";
+        return;
+      }
+      apps = r.data || []; renderApps();
+    });
+  }
+  var APP_LABEL = { "new": "New", approved: "Approved", rejected: "Rejected" };
+  function renderApps() {
+    var n = apps.filter(function (a) { return a.status === "new"; }).length;
+    $("appCount").textContent = "(" + n + " new, " + apps.length + " total)";
+    if (!apps.length) { $("appRows").innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:20px;">No applications yet.</td></tr>'; return; }
+    $("appRows").innerHTML = apps.map(function (a) {
+      var btns = a.status === "approved" ? '<small style="color:#1c6b2f">On the website. Add her photos and YouTube link under “Couples” below.</small>' :
+        '<button type="button" class="btn btn-gold" data-act="approve" style="padding:6px 12px;font-size:.78rem">Approve</button> ' +
+        (a.status === "rejected" ? '<button type="button" class="btn btn-outline" data-act="restore" style="padding:5px 10px;font-size:.78rem;border-color:var(--line)">Restore</button>' :
+          '<button type="button" class="btn btn-outline" data-act="reject" style="padding:5px 10px;font-size:.78rem;border-color:#e6b4b4;color:#9b1c1c">Reject</button>');
+      return '<tr data-id="' + e(a.id) + '"><td style="white-space:nowrap">' + e(when(a.created_at)) + "</td>" +
+        "<td><b>" + e(a.bride_name) + "</b> &amp; " + e(a.partner_name) + "<br><small>" + e(a.location) + " &middot; " + e(a.word_count) + " words</small>" +
+        '<details style="margin-top:6px"><summary style="cursor:pointer;color:#58493A;font-size:.82rem">Read love story and add a note</summary>' +
+        '<p style="white-space:pre-wrap;margin:8px 0;max-width:560px;line-height:1.5">' + e(a.story) + "</p>" +
+        '<label style="font-size:.78rem;display:block;margin-top:6px">Private note</label><textarea class="appNote" rows="2" maxlength="1000" style="width:100%;max-width:560px;box-sizing:border-box;padding:6px 8px;border:1px solid var(--line);border-radius:8px;font:inherit">' + e(a.admin_note || "") + "</textarea>" +
+        '<button type="button" class="btn btn-outline" data-act="note" style="padding:4px 10px;font-size:.76rem;border-color:var(--line);margin-top:4px">Save note</button></details></td>' +
+        "<td>" + e(a.phone) + "<br><small>" + e(a.email) + "</small></td>" +
+        '<td><span style="font-weight:700;color:' + (a.status === "new" ? "#8a6d00" : a.status === "approved" ? "#1c6b2f" : "#9b1c1c") + '">' + e(APP_LABEL[a.status] || a.status) + "</span></td>" +
+        '<td style="min-width:150px">' + btns + "</td></tr>";
+    }).join("");
+  }
+  function appClick(ev) {
+    var b = ev.target.closest("button[data-act]"); if (!b) return;
+    var tr = b.closest("tr"), id = tr.dataset.id, a = apps.filter(function (x) { return x.id === id; })[0]; if (!a) return;
+    var act = b.dataset.act;
+    if (act === "note") {
+      return supabaseClient.from("challenge_applications").update({ admin_note: tr.querySelector(".appNote").value.trim() || null }).eq("id", id).then(function (r) {
+        if (r.error) return say("mApps", "Could not save the note: " + r.error.message, true);
+        say("mApps", "Note saved."); loadApps();
+      });
+    }
+    if (act === "approve") {
+      if (!confirm("Approve " + a.bride_name + " & " + a.partner_name + "? She will appear on the website with her love story.")) return;
+      b.disabled = true; say("mApps", "Approving…");
+      return supabaseClient.rpc("challenge_admin_approve_application", { p_id: id }).then(function (r) {
+        if (r.error || !r.data || !r.data.ok) { b.disabled = false; return say("mApps", "Could not approve: " + ((r.error && r.error.message) || "not found"), true); }
+        say("mApps", "Approved. " + a.bride_name + " is now in “Couples” below and on the website. Add her photos and YouTube link there (press Edit).");
+        loadApps(); loadRegs();
+      });
+    }
+    var status = act === "reject" ? "rejected" : "new";
+    if (act === "reject" && !confirm("Reject " + a.bride_name + " & " + a.partner_name + "?")) return;
+    supabaseClient.from("challenge_applications").update({ status: status, reviewed_at: new Date().toISOString() }).eq("id", id).then(function (r) {
+      if (r.error) return say("mApps", "Could not change this: " + r.error.message, true);
+      say("mApps", act === "reject" ? "Rejected." : "Restored to New."); loadApps();
+    });
   }
 
   /* ---------- couples (added by admins only) ---------- */

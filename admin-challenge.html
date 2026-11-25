@@ -154,6 +154,17 @@
     <button type="button" class="btn btn-gold" id="bText" style="padding:9px 18px;font-size:.85rem;">Save wording</button>
   </div>
 
+  <div class="admin-panel" id="pApps">
+    <div class="admin-panel-head"><h2>Applications <span id="appCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2></div>
+    <p class="adm-hint" style="margin-top:0">Couples apply on the website. Press <b>Approve</b> to put the couple on the website with her love story (she appears in “Couples” below, ready for her photos and YouTube link). Press <b>Reject</b> to decline. Phone and email are private and only you can see them.</p>
+    <p id="mApps" class="adm-msg" role="status" aria-live="polite"></p>
+    <div style="overflow-x:auto"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Applications to the challenge</caption>
+      <thead><tr><th scope="col">Received</th><th scope="col">Couple</th><th scope="col">Contact</th><th scope="col">Status</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="appRows"><tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
+    </table></div>
+  </div>
+
   <div class="admin-panel" id="pRegs">
     <div class="admin-panel-head"><h2>Couples <span id="regCount" style="font-weight:400;font-size:.85rem;color:var(--ink-soft)"></span></h2>
       <span><button type="button" class="btn btn-gold" id="bAdd" style="padding:7px 14px;font-size:.8rem;">Add couple</button>
@@ -168,7 +179,7 @@
         <div class="auth-field"><label for="cGroom">Partner's name</label><input type="text" id="cGroom" maxlength="100"></div>
         <div class="auth-field"><label for="cCity">City</label><input type="text" id="cCity" maxlength="100"></div>
       </div>
-      <div class="auth-field"><label for="cStory">Love story (shown on the website)</label><textarea id="cStory" rows="5" maxlength="1500"></textarea></div>
+      <div class="auth-field"><label for="cStory">Love story (shown on the website)</label><textarea id="cStory" rows="8" maxlength="4000"></textarea></div>
       <div class="ch-a-cols">
         <div class="ch-a-img" id="cBox1"></div><div class="ch-a-img" id="cBox2"></div>
       </div>

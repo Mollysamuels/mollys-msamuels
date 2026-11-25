@@ -57,4 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
     a.href = href; a.className = "admin-nav"; a.innerHTML = icon + label;
     list.insertBefore(a, settings || null);
   });
+  // Red badge on "Bridal Challenge" showing how many applications are waiting for you (stays hidden if there are none or the feature is not set up).
+  const badge = () => {
+    supabaseClient.from("challenge_applications").select("id", { count: "exact", head: true }).eq("status", "new").then((r) => {
+      if (r.error || !r.count) return;
+      const link = list.querySelector('a[href="admin-challenge.html"]'); if (!link || link.querySelector(".ch-badge")) return;
+      const b = document.createElement("span"); b.className = "ch-badge";
+      b.style.cssText = "margin-left:8px;background:#C62828;color:#fff;border-radius:999px;padding:1px 8px;font-size:.72rem;font-weight:700";
+      b.textContent = r.count + " new"; b.setAttribute("aria-label", r.count + " new applications"); link.appendChild(b);
+    });
+  };
+  if (window.currentAdmin) badge(); else document.addEventListener("adminReady", badge);
 });
