@@ -53,11 +53,19 @@
     $("chFounderT").textContent = s.founder_text || "";
     var box = $("chVideo"), portrait = s.founder_ratio === "9:16";
     box.className = "ch-video " + (portrait ? "is-portrait" : "is-wide");
+    var wrap = $("chFounderWrap"), sec = $("founder");
+    if (wrap) wrap.classList.toggle("ch-split", portrait);   /* portrait video: small card with the words beside it */
+    if (portrait && sec && !sec.getAttribute("data-rev") && "IntersectionObserver" in window && !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches)) {
+      sec.setAttribute("data-rev", "1"); sec.classList.add("ch-rev");
+      var io = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { sec.classList.add("in"); io.disconnect(); } }, { threshold: 0.2 });
+      io.observe(sec);
+    }
     var thumb = C.safeImg(s.founder_thumb_url) || (v.thumb || "");
     box.innerHTML = '<button type="button" class="ch-play" aria-label="Play the founder\'s message">' +
       (thumb ? '<img src="' + e(thumb) + '" alt="" loading="lazy" decoding="async">' : "") +
       '<span class="ch-play-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span></button>';
     box.querySelector("button").addEventListener("click", function () {
+      box.classList.add("is-playing");
       if (v.kind === "file") box.innerHTML = '<video controls playsinline preload="metadata" autoplay src="' + e(v.src) + '"></video>';
       else box.innerHTML = '<iframe src="' + e(v.embed) + '" title="Founder\'s message" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
     });
