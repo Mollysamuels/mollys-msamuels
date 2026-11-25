@@ -4,7 +4,7 @@
   "use strict";
   var C = window.MSChallenge, e = C.esc;
   var sb = null, S = null, phase = "", tally = {}, counting = false, voted = null, pend = null, last = null;
-  var DEV_KEY = "ms_ch_dev_v1", VOTED_KEY = "ms_ch_voted_v1", PEND_KEY = "ms_ch_pending_v1";
+  var DEV_KEY = "ms_ch_dev_v1", VOTED_KEY = "ms_ch_voted_v1", PEND_KEY = "ms_ch_pending_v1", LINK_KEY = "ms_ch_vote_link_v1", LINK_MAX_MS = 60 * 60 * 1000;
   function $(id) { return document.getElementById(id); }
 
   /* ---------- this device's private id (only a scrambled copy is ever stored) ---------- */
@@ -153,8 +153,11 @@
   /* step 2 (email path): the code */
   function sendCode(v) {
     err(""); busy(true);
-    sb.auth.signInWithOtp({ email: v.email, options: { shouldCreateUser: true, data: { full_name: v.name, phone: v.phone } } }).then(function (r) {
+    /* The emailed link opens a new tab and returns to this page (not the home page). The details live in localStorage so that tab can finish the vote. */
+    try { localStorage.setItem(LINK_KEY, JSON.stringify({ t: Date.now(), id: last.id, bride: last.bride, name: v.name, phone: v.phone, optin: v.optin })); } catch (x) {}
+    sb.auth.signInWithOtp({ email: v.email, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname, data: { full_name: v.name, phone: v.phone } } }).then(function (r) {
       if (r.error) {
+        try { localStorage.removeItem(LINK_KEY); } catch (x) {}
         busy(false); var m = String(r.error.message || "").toLowerCase();
         return err(/after \d+ seconds|rate limit|too many/.test(m) ? "Too many codes were requested. Please wait a minute and try again, or continue with Google." : "We could not send the code. Please check the email address or continue with Google.");
       }
@@ -179,6 +182,7 @@
         return r;
       }).then(function (r) {
         if (!r || r.error || !r.data || !r.data.session) { busy(false); return err("That code is not right or has expired. Please try again or ask for a new code."); }
+        try { localStorage.removeItem(LINK_KEY); } catch (x) {}
         cast(v, "email");
       });
     });
@@ -225,15 +229,17 @@
 
   /* ---------- coming back from Google ---------- */
   function resumeGoogle() {
-    var raw = null; try { raw = sessionStorage.getItem(PEND_KEY); } catch (x) {}
+    var raw = null, viaLink = false; try { raw = sessionStorage.getItem(PEND_KEY); } catch (x) {}
+    if (!raw) { try { raw = localStorage.getItem(LINK_KEY); viaLink = !!raw; } catch (x) {} }
     if (!raw) return;
     try { pend = JSON.parse(raw); } catch (x) { pend = null; }
+    if (viaLink && (!pend || !(Date.now() - Number(pend.t) < LINK_MAX_MS))) { pend = null; try { localStorage.removeItem(LINK_KEY); } catch (x) {} return; }
     sb.auth.getSession().then(function (s) {
-      try { sessionStorage.removeItem(PEND_KEY); } catch (x) {}
+      try { sessionStorage.removeItem(PEND_KEY); localStorage.removeItem(LINK_KEY); } catch (x) {}
       var u = s.data.session && s.data.session.user;
       if (!pend || !u) return;
       last = { id: pend.id, bride: pend.bride, name: pend.name, phone: pend.phone };
-      open(); cast({ name: pend.name, phone: pend.phone, optin: pend.optin }, "google");
+      open(); cast({ name: pend.name, phone: pend.phone, optin: pend.optin }, viaLink ? ((u.app_metadata && u.app_metadata.provider === "google") ? "google" : "email") : "google");
     });
   }
 

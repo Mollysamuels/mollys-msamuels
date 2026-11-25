@@ -5,7 +5,7 @@
   "use strict";
   var C = window.MSChallenge, e = C.esc;
   var sb = null, phase = "", box, bodyEl, lastFocus = null;
-  var PEND_KEY = "ms_ch_apply_pending_v1", DRAFT_KEY = "ms_ch_apply_draft_v1";
+  var PEND_KEY = "ms_ch_apply_pending_v1", DRAFT_KEY = "ms_ch_apply_draft_v1", LINK_KEY = "ms_ch_apply_link_v1", LINK_MAX_MS = 60 * 60 * 1000;
   var MIN_W = 50, MAX_W = 500, MAX_C = 4000;
   function $(id) { return document.getElementById(id); }
 
@@ -78,8 +78,11 @@
   }
   function sendCode(em) {
     err(""); busy(true);
-    sb.auth.signInWithOtp({ email: em, options: { shouldCreateUser: true } }).then(function (r) {
+    /* The emailed link opens a new tab and returns to this page (not the home page). The flag lives in localStorage so that tab can pick the application up again. */
+    try { localStorage.setItem(LINK_KEY, String(Date.now())); } catch (x) {}
+    sb.auth.signInWithOtp({ email: em, options: { shouldCreateUser: true, emailRedirectTo: location.origin + location.pathname } }).then(function (r) {
       if (r.error) {
+        try { localStorage.removeItem(LINK_KEY); } catch (x) {}
         busy(false); var m = String(r.error.message || "").toLowerCase();
         return err(/after \d+ seconds|rate limit|too many/.test(m) ? "Too many codes were requested. Please wait a minute and try again, or continue with Google." : "We could not send the code. Please check the email address or continue with Google.");
       }
@@ -104,6 +107,7 @@
         return r;
       }).then(function (r) {
         if (!r || r.error || !r.data || !r.data.session) { busy(false); return err("That code is not right or has expired. Please try again or ask for a new code."); }
+        try { localStorage.removeItem(LINK_KEY); } catch (x) {}
         stepForm(r.data.session.user);
       });
     });
@@ -198,9 +202,11 @@
   }
   function resumeGoogle() {
     var p = null; try { p = sessionStorage.getItem(PEND_KEY); } catch (x) {}
-    if (!p) return;
+    var lk = null; try { lk = localStorage.getItem(LINK_KEY); } catch (x) {}
+    if (lk && !(Date.now() - Number(lk) < LINK_MAX_MS)) { lk = null; try { localStorage.removeItem(LINK_KEY); } catch (x) {} }
+    if (!p && !lk) return;
     sb.auth.getSession().then(function (s) {
-      try { sessionStorage.removeItem(PEND_KEY); } catch (x) {}
+      try { sessionStorage.removeItem(PEND_KEY); localStorage.removeItem(LINK_KEY); } catch (x) {}
       if (s.data.session) { start(); }
     });
   }
