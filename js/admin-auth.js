@@ -57,6 +57,20 @@ document.addEventListener("DOMContentLoaded", () => {
     a.href = href; a.className = "admin-nav"; a.innerHTML = icon + label;
     list.insertBefore(a, settings || null);
   });
+  // INA (type in ad numbers) and Gg Ad API (the report). The INA link is left out on the Gg page itself.
+  const onPage = (location.pathname.split("/").pop() || "").toLowerCase();
+  const adLinks = [
+    ["admin-ina.html", "INA", '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20h4l10-10-4-4L4 16v4z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 7l4 4" stroke="currentColor" stroke-width="1.5"/></svg>'],
+    ["admin-gg.html", "Gg Ad API", '<svg viewBox="0 0 24 24" fill="none"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>']
+  ];
+  adLinks.forEach(([href, label, svg]) => {
+    if (href === "admin-ina.html" && onPage === "admin-gg.html") return;
+    if (list.querySelector('a[href="' + href + '"]')) return;
+    const a = document.createElement("a");
+    a.href = href; a.className = "admin-nav" + (onPage === href ? " active" : ""); a.innerHTML = svg + label;
+    if (onPage === href) a.setAttribute("aria-current", "page");
+    list.insertBefore(a, settings || null);
+  });
   // Red badge on "Bridal Challenge" showing how many applications are waiting for you (stays hidden if there are none or the feature is not set up).
   const badge = () => {
     supabaseClient.from("challenge_applications").select("id", { count: "exact", head: true }).eq("status", "new").then((r) => {

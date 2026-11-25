@@ -1,0 +1,115 @@
+/* INA (input) and Gg Ad API (report) admin pages. Own classes only: prefix ads- / gg- / ina-. */
+.ads-badge{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:4px 10px;font-weight:700;line-height:1.1;letter-spacing:.2px;white-space:nowrap}
+.ads-logo{display:inline-block;width:auto;max-width:150px;object-fit:contain;vertical-align:middle}
+.ads-gg{display:block}
+
+/* ---------- INA ---------- */
+.ina-form{border:1px solid var(--line,#ddd);border-radius:12px;padding:16px;background:#faf8ee;margin:10px 0}
+.ina-cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:10px}
+.ina-form input[type=text],.ina-form input[type=number],.ina-form input[type=date],.ina-form input[type=url],.ina-form select,.ina-form textarea{width:100%;box-sizing:border-box;font:inherit;padding:9px 11px;border:1px solid var(--line,#ddd);border-radius:8px;background:#fff}
+.ina-form textarea{min-height:84px}
+.ina-form label{display:block;font-size:.82rem;font-weight:600;margin-bottom:4px}
+.ina-wide{grid-column:1/-1}
+.ina-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.ina-sub{border-top:1px dashed var(--line,#ddd);margin-top:12px;padding-top:12px}
+.ina-note{font-size:.82rem;color:#58493A}
+.ina-curtag{display:inline-block;background:#fff;border:1px solid var(--line,#ddd);border-radius:99px;padding:1px 9px;font-size:.78rem;font-weight:700}
+.ina-st{font:inherit;font-size:.82rem;padding:4px 6px;border:1px solid var(--line,#ddd);border-radius:6px;background:#fff}
+.ina-row-actions button{margin-right:6px}
+.ina-logo-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:12px 0;border-bottom:1px solid var(--line,#eee)}
+.ina-logo-row .pv{min-width:150px;min-height:42px;display:flex;align-items:center}
+.ina-small{padding:6px 12px !important;font-size:.8rem !important}
+.ina-danger{color:#9b1c1c !important;border-color:#e3b4b4 !important}
+.ina-cm{border:1px solid var(--line,#ddd);border-radius:10px;padding:10px 12px;margin:8px 0;background:#fff}
+.ina-cm p{margin:6px 0 4px;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* ---------- Gg Ad API ---------- */
+.gg-wrap{max-width:1180px}
+.gg-hero{background:linear-gradient(135deg,#0d1b3d,#18305f 60%,#1d3f7a);color:#fff;border-radius:18px;padding:22px 26px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.gg-title{display:flex;align-items:center;gap:18px}
+.gg-title h2{margin:0;font-family:'Fraunces',serif;font-size:clamp(1.9rem,4.4vw,3rem);line-height:1;font-weight:600;color:#fff;letter-spacing:-.5px}
+.gg-title p{margin:6px 0 0;font-size:.95rem;color:#c8d6f2}
+.gg-hero .gg-tools{display:flex;flex-direction:column;gap:10px;align-items:flex-end}
+.gg-switch{display:inline-flex;background:rgba(255,255,255,.12);border-radius:99px;padding:3px}
+.gg-switch button{border:0;background:transparent;color:#fff;font:inherit;font-weight:700;padding:7px 18px;border-radius:99px;cursor:pointer}
+.gg-switch button[aria-pressed="true"]{background:#fff;color:#0d1b3d}
+.gg-range{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 4px}
+.gg-range input[type=date]{font:inherit;padding:7px 9px;border:1px solid var(--line,#ddd);border-radius:8px;background:#fff}
+.gg-range button{font:inherit;font-size:.82rem;font-weight:600;padding:7px 13px;border-radius:99px;border:1px solid var(--line,#ddd);background:#fff;cursor:pointer}
+.gg-range button[aria-pressed="true"]{background:#0d1b3d;color:#fff;border-color:#0d1b3d}
+.gg-meta{font-size:.82rem;color:#58493A;margin:6px 0 14px}
+.gg-meta b{color:#000}
+.gg-note{background:#fff7da;border:1px solid #f0dc8a;border-radius:10px;padding:9px 13px;font-size:.84rem;margin:8px 0}
+
+.gg-live{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;margin:16px 0}
+@media(max-width:860px){.gg-live{grid-template-columns:1fr}}
+.gg-card{background:#fff;border:1px solid var(--line,#e5e0d2);border-radius:16px;padding:16px 18px}
+.gg-card h3{margin:0 0 4px;font-size:1rem}
+.gg-card .sub{font-size:.78rem;color:#58493A;margin:0 0 10px}
+.gg-toasts{position:relative;min-height:236px;display:flex;flex-direction:column;gap:8px;overflow:hidden}
+.gg-toast{display:flex;gap:10px;align-items:center;background:#f6f8ff;border:1px solid #dbe4fb;border-radius:12px;padding:10px 12px;font-size:.88rem;animation:ggIn .45s ease both}
+.gg-toast.out{animation:ggOut .5s ease both}
+.gg-toast .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.gg-toast .t{flex:1;min-width:0;overflow-wrap:anywhere}
+.gg-toast .w{font-size:.72rem;color:#58493A;white-space:nowrap}
+.gg-empty{color:#58493A;font-size:.9rem;padding:20px 4px}
+@keyframes ggIn{from{opacity:0;transform:translateY(-14px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ggOut{from{opacity:1}to{opacity:0;transform:translateX(18px)}}
+.gg-pulse{position:relative;height:150px;overflow:hidden;border-radius:12px;background:#0d1b3d}
+.gg-pulse .track{position:absolute;left:0;top:0;height:100%;width:200%;display:flex;animation:ggScroll 9s linear infinite}
+.gg-pulse svg{width:50%;height:100%;flex:none}
+.gg-pulse path{fill:none;stroke:#35e0a1;stroke-width:2.4;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(53,224,161,.8))}
+.gg-pulse .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0d1b3d 0,transparent 14%,transparent 86%,#0d1b3d 100%);pointer-events:none}
+@keyframes ggScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.gg-pulse-cap{display:flex;justify-content:space-between;font-size:.75rem;color:#58493A;margin-top:8px;gap:8px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){.gg-pulse .track{animation:none}.gg-toast,.gg-toast.out{animation:none}}
+
+.gg-kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin:14px 0}
+.gg-kpi{background:#fff;border:1px solid var(--line,#e5e0d2);border-radius:14px;padding:13px 14px}
+.gg-kpi span{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:#58493A}
+.gg-kpi b{display:block;font-size:1.45rem;margin-top:4px;font-family:'Fraunces',serif}
+.gg-kpi small{display:block;color:#58493A;font-size:.74rem;margin-top:2px}
+
+.gg-h{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:26px 0 10px}
+.gg-h h3{margin:0;font-size:1.15rem}
+.gg-plats{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px}
+.gg-plat{background:#fff;border:1px solid var(--line,#e5e0d2);border-radius:16px;padding:16px}
+.gg-plat.big{grid-column:span 2;border-width:2px}
+@media(max-width:620px){.gg-plat.big{grid-column:auto}}
+.gg-plat-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px;min-height:44px}
+.gg-plat.big .ads-logo{max-width:220px}
+.gg-status{font-size:.74rem;font-weight:700;border-radius:99px;padding:3px 10px;background:#e8f6ec;color:#1c6b2f}
+.gg-status.paused{background:#fff2d8;color:#8a5a00}.gg-status.ended{background:#eee;color:#555}
+.gg-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px 8px}
+.gg-plat.big .gg-stats{grid-template-columns:repeat(6,1fr)}
+@media(max-width:620px){.gg-plat.big .gg-stats{grid-template-columns:repeat(3,1fr)}}
+.gg-stats div span{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:#58493A}
+.gg-stats div b{font-size:1rem}
+
+.gg-place{display:grid;grid-template-columns:minmax(110px,1.1fr) minmax(80px,1.4fr) repeat(5,minmax(62px,.7fr));gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid #eee;font-size:.88rem}
+.gg-place.head{font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#58493A;border-bottom:2px solid #ddd}
+.gg-bar{height:10px;border-radius:6px;background:#eef0f6;overflow:hidden}.gg-bar i{display:block;height:100%;background:linear-gradient(90deg,#1E6BE6,#35a0ff)}
+@media(max-width:720px){.gg-place{grid-template-columns:repeat(3,1fr)}.gg-place .gg-bar,.gg-place.head .bar{grid-column:1/-1;order:9}}
+
+.gg-ongoing{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:16px}
+.gg-ad{background:#fff;border:1px solid var(--line,#e5e0d2);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+.gg-ad .vid{position:relative;aspect-ratio:16/9;background:#0d1b3d}
+.gg-ad .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.gg-ad .noVid{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#c8d6f2;font-size:.85rem;text-align:center;padding:10px}
+.gg-ad .body{padding:13px 15px}
+.gg-ad h4{margin:6px 0 2px;font-size:1rem}
+.gg-ad .vn{font-size:.82rem;color:#58493A;margin:0 0 10px;overflow-wrap:anywhere}
+.gg-ad .gg-stats{grid-template-columns:repeat(3,1fr)}
+.gg-live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#2dbd6e;margin-right:6px;animation:ggBlink 1.6s ease-in-out infinite}
+@keyframes ggBlink{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.gg-live-dot{animation:none}}
+
+.gg-cm{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #eee}
+.gg-cm:last-child{border-bottom:0}
+.gg-cm .who{font-size:.8rem;color:#58493A}
+.gg-cm p{margin:3px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* outline buttons on these pages sit on light backgrounds, so keep their text dark */
+.ina-form .btn-outline,.ina-actions .btn-outline,.gg-card .btn-outline,.admin-table .btn-outline,.ina-sub .btn-outline{color:#211A12;background:#fff}
+.ina-danger.btn-outline{color:#9b1c1c !important}
+.ina-actions [hidden],.gg-wrap [hidden],.ina-form [hidden]{display:none !important}

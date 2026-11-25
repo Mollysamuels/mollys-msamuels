@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>INA — Admin — Molly Samuels</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/admin.css">
+<link rel="stylesheet" href="css/admin-form.css">
+<link rel="stylesheet" href="css/ads.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+  .skip-link { position:absolute; left:-9999px; top:8px; background:#000; color:#fff; padding:10px 16px; border-radius:6px; z-index:1000; }
+  .skip-link:focus { left:8px; }
+  .adm-msg { font-size:0.85rem; margin:0 0 10px; }
+  .adm-msg.ok { color:#2D6B3B; } .adm-msg.err { color:#B23A3A; }
+  .adm-hint { display:block; font-size:0.78rem; color:#58493A; margin-top:5px; }
+  .auth-field input[aria-invalid="true"] { border-color:#B23A3A; }
+  :focus-visible { outline:2px solid #1B2A4A; outline-offset:2px; }
+.auth-field textarea{width:100%;box-sizing:border-box;min-height:90px;font:inherit;padding:10px 12px;border:1px solid var(--line,#ddd);border-radius:8px}
+</style>
+</head>
+<body class="admin-body" style="visibility:hidden;">
+<a href="#main" class="skip-link">Skip to main content</a>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+  const supabaseClient = supabase.createClient(
+    "https://vdlwnflklclenavtpamp.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZkbHduZmxrbGNsZW5hdnRwYW1wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk5OTg5NTksImV4cCI6MjEwNTU3NDk1OX0.OfZ8QHqzaRepBc6pghvK6fbH1N6TqsD5AS4370CaBfU"
+  );
+</script>
+<script src="js/admin-auth.js"></script>
+<script>
+  document.addEventListener("adminReady", () => { document.body.style.visibility = "visible"; });
+</script>
+
+<div class="admin-shell">
+<aside class="admin-sidebar">
+  <a href="admin-dashboard.html" class="logo-mark">Molly <span>Samuels</span></a>
+  <span class="admin-tag">Admin Panel</span>
+  <nav class="admin-nav-list" aria-label="Admin" style="display:flex;flex-direction:column;gap:2px;">
+    <a href="admin-dashboard.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Dashboard</a>
+    <a href="admin-products.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7l8-4 8 4-8 4-8-4z" stroke="currentColor" stroke-width="1.5"/><path d="M4 7v10l8 4 8-4V7" stroke="currentColor" stroke-width="1.5"/></svg>Products</a>
+    <a href="admin-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="17" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Orders</a>
+    <a href="admin-custom-orders.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 4h6l1 3h3v3h-2v10H6V10H4V7h3l1-3z" stroke="currentColor" stroke-width="1.5"/></svg>Custom &amp; Bulk</a>
+    <a href="admin-customers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.5"/><path d="M4.5 20c1.6-3.6 4.4-5.5 7.5-5.5s5.9 1.9 7.5 5.5" stroke="currentColor" stroke-width="1.5"/></svg>Customers</a>
+    <a href="admin-subscribers.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Subscribers</a>
+    <a href="admin-newsletter.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M21 3L3 10.5l7 2.5 2.5 7L21 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Newsletter</a>
+    <a href="admin-messages.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M4 5h16v11H9l-5 4V5z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>Customer Messages</a>
+    <a href="admin-categories.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.5"/></svg>Categories</a>
+    <a href="admin-sync-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><circle cx="9" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4 17l5-4 3 3 3-2 5 4" stroke="currentColor" stroke-width="1.3"/></svg>Add from photos</a>
+    <a href="admin-match-photos.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="13" y="6" width="8" height="12" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M11 12h2" stroke="currentColor" stroke-width="1.5"/></svg>Match hover photos</a>
+    <a href="admin-sitemap.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" stroke="currentColor" stroke-width="1.3"/></svg>Sitemap &amp; link previews</a>
+    <a href="admin-challenge.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Bridal Challenge</a>
+    <a href="admin-challenge-votes.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="15" cy="14" r="5" stroke="currentColor" stroke-width="1.5"/><path d="M12 3l1.2 2.4L12 8l-1.2-2.6L12 3z" fill="currentColor"/></svg>Challenge Votes</a>
+    <a href="admin-settings.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" stroke="currentColor" stroke-width="1.3"/></svg>Settings</a>
+
+  </nav>
+  <div class="admin-nav-logout">
+    <a href="admin-login.html" class="admin-nav"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" stroke="currentColor" stroke-width="1.5"/><path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.5"/></svg>Log Out</a>
+  </div>
+</aside>
+<main class="admin-main" id="main">
+<div class="admin-topbar">
+  <h1>INA — Input ads</h1>
+  <div class="admin-topbar-user"><div class="admin-avatar" aria-hidden="true">A</div> Admin</div>
+</div>
+<div class="admin-content" style="max-width:1000px;">
+  <p class="ina-note" style="margin:0 0 14px">Type in your ad numbers here. Everything you save appears by itself on the <a href="admin-gg.html"><b>Gg Ad API</b></a> report page. Only signed-in admins can see or change this.</p>
+  <div id="inaSetup"></div>
+
+  <div class="admin-panel" id="pAd">
+    <div class="admin-panel-head"><h2 id="adTitle">1. Add an ad</h2></div>
+    <p class="ina-note" style="margin:0 0 6px">YouTube, TikTok, Facebook and Instagram are already here. Pick one, then give the ad a name.</p>
+    <div class="ina-form">
+      <div class="ina-cols">
+        <div><label for="aPlat">Platform *</label><select id="aPlat"></select></div>
+        <div><label for="aName">Ad name *</label><input type="text" id="aName" maxlength="150" autocomplete="off"></div>
+        <div><label for="aVideo">Video name</label><input type="text" id="aVideo" maxlength="150" autocomplete="off"></div>
+        <div><label for="aUrl">Video link</label><input type="url" id="aUrl" maxlength="300" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off"></div>
+        <div><label for="aStatus">Status</label><select id="aStatus"><option value="ongoing">Ongoing</option><option value="paused">Paused</option><option value="ended">Ended</option></select></div>
+        <div><label for="aCur">Money for this ad</label><select id="aCur"><option value="NGN">₦ Naira</option><option value="USD">$ US Dollar</option></select></div>
+        <div><label for="aStart">Started on</label><input type="date" id="aStart"></div>
+        <div><label for="aEnd">Ended on (if it ended)</label><input type="date" id="aEnd"></div>
+        <div class="ina-wide"><label for="aNotes">Notes (only you see this)</label><textarea id="aNotes" maxlength="1000"></textarea></div>
+      </div>
+      <p id="mAd" class="adm-msg" role="status" aria-live="polite"></p>
+      <div class="ina-actions"><button type="button" class="btn btn-gold" id="bAd" style="padding:9px 18px;font-size:.85rem;">Save ad</button><button type="button" class="btn btn-outline" id="bAdCancel" hidden style="padding:9px 18px;font-size:.85rem;border-color:var(--line)">Cancel editing</button></div>
+    </div>
+    <div style="overflow-x:auto"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Your ads</caption>
+      <thead><tr><th scope="col">Ad</th><th scope="col">Status</th><th scope="col">Money</th><th scope="col">Dates</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="adRows"><tr><td colspan="5" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="admin-panel" id="pRes">
+    <div class="admin-panel-head"><h2 id="resTitle">2. Add results for a date range</h2></div>
+    <p class="ina-note" style="margin:0 0 6px">One entry = one ad, in one place, for one range of dates. If the same ad ran on YouTube and on a website, add two entries.</p>
+    <div class="ina-form">
+      <div class="ina-cols">
+        <div><label for="rAd">Ad *</label><select id="rAd"></select></div>
+        <div><label for="rPlace">Where it appeared *</label><select id="rPlace"></select></div>
+        <div><label for="rFrom">From *</label><input type="date" id="rFrom"></div>
+        <div><label for="rTo">To *</label><input type="date" id="rTo"></div>
+        <div><label for="rImp">Impressions</label><input type="text" inputmode="numeric" id="rImp" placeholder="0" autocomplete="off"></div>
+        <div><label for="rClk">Clicks</label><input type="text" inputmode="numeric" id="rClk" placeholder="0" autocomplete="off"></div>
+        <div><label for="rViews">Views</label><input type="text" inputmode="numeric" id="rViews" placeholder="0" autocomplete="off"></div>
+        <div><label for="rCost">Cost <span class="ina-curtag" id="rCur">₦</span></label><input type="text" inputmode="decimal" id="rCost" placeholder="0.00" autocomplete="off"></div>
+        <div class="ina-wide"><label for="rNote">Note (optional)</label><input type="text" id="rNote" maxlength="500" autocomplete="off"></div>
+      </div>
+      <div class="ina-sub">
+        <b style="font-size:.85rem">Add another website or app by its full name</b>
+        <div class="ina-cols" style="margin-top:8px">
+          <div><label for="pName">Full name</label><input type="text" id="pName" maxlength="120" placeholder="e.g. Jumia, Nairaland, Opera News" autocomplete="off"></div>
+          <div><label for="pKind">It is a</label><select id="pKind"><option value="other_website">Website</option><option value="other_app">Mobile app</option></select></div>
+        </div>
+        <button type="button" class="btn btn-outline ina-small" id="bPlace" style="border-color:var(--line)">Add this place</button>
+        <p id="mPlace" class="adm-msg" role="status" aria-live="polite"></p>
+        <div id="placeList" class="ina-note"></div>
+      </div>
+      <p id="mRes" class="adm-msg" role="status" aria-live="polite" style="margin-top:12px"></p>
+      <div class="ina-actions"><button type="button" class="btn btn-gold" id="bRes" style="padding:9px 18px;font-size:.85rem;">Save results</button><button type="button" class="btn btn-outline" id="bResCancel" hidden style="padding:9px 18px;font-size:.85rem;border-color:var(--line)">Cancel editing</button></div>
+    </div>
+    <div class="auth-field" style="max-width:320px"><label for="fRes">Show entries for</label><select id="fRes"></select></div>
+    <div style="overflow-x:auto"><table class="admin-table">
+      <caption class="sr-only" style="position:absolute;left:-9999px">Result entries</caption>
+      <thead><tr><th scope="col">Dates</th><th scope="col">Ad and place</th><th scope="col">Impressions</th><th scope="col">Clicks</th><th scope="col">Views</th><th scope="col">Cost</th><th scope="col"><span class="sr-only" style="position:absolute;left:-9999px">Actions</span></th></tr></thead>
+      <tbody id="resRows"><tr><td colspan="7" style="text-align:center;color:var(--ink-soft);padding:20px;">Loading…</td></tr></tbody>
+    </table></div>
+  </div>
+
+  <div class="admin-panel" id="pCom">
+    <div class="admin-panel-head"><h2 id="comTitle">3. Add comments people wrote</h2></div>
+    <p class="ina-note" style="margin:0 0 6px">Copy a real comment from YouTube, TikTok, Facebook or Instagram and paste it here.</p>
+    <div class="ina-form">
+      <div class="ina-cols">
+        <div><label for="cAd">Ad *</label><select id="cAd"></select></div>
+        <div><label for="cAuthor">Who wrote it (optional)</label><input type="text" id="cAuthor" maxlength="120" autocomplete="off"></div>
+        <div><label for="cDate">Date of the comment (optional)</label><input type="date" id="cDate"></div>
+        <div class="ina-wide"><label for="cBody">The comment *</label><textarea id="cBody" maxlength="1000"></textarea></div>
+      </div>
+      <p id="mCom" class="adm-msg" role="status" aria-live="polite"></p>
+      <div class="ina-actions"><button type="button" class="btn btn-gold" id="bCom" style="padding:9px 18px;font-size:.85rem;">Save comment</button><button type="button" class="btn btn-outline" id="bComCancel" hidden style="padding:9px 18px;font-size:.85rem;border-color:var(--line)">Cancel editing</button></div>
+    </div>
+    <div id="comList"></div>
+  </div>
+
+  <div class="admin-panel" id="pLogo">
+    <div class="admin-panel-head"><h2>4. Platform logos</h2></div>
+    <p class="ina-note" style="margin:0 0 6px">Upload the logo of each platform (PNG, JPG or WEBP, up to 1 MB). The Gg Ad API page shows it by itself. Until you upload one, the page shows a coloured badge with the name.</p>
+    <p id="mLogo" class="adm-msg" role="status" aria-live="polite"></p>
+    <div id="logoRows"></div>
+  </div>
+</div>
+</main>
+</div>
+<script src="js/ads-common.js"></script>
+<script src="js/admin-ina.js"></script>
+</body>
+</html>
